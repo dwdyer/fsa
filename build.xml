@@ -18,8 +18,7 @@
   <property name="project.jar" value="fsa.jar"/>
   <property name="release.zip" value="fsa2.zip"/>
 
-  <!-- Standard classes are in a non-standard location on Macs.
-       TO DO: Get hold of rt.jar from JDK 1.1 and use that for compilation. -->
+  <!-- Standard classes are in a non-standard location on Macs. -->
   <condition property="jdk.libs"
              value="${java.home}/../Classes/classes.jar;${java.home}/../Classes/ui.jar"
              else="${java.home}/lib/rt.jar">
@@ -40,20 +39,22 @@
   <!-- Compiles all Java source files and copies all non-source resources into the build
        location. -->
   <target name="compile" description="Compiles all Java source files.">
-    <mkdir dir="${classes.dir}"/>
-    <javac srcdir="${src.dir}/java"
-           destdir="${classes.dir}"
-           source="1.3"
-           target="1.1"
+    <mkdir dir="${classes.dir}/main"/>
+    <javac srcdir="${src.dir}/java/main"
+           destdir="${classes.dir}/main"
+           source="1.5"
+           target="1.5"
            debug="off"
            optimize="on"
-           deprecation="on"/>
+           deprecation="on">
+      <compilerarg line="-Xlint:unchecked" />
+    </javac>
   </target>
 
   <!-- Packages and deploys all distributable files. -->
   <target name="dist" depends="compile" description="Builds JAR file and deploys all files.">
     <mkdir dir="${deploy.dir}"/>
-    <jar jarfile="${deploy.dir}/${project.jar}" basedir="${classes.dir}"/>
+    <jar jarfile="${deploy.dir}/${project.jar}" basedir="${classes.dir}/main"/>
     <copy todir="${deploy.dir}">
       <fileset dir="${src.dir}/conf" includes="*"/>
       <fileset dir="${src.dir}/data" includes="*"/>
@@ -96,7 +97,7 @@
              packagenames="net.footballpredictions.*"
              author="true"
              version="true"
-             source="1.3"
+             source="1.5"
              windowtitle="Football Statistics Applet"
              doctitle="Football Statistics Applet">
       <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
