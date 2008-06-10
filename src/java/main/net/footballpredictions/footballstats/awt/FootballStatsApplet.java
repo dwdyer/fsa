@@ -37,8 +37,8 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
  */
 public final class FootballStatsApplet extends Applet
 {
-    private static final String VERSION_STRING = "Version 2.0.3";
-    private static final String COPYRIGHT_STRING = "© Copyright 2000-2007, Daniel W. Dyer";
+    private static final String VERSION_STRING = "Version 3.0 Alpha";
+    private static final String COPYRIGHT_STRING = "© Copyright 2000-2008, Daniel W. Dyer";
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
     
     // Mapping from display name to file name for results files.

@@ -1,12 +1,14 @@
 package net.footballpredictions.footballstats.model;
 
+import java.util.Comparator;
+
 /**
  * Convenience base class that provides most of the comparison logic for league tables.
  * Sub-classes just need to fill in the main comparison (i.e. the one that takes precedence
  * over all of the others).
  * @author Daniel Dyer
  */
-abstract class LeagueTableComparator implements TeamComparator
+abstract class LeagueTableComparator implements Comparator<Team>
 {
     protected int where = Team.BOTH;
     protected boolean form = false; // Are we calculating a form table.
@@ -23,7 +25,7 @@ abstract class LeagueTableComparator implements TeamComparator
     }
         
         
-    public final int compareTeams(Team team1, Team team2)
+    public final int compare(Team team1, Team team2)
     {
         int compare = doMainComparison(team1, team2);
         if (compare == 0)

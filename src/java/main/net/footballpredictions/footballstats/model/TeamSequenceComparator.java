@@ -1,10 +1,12 @@
 package net.footballpredictions.footballstats.model;
 
+import java.util.Comparator;
+
 /**
  * Comparator for sorting a set of teams by a particular sequences statistic.
  * @author Daniel Dyer
  */
-final class SequenceComparator implements TeamComparator
+final class TeamSequenceComparator implements Comparator<Team>
 {
     private int when, where, sequence;
         
@@ -15,7 +17,7 @@ final class SequenceComparator implements TeamComparator
         this.sequence = sequence;
     }
         
-    public int compareTeams(Team team1, Team team2)
+    public int compare(Team team1, Team team2)
     {
         int compare = team2.getSequence(when, where, sequence) - team1.getSequence(when, where, sequence); // Swap teams for descending sort.
         if (compare == 0)

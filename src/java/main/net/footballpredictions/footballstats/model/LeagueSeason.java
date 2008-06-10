@@ -7,7 +7,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,7 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.util.Vector;
+import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
 
 /**
  * Models a single season in a particular football league.
@@ -43,11 +45,16 @@ public final class LeagueSeason
     private String[] teamNames;
     private final SortedSet<Date> dates = new TreeSet<Date>(Collections.reverseOrder()); // Most recent first.
     private final Map<Date, List<Result>> resultsByDate = new HashMap<Date, List<Result>>();
-    private final Vector topAttendances = new Vector(21);
-    private final Vector bottomAttendances = new Vector(21);
-    private final Vector biggestHomeWins = new Vector(5);
-    private final Vector biggestAwayWins = new Vector(5);
-    private final Vector highestMatchAggregates = new Vector(5);
+
+    private final Comparator<Result> resultAttendanceComparator = new ResultAttendanceComparator();
+    private final SortedSet<Result> topAttendances = new FixedSizeSortedSet<Result>(20, resultAttendanceComparator);
+    private final SortedSet<Result> bottomAttendances = new FixedSizeSortedSet<Result>(20, Collections.reverseOrder(resultAttendanceComparator));
+
+    private final Comparator<Result> resultMarginComparator = new ResultMarginComparator();
+    private final SortedSet<Result> biggestHomeWins = new FixedSizeSortedSet<Result>(5, resultMarginComparator);
+    private final SortedSet<Result> biggestAwayWins = new FixedSizeSortedSet<Result>(5, resultMarginComparator);
+    
+    private final SortedSet<Result> highestMatchAggregates = new FixedSizeSortedSet<Result>(5, new ResultAggregateComparator());
     
     private int matchCount = 0;
     private int aggregateHomeWins = 0;
@@ -109,8 +116,8 @@ public final class LeagueSeason
         }
     };
         
-    private final SequenceComparator sequenceComparator = new SequenceComparator();
-    private final AttendanceComparator attendanceComparator = new AttendanceComparator();
+    private final TeamSequenceComparator sequenceComparator = new TeamSequenceComparator();
+    private final TeamAttendanceComparator attendanceComparator = new TeamAttendanceComparator();
     
     
     public LeagueSeason(URL resultsURL)
@@ -359,39 +366,15 @@ public final class LeagueSeason
     
     private void updateKeyResults(Result result)
     {
-        Vector winsVector = null;
         if (result.isWin(result.homeTeam)) // Home Win
         {
-            winsVector = biggestHomeWins;
+            biggestHomeWins.add(result);
         }
         else if (result.isWin(result.awayTeam)) // Away Win
         {
-            winsVector = biggestAwayWins;
+            biggestAwayWins.add(result);
         }
-        if (winsVector != null)
-        {
-            int index = winsVector.size();
-            while (index > 0 && result.getMarginOfVictory() > ((Result) winsVector.elementAt(index - 1)).getMarginOfVictory())
-            {
-                index--;
-            }
-            if (index < 5)
-            {
-                winsVector.insertElementAt(result, index);
-                winsVector.setSize(Math.min(winsVector.size(), 4));
-            }
-        }
-        
-        int index = highestMatchAggregates.size();
-        while (index > 0 && result.getMatchAggregate() > ((Result) highestMatchAggregates.elementAt(index - 1)).getMatchAggregate())
-        {
-            index--;
-        }
-        if (index < 5)
-        {
-            highestMatchAggregates.insertElementAt(result, index);
-            highestMatchAggregates.setSize(Math.min(highestMatchAggregates.size(), 4));
-        }
+        highestMatchAggregates.add(result);
     }
     
     
@@ -400,30 +383,12 @@ public final class LeagueSeason
         if (result.attendance >= 0)
         {
             aggregateAttendance += result.attendance;
-            int index = topAttendances.size();
-            while (index > 0 && result.attendance > ((Result) topAttendances.elementAt(index - 1)).attendance)
-            {
-                index--;
-            }
-            if (index < 20)
-            {
-                topAttendances.insertElementAt(result, index);
-                topAttendances.setSize(Math.min(topAttendances.size(), 20));
-            }
-            index = bottomAttendances.size();
-            while (index > 0 && result.attendance < ((Result) bottomAttendances.elementAt(index - 1)).attendance)
-            {
-                index--;
-            }
-            if (index < 20)
-            {
-                bottomAttendances.insertElementAt(result, index);
-                bottomAttendances.setSize(Math.min(bottomAttendances.size(), 20));
-            }
+            topAttendances.add(result);
+            bottomAttendances.add(result);
         }
     }
-    
-    
+
+
     /**
      * Get a list of the names of all the teams in the division, sorted in alphabetical order.
      */
@@ -431,9 +396,9 @@ public final class LeagueSeason
     {
         if (teamNames == null)
         {
-            Team[] alphabeticalTeams = sortTeams(teams, new TeamComparator()
+            Team[] alphabeticalTeams = sortTeams(teams, new Comparator<Team>()
             {
-                public int compareTeams(Team team1, Team team2)
+                public int compare(Team team1, Team team2)
                 {
                     return team1.getName().toLowerCase().compareTo(team2.getName().toLowerCase());
                 }
@@ -469,7 +434,7 @@ public final class LeagueSeason
     
     public Date getMostRecentDate()
     {
-        return dates.last();
+        return dates.first();
     }
     
     
@@ -551,45 +516,34 @@ public final class LeagueSeason
     
     public Result[] getBiggestHomeWins()
     {
-        return vectorToResultsArray(biggestHomeWins);
+        return biggestHomeWins.toArray(new Result[biggestHomeWins.size()]);
     }
 
 
     public Result[] getBiggestAwayWins()
     {
-        return vectorToResultsArray(biggestAwayWins);
+        return biggestAwayWins.toArray(new Result[biggestAwayWins.size()]);
     }
     
     
     public Result[] getHighestMatchAggregates()
     {
-        return vectorToResultsArray(highestMatchAggregates);
+        return highestMatchAggregates.toArray(new Result[highestMatchAggregates.size()]);
     }
 
     
     public Result[] getHighestAttendances()
     {
-        return vectorToResultsArray(topAttendances);
+        return topAttendances.toArray(new Result[topAttendances.size()]);
     }
     
     
     public Result[] getLowestAttendances()
     {
-        return vectorToResultsArray(bottomAttendances);
+        return bottomAttendances.toArray(new Result[bottomAttendances.size()]);
     }
     
     
-    /**
-     * Helper method to convert a vector of results into an array.
-     */
-    private Result[] vectorToResultsArray(Vector vector)
-    {
-        Result[] results = new Result[vector.size()];
-        vector.copyInto(results);
-        return results;
-    }
-    
-   
     public int getMatchCount()
     {
         return matchCount;
@@ -693,77 +647,13 @@ public final class LeagueSeason
     /**
      * Perform a sort on an array of teams using the specified comparator.
      */
-    private Team[] sortTeams(Team[] teams, TeamComparator comparator)
+    private Team[] sortTeams(Team[] teams, Comparator<Team> comparator)
     {
-        Team[] copy = (Team[]) teams.clone();
-        mergeSort(teams, copy, 0, teams.length, comparator);
+        Team[] copy = teams.clone();
+        Arrays.sort(copy, comparator);
         return copy;
     }
 
-
-    /**
-     * Merge sort based on the implementation in java.util.Arrays in J2SE version 1.2 and later.
-     * One thing that is not made clear in the documentation for that implementation is that it
-     * makes the assumption that the contents of both src and dest are the same to start with.
-     */
-    private void mergeSort(Team[] src,
-                           Team[] dest,
-                           int low,
-                           int high,
-                           TeamComparator comparator)
-    {
-	int length = high - low;
-
-	// Use insertion sort for small sorts, it's quicker.
-	if (length < 7)
-        {
-	    for (int i = low; i < high; i++)
-            {
-		for (int j = i; j > low && comparator.compareTeams(dest[j - 1], dest[j]) > 0; j--)
-                {
-		    swap(dest, j, j - 1);
-                }
-            }
-	    return;
-	}
-
-        // Recursively sort halves of dest into src.
-        int mid = (low + high) >> 1;
-        mergeSort(dest, src, low, mid, comparator);
-        mergeSort(dest, src, mid, high, comparator);
-
-        // If list is already sorted, just copy from src to dest.  This is an
-        // optimisation that results in faster sorts for nearly ordered lists.
-        if (comparator.compareTeams(src[mid - 1], src[mid]) <= 0)
-        {
-           System.arraycopy(src, low, dest, low, length);
-           return;
-        }
-
-        // Merge sorted halves (now in src) into dest
-        for(int i = low, p = low, q = mid; i < high; i++)
-        {
-            if (q >= high || p < mid && comparator.compareTeams(src[p], src[q]) <= 0)
-            {
-                dest[i] = src[p++];
-            }
-            else
-            {
-                dest[i] = src[q++];
-            }
-        }
-    }
-    
-    
-    /**
-     * Swaps teams[a] with teams[b].
-     */
-    private void swap(Team[] teams, int a, int b)
-    {
-        Team team = teams[a];
-        teams[a] = teams[b];
-        teams[b] = team;
-    }
 
 
     public int getPointsForWin()
@@ -776,4 +666,5 @@ public final class LeagueSeason
     {
         return pointsForDraw;
     }
+
 }
