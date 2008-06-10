@@ -44,7 +44,7 @@
            destdir="${classes.dir}/main"
            source="1.5"
            target="1.5"
-           debug="off"
+           debug="on"
            optimize="on"
            deprecation="on">
       <compilerarg line="-Xlint:unchecked" />

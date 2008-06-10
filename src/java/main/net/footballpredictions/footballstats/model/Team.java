@@ -1,8 +1,10 @@
 // $Header: $
 package net.footballpredictions.footballstats.model;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Models a single team's record for the season.
@@ -52,8 +54,8 @@ public final class Team
 
     // Team data.
     private final String name;    
-    private final Vector results = new Vector();
-    private final Vector leaguePositions = new Vector();
+    private final List<Result> results = new ArrayList<Result>(46); // Most leagues have no more than 46 games per team.
+    private final List<LeaguePosition> leaguePositions = new ArrayList<LeaguePosition>(46);
            
     /**
      * Two dimensional array for storing aggregates (i.e. league table data).
@@ -99,7 +101,7 @@ public final class Team
         if (where == BOTH)
         {
             resultsArray = new Result[results.size()];
-            results.copyInto(resultsArray);
+            results.toArray(resultsArray);
         }
         else
         {
@@ -107,7 +109,7 @@ public final class Team
             int count = 0;
             for (int i = 0; i < results.size() && count < resultsArray.length; i++)
             {
-                Result result = (Result) results.elementAt(i);
+                Result result = results.get(i);
                 if ((where == HOME && result.homeTeam.equals(this))
                     || (where == AWAY && result.awayTeam.equals(this)))
                 {
@@ -123,14 +125,14 @@ public final class Team
     public LeaguePosition[] getLeaguePositions()
     {
         LeaguePosition[] positions = new LeaguePosition[leaguePositions.size()];
-        leaguePositions.copyInto(positions);
+        leaguePositions.toArray(positions);
         return positions;
     }
     
     
     public int getLastLeaguePosition()
     {
-        return ((LeaguePosition) leaguePositions.lastElement()).position;
+        return (leaguePositions.get(leaguePositions.size() - 1)).position;
         
     }
     
@@ -143,7 +145,7 @@ public final class Team
         data[0][1] = total;
         for (int i = 0; i < results.size(); i++)
         {
-            Result result = (Result) results.elementAt(i);
+            Result result = results.get(i);
             if (result.isDraw())
             {
                 total += pointsForDraw;
@@ -163,7 +165,7 @@ public final class Team
     
     public void addResult(Result result)
     {
-        results.addElement(result);
+        results.add(result);
         updateAggregatesAndSequences(result);
         updateForm(result);
         updateAttendanceFigures(result);
@@ -172,7 +174,7 @@ public final class Team
     
     public void addLeaguePosition(Date date, int position)
     {
-        leaguePositions.addElement(new LeaguePosition(date, position));
+        leaguePositions.add(new LeaguePosition(date, position));
     }
     
     
@@ -359,7 +361,7 @@ public final class Team
      */
     public String[] getNotes(int where)
     {
-        Vector notes = new Vector();
+        List<String> notes = new LinkedList<String>();
         String end = " matches.";
         if (where == HOME)
         {
@@ -373,43 +375,43 @@ public final class Team
         // Check unbeatean/without win sequences.
         if (getSequence(CURRENT, where, SEQUENCE_UNBEATEN) >= 3)
         {
-            notes.addElement("Unbeaten in last " + getSequence(CURRENT, where, SEQUENCE_UNBEATEN) + end);
+            notes.add("Unbeaten in last " + getSequence(CURRENT, where, SEQUENCE_UNBEATEN) + end);
         }
         if (getSequence(CURRENT, where, SEQUENCE_NO_WIN) >= 3)
         {
-            notes.addElement("Haven't won in last " + getSequence(CURRENT, where, SEQUENCE_NO_WIN) + end);
+            notes.add("Haven't won in last " + getSequence(CURRENT, where, SEQUENCE_NO_WIN) + end);
         }        
         
         // Check win/loss sequences.
         if (getSequence(CURRENT, where, SEQUENCE_WIN) >= 3)
         {
-            notes.addElement("Won last " + getSequence(CURRENT, where, SEQUENCE_WIN) + end);
+            notes.add("Won last " + getSequence(CURRENT, where, SEQUENCE_WIN) + end);
         }
         else if (getSequence(CURRENT, where, SEQUENCE_DRAW) >= 3)
         {
-            notes.addElement("Drawn last " + getSequence(CURRENT, where, SEQUENCE_DRAW) + end);
+            notes.add("Drawn last " + getSequence(CURRENT, where, SEQUENCE_DRAW) + end);
         }
         else if (getSequence(CURRENT, where, SEQUENCE_DEFEAT) >= 3)
         {
-            notes.addElement("Lost last " + getSequence(CURRENT, where, SEQUENCE_DEFEAT) + end);
+            notes.add("Lost last " + getSequence(CURRENT, where, SEQUENCE_DEFEAT) + end);
         }
         
         // Check cleansheet/scoring sequences.
         if (getSequence(CURRENT, where, SEQUENCE_NO_GOAL) >= 3)
         {
-            notes.addElement("Haven't scored in last " + getSequence(CURRENT, where, SEQUENCE_NO_GOAL) + end);
+            notes.add("Haven't scored in last " + getSequence(CURRENT, where, SEQUENCE_NO_GOAL) + end);
         }
         if (getSequence(CURRENT, where, SEQUENCE_CLEANSHEET) >= 3)
         {
-            notes.addElement("Haven't conceded in last " + getSequence(CURRENT, where, SEQUENCE_CLEANSHEET) + end);
+            notes.add("Haven't conceded in last " + getSequence(CURRENT, where, SEQUENCE_CLEANSHEET) + end);
         }
         if (getSequence(CURRENT, where, SEQUENCE_SCORED) >= 10)
         {
-            notes.addElement("Scored in last " + getSequence(CURRENT, where, SEQUENCE_SCORED) + end);
+            notes.add("Scored in last " + getSequence(CURRENT, where, SEQUENCE_SCORED) + end);
         }
         
         String[] noteStrings = new String[notes.size()];
-        notes.copyInto(noteStrings);
+        notes.toArray(noteStrings);
         return noteStrings;
     }
     
