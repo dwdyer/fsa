@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+  <html>
+    <head>
+      <title>Football Statistics Applet - Demo Page</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="author" content="Daniel Dyer" />
+    </head>
+    <body>
+
+      <div style="text-align: center;">
+        <!-- Begin FSA code.  The nested object tags are necessary to work in both IE (inner tag) and Firefox
+             (outer tag).  Opera will work with either.  It should not be necessary to modify this code.
+             Configuration is achieved by editing the fsa.properties file. -->
+        <!--[if !IE]>-->
+        <object classid="java:net.footballpredictions.footballstats.awt.FootballStatsApplet.class" 
+                type="application/x-java-applet"
+                archive="fsa.jar" 
+                height="420"
+                width="640"
+                standby="Loading the Football Statistics Applet...">
+          <param name="config.url" value="fsa.properties" />
+        <!--<![endif]-->
+          <object classid="clsid:08B0E5C0-4FCB-11CF-AAA5-00401C608501"
+                  type="application/x-java-applet"
+                  archive="fsa.jar" 
+                  height="420"
+                  width="640"
+                  standby="Loading the Football Statistics Applet...">
+            <param name="code" value="net.footballpredictions.footballstats.awt.FootballStatsApplet.class" />
+            <param name="config.url" value="fsa.properties" />
+          </object>
+        <!--[if !IE]>-->
+        </object>
+        <!--<![endif]-->
+        <!-- End FSA code. -->
+      </div>            
+    </body>
+</html>

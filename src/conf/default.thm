@@ -1,0 +1,35 @@
+# Control colours.
+colour.button=999999
+colour.button.selected=666666
+colour.button.text=FFFFFF
+colour.controlpanel=CCCCCC
+colour.controlpanel.text=000000
+colour.mainview=EEEEEE
+colour.mainview.text=000000
+colour.topbar=AAAAAA
+colour.topbar.text=000000
+
+# Result/goal difference colours.
+colour.defeat=FF6633
+colour.draw=FFDD00
+colour.win=66CC66
+colour.goaldiff.negative=990000
+colour.goaldiff.positive=006600
+
+# Prize (promotion, promotion play-offs etc.) colours.  Can specify as many as you need.
+colour.prize1=FFCC00
+colour.prize2=FFFF66
+colour.prize3=FFFFCC
+colour.prize4=FFFFFF
+
+# Relegation, relgation play-offs etc. colours.  Can specify as many as you need.
+colour.relegation1=FF9999
+colour.relegation2=FFCCCC
+
+# Notes colour.
+colour.notes=9999CC
+
+# Graph colours.
+colour.graph1=990000
+colour.graph2=000066
+colour.graph3=006600

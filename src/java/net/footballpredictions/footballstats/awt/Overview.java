@@ -1,0 +1,214 @@
+// $Header: $
+package net.footballpredictions.footballstats.awt;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Label;
+import java.awt.Panel;
+import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.model.Result;
+
+/**
+ * @author Daniel Dyer
+ * @since 4/1/2004
+ * @version $Revision: $
+ */
+public class Overview implements StatsPanel
+{
+    private LeagueSeason data = null;
+    private Theme theme = null;
+    private String highlightedTeam = null;
+    
+    private Panel view = null;
+    private Label matchesLabel, homeWinsLabel, homeWinsPercentLabel, awayWinsLabel, awayWinsPercentLabel, drawsLabel,
+                  drawsPercentLabel, drawsBreakdownLabel, goalsLabel, goalsAverageLabel, goalsBreakdownLabel, cleansheetsLabel,
+                  aggregateLabel, averageLabel;
+    private Panel homeWinsPanel, awayWinsPanel, aggregatesPanel;
+    
+    public void setLeagueData(LeagueSeason data, String highlightedTeam)
+    {
+        this.data = data;
+        this.highlightedTeam = highlightedTeam;
+        if (view != null)
+        {
+            updateView();
+        }
+    }
+    
+    
+    public void setTheme(Theme theme)
+    {
+        this.theme = theme;
+    }
+    
+    
+    public Component getControls()
+    {
+        return null;
+    }
+    
+    
+    public Component getView()
+    {
+        if (view == null)
+        {
+            view = new Panel(new BorderLayout(20, 0));
+            view.add(createTotalsPanel(), BorderLayout.WEST);
+            Panel innerPanel = new Panel(new GridLayout(3, 1));
+            homeWinsPanel = new Panel(new BorderLayout());
+            Label homeWinsLabel = new Label("Biggest Home Wins");
+            homeWinsLabel.setFont(theme.getBoldFont());
+            homeWinsPanel.add(homeWinsLabel, BorderLayout.NORTH);
+            awayWinsPanel = new Panel(new BorderLayout());
+            Label awayWinsLabel = new Label("Biggest Away Wins");
+            awayWinsLabel.setFont(theme.getBoldFont());
+            awayWinsPanel.add(awayWinsLabel, BorderLayout.NORTH);
+            aggregatesPanel = new Panel(new BorderLayout());
+            Label aggregatesLabel = new Label("Highest Match Aggregates");
+            aggregatesLabel.setFont(theme.getBoldFont());
+            aggregatesPanel.add(aggregatesLabel, BorderLayout.NORTH);
+            innerPanel.add(homeWinsPanel);
+            innerPanel.add(awayWinsPanel);
+            innerPanel.add(aggregatesPanel);            
+            view.add(Util.borderLayoutWrapper(innerPanel, BorderLayout.NORTH), BorderLayout.CENTER);
+            updateView();
+        }
+        return view;
+    }
+    
+    
+    private Component createTotalsPanel()
+    {
+        Panel innerPanel = new Panel(new GridBagLayout());
+        GridBagConstraints labelConstraints = new GridBagConstraints();
+        labelConstraints.anchor = GridBagConstraints.WEST;
+        labelConstraints.weightx = 1.0;
+        labelConstraints.fill = GridBagConstraints.HORIZONTAL;
+        labelConstraints.gridwidth = 1;
+        GridBagConstraints valueConstraints = (GridBagConstraints) labelConstraints.clone();
+        valueConstraints.gridwidth = GridBagConstraints.RELATIVE;
+        GridBagConstraints extraConstraints = (GridBagConstraints) labelConstraints.clone();
+        extraConstraints.gridwidth = GridBagConstraints.REMAINDER;        
+        extraConstraints.weightx = 0.1;
+        
+        Label totalsLabel = new Label("Totals");
+        totalsLabel.setFont(theme.getBoldFont());
+        innerPanel.add(totalsLabel, extraConstraints);
+        innerPanel.add(new Label("Matches Played:"), labelConstraints);
+        matchesLabel = new Label();
+        matchesLabel.setFont(theme.getBoldFont());
+        innerPanel.add(matchesLabel, extraConstraints);
+        innerPanel.add(new Label("Home Wins:"), labelConstraints);
+        homeWinsLabel = new Label();
+        homeWinsLabel.setFont(theme.getBoldFont());
+        innerPanel.add(homeWinsLabel, valueConstraints);
+        homeWinsPercentLabel = new Label();
+        innerPanel.add(homeWinsPercentLabel, extraConstraints);
+        innerPanel.add(new Label("Away Wins:"), labelConstraints);
+        awayWinsLabel = new Label();
+        awayWinsLabel.setFont(theme.getBoldFont());
+        innerPanel.add(awayWinsLabel, valueConstraints);
+        awayWinsPercentLabel = new Label();
+        innerPanel.add(awayWinsPercentLabel, extraConstraints);
+        innerPanel.add(new Label("Draws:"), labelConstraints);
+        drawsLabel = new Label();
+        drawsLabel.setFont(theme.getBoldFont());
+        innerPanel.add(drawsLabel, valueConstraints);
+        drawsPercentLabel = new Label();
+        innerPanel.add(drawsPercentLabel, extraConstraints);
+        drawsBreakdownLabel = new Label();
+        drawsBreakdownLabel.setFont(theme.getSmallFont());
+        innerPanel.add(drawsBreakdownLabel, extraConstraints);
+        innerPanel.add(new Label("Goals Scored:"), labelConstraints);
+        goalsLabel = new Label();
+        goalsLabel.setFont(theme.getBoldFont());
+        innerPanel.add(goalsLabel, valueConstraints);
+        goalsAverageLabel = new Label();
+        innerPanel.add(goalsAverageLabel, extraConstraints);
+        goalsBreakdownLabel = new Label();
+        goalsBreakdownLabel.setFont(theme.getSmallFont());
+        innerPanel.add(goalsBreakdownLabel, extraConstraints);
+        innerPanel.add(new Label("Cleansheets:"), labelConstraints);
+        cleansheetsLabel = new Label();
+        cleansheetsLabel.setFont(theme.getBoldFont());
+        innerPanel.add(cleansheetsLabel, extraConstraints);
+        innerPanel.add(new Label(), extraConstraints); // Blank Row
+        Label attendancesLabel = new Label("Attendances");
+        attendancesLabel.setFont(theme.getBoldFont());
+        innerPanel.add(attendancesLabel, extraConstraints);
+        innerPanel.add(new Label("Aggregate:"), labelConstraints);
+        aggregateLabel = new Label();
+        aggregateLabel.setFont(theme.getBoldFont());
+        innerPanel.add(aggregateLabel, extraConstraints);
+        innerPanel.add(new Label("Average:"), labelConstraints);
+        averageLabel = new Label();
+        averageLabel.setFont(theme.getBoldFont());
+        innerPanel.add(averageLabel, extraConstraints);        
+        return Util.borderLayoutWrapper(innerPanel, BorderLayout.NORTH);
+    }
+    
+    
+    private void updateView()
+    {
+        if (data != null)
+        {
+            matchesLabel.setText(String.valueOf(data.getMatchCount()));
+            homeWinsLabel.setText(String.valueOf(data.getHomeWins()));
+            homeWinsPercentLabel.setText("(" + theme.getDecimalFormat().format(getPercentage(data.getHomeWins(), data.getMatchCount())) + "%)");
+            awayWinsLabel.setText(String.valueOf(data.getAwayWins()));
+            awayWinsPercentLabel.setText("(" + theme.getDecimalFormat().format(getPercentage(data.getAwayWins(), data.getMatchCount())) + "%)");
+            drawsLabel.setText(String.valueOf(data.getScoreDraws() + data.getNoScoreDraws()));
+            drawsPercentLabel.setText("(" + theme.getDecimalFormat().format(getPercentage(data.getScoreDraws() + data.getNoScoreDraws(), data.getMatchCount())) + "%)");
+            drawsBreakdownLabel.setText("(Scoring Draws: " + data.getScoreDraws() + ", Goalless Draws: " + data.getNoScoreDraws() + ")");
+            goalsLabel.setText(String.valueOf(data.getHomeGoals() + data.getAwayGoals()));
+            goalsAverageLabel.setText("(" + theme.getDecimalFormat().format(((double) data.getHomeGoals() + data.getAwayGoals()) / data.getMatchCount()) + " per game)");
+            goalsBreakdownLabel.setText("(Home Goals: " + data.getHomeGoals() + ", Away Goals: " + data.getAwayGoals() + ")");
+            cleansheetsLabel.setText(String.valueOf(data.getCleansheets()));
+            aggregateLabel.setText(String.valueOf(data.getAggregateAttendance()));
+            averageLabel.setText(String.valueOf(data.getAverageAttendance()));
+            doResultsPanel(data.getBiggestHomeWins(), homeWinsPanel);
+            doResultsPanel(data.getBiggestAwayWins(), awayWinsPanel);
+            doResultsPanel(data.getHighestMatchAggregates(), aggregatesPanel);
+            view.validate();
+        }
+    }
+    
+    
+    private void doResultsPanel(Result[] results, Panel panel)
+    {
+        if (panel.getComponentCount() > 1)
+        {
+            panel.remove(1);
+        }
+        Panel innerPanel = new Panel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        for (int i = 0; i < results.length; i++)
+        {
+            constraints.gridwidth = 1;
+            innerPanel.add(new Label(theme.getShortDateFormat().format(results[i].date)), constraints);
+            Label homeTeamLabel = new Label(results[i].homeTeam.getName());
+            homeTeamLabel.setFont(results[i].homeTeam.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            innerPanel.add(homeTeamLabel, constraints);
+            constraints.gridwidth = GridBagConstraints.RELATIVE;
+            Label scoreLabel = new Label(results[i].homeGoals + "-" + results[i].awayGoals, Label.CENTER);
+            scoreLabel.setFont(theme.getBoldFont());
+            innerPanel.add(scoreLabel, constraints);
+            constraints.gridwidth = GridBagConstraints.REMAINDER;
+            Label awayTeamLabel = new Label(results[i].awayTeam.getName());
+            awayTeamLabel.setFont(results[i].awayTeam.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            innerPanel.add(awayTeamLabel, constraints);
+        }
+        panel.add(Util.borderLayoutWrapper(innerPanel, BorderLayout.NORTH), BorderLayout.CENTER);
+    }
+    
+    
+    private double getPercentage(int numerator, int denominator)
+    {
+        return denominator == 0 ? 0 : (((double) numerator) / denominator) * 100;
+    }
+}

@@ -1,0 +1,35 @@
+# Control colours.
+colour.button=006699
+colour.button.selected=003366
+colour.button.text=FFFFFF
+colour.controlpanel=006699
+colour.controlpanel.text=FFFFFF
+colour.mainview=DDEEFF
+colour.mainview.text=000066
+colour.topbar=000066
+colour.topbar.text=BBCCDD
+
+# Result/goal difference colours.
+colour.defeat=EE5522
+colour.draw=DDBB00
+colour.win=55BB55
+colour.goaldiff.negative=990000
+colour.goaldiff.positive=006600
+
+# Prize (promotion, promotion play-offs etc.) colours.  Can specify as many as you need.
+colour.prize1=0099CC
+colour.prize2=00CCFF
+colour.prize3=88CCFF
+colour.prize4=BBDDFF
+
+# Relegation, relgation play-offs etc. colours.  Can specify as many as you need.
+colour.relegation1=BBCCDD
+colour.relegation2=CCCCCC
+
+# Notes colour.
+colour.notes=006699
+
+# Graph colours.
+colour.graph1=00CCFF
+colour.graph2=0099CC
+colour.graph3=003366
