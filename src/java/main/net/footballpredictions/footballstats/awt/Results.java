@@ -17,6 +17,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Collection;
+import java.util.List;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.Team;
@@ -58,12 +60,11 @@ public class Results implements StatsPanel
         this.highlightedTeam = highlightedTeam;
         
         teamChoice.removeAll();
-        String[] teamNames = data.getTeamNames();
-        for (int i = 0; i < teamNames.length; i++)
+        for (String teamName : data.getTeamNames())
         {
-            teamChoice.add(teamNames[i]);
+            teamChoice.add(teamName);
         }
-        
+
         if (highlightedTeam != null)
         {
             teamChoice.select(highlightedTeam);
@@ -71,10 +72,10 @@ public class Results implements StatsPanel
         }
         
         dateChoice.removeAll();
-        Date[] dates = data.getDates();
-        for (int i = 0; i < dates.length; i++)
+        Collection<Date> dates = data.getDates();
+        for (Date date : dates)
         {
-            dateChoice.add(theme.getLongDateFormat().format(dates[i]));
+            dateChoice.add(theme.getLongDateFormat().format(date));
         }
         
         if (view != null)
@@ -216,37 +217,38 @@ public class Results implements StatsPanel
         constraints.anchor = GridBagConstraints.NORTH;
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
-        
-        for (int i = 0; i < results.length; i++)
+
+        for (Result result : results)
         {
             constraints.gridwidth = 1;
-            resultsPanel.add(new Label(theme.getLongDateFormat().format(results[i].date)), constraints);
-            if (results[i].homeTeam.equals(team)) // Home
+            resultsPanel.add(new Label(theme.getLongDateFormat().format(result.getDate())), constraints);
+            if (result.getHomeTeam().equals(team)) // Home
             {
-                resultsPanel.add(new Label(results[i].awayTeam.getName() + " (H)"), constraints);
+                resultsPanel.add(new Label(result.getAwayTeam().getName() + " (H)"), constraints);
             }
             else // Away
             {
-                resultsPanel.add(new Label(results[i].homeTeam.getName() + " (A)"), constraints);
+                resultsPanel.add(new Label(result.getHomeTeam().getName() + " (A)"), constraints);
             }
             constraints.gridwidth = GridBagConstraints.RELATIVE;
             constraints.weightx = 0.0;
-            Label scoreLabel = new Label(results[i].getGoalsFor(team) + "-" + results[i].getGoalsAgainst(team), Label.CENTER);
+            Label scoreLabel = new Label(result.getGoalsFor(team) + "-" + result.getGoalsAgainst(team), Label.CENTER);
             scoreLabel.setFont(theme.getBoldFont());
-            if (results[i].isDraw())
+            if (result.isDraw())
             {
                 scoreLabel.setBackground(theme.getDrawColour());
             }
             else
             {
-                scoreLabel.setBackground(results[i].isWin(team) ? theme.getWinColour() : theme.getDefeatColour());
+                scoreLabel.setBackground(result.isWin(team) ? theme.getWinColour() : theme.getDefeatColour());
             }
             resultsPanel.add(scoreLabel, constraints);
             constraints.gridwidth = GridBagConstraints.REMAINDER;
             constraints.weightx = 1.0;
-            resultsPanel.add(new Label(results[i].attendance >= 0 ? String.valueOf(results[i].attendance) : "N/A", Label.RIGHT), constraints);
+            resultsPanel.add(new Label(result.getAttendance() >= 0 ? String.valueOf(result.getAttendance()) : "N/A", Label.RIGHT),
+                             constraints);
         }
-        
+
         view.validate();
     }
     
@@ -256,7 +258,7 @@ public class Results implements StatsPanel
      */
     private void showResults(Date date)
     {
-        Result[] results = data.getResults(date);
+        List<Result> results = data.getResults(date);
         
         titleLabel.setText("Results for " + theme.getLongDateFormat().format(date));
         GridBagConstraints constraints = new GridBagConstraints();
@@ -264,25 +266,25 @@ public class Results implements StatsPanel
         constraints.anchor = GridBagConstraints.NORTH;
         constraints.weighty = 1.0;
         
-        for (int i = 0; i < results.length; i++)
+        for (Result result : results)
         {
             constraints.gridwidth = 1;
             constraints.weightx = 1.0;
-            Label homeTeamLabel = new Label(results[i].homeTeam.getName(), Label.RIGHT);
-            homeTeamLabel.setFont(results[i].homeTeam.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            Label homeTeamLabel = new Label(result.getHomeTeam().getName(), Label.RIGHT);
+            homeTeamLabel.setFont(result.getHomeTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             resultsPanel.add(homeTeamLabel, constraints);
-            Label scoreLabel = new Label(results[i].homeGoals + "-" + results[i].awayGoals, Label.CENTER);
+            Label scoreLabel = new Label(result.getHomeGoals() + "-" + result.getAwayGoals(), Label.CENTER);
             scoreLabel.setFont(theme.getBoldFont());
             // constraints.weightx = 0.0;
             resultsPanel.add(scoreLabel, constraints);
             constraints.gridwidth = GridBagConstraints.RELATIVE;
             // constraints.weightx = 1.0;
-            Label awayTeamLabel = new Label(results[i].awayTeam.getName(), Label.LEFT);
-            awayTeamLabel.setFont(results[i].awayTeam.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            Label awayTeamLabel = new Label(result.getAwayTeam().getName(), Label.LEFT);
+            awayTeamLabel.setFont(result.getAwayTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             resultsPanel.add(awayTeamLabel, constraints);
             constraints.gridwidth = GridBagConstraints.REMAINDER;
             constraints.weightx = 0.0;
-            resultsPanel.add(new Label(results[i].attendance >= 0 ? String.valueOf(results[i].attendance) : "N/A", Label.RIGHT), constraints);
+            resultsPanel.add(new Label(result.getAttendance() >= 0 ? String.valueOf(result.getAttendance()) : "N/A", Label.RIGHT), constraints);
         }
         
         view.validate();

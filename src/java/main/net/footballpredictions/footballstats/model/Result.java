@@ -11,12 +11,12 @@ import java.util.Date;
  */
 public final class Result
 {
-    public final Team homeTeam;
-    public final Team awayTeam;
-    public final int homeGoals;
-    public final int awayGoals;
-    public final int attendance;
-    public final Date date;
+    private final Team homeTeam;
+    private final Team awayTeam;
+    private final int homeGoals;
+    private final int awayGoals;
+    private final int attendance;
+    private final Date date;
     
     
     /**
@@ -95,5 +95,41 @@ public final class Result
     public int getMatchAggregate()
     {
         return homeGoals + awayGoals;
+    }
+
+
+    public Team getHomeTeam()
+    {
+        return homeTeam;
+    }
+
+
+    public Team getAwayTeam()
+    {
+        return awayTeam;
+    }
+
+
+    public int getHomeGoals()
+    {
+        return homeGoals;
+    }
+
+
+    public int getAwayGoals()
+    {
+        return awayGoals;
+    }
+
+
+    public int getAttendance()
+    {
+        return attendance;
+    }
+
+    
+    public Date getDate()
+    {
+        return date;
     }
 }

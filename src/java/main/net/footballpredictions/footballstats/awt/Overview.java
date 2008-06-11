@@ -8,6 +8,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
+import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
 
@@ -177,7 +178,7 @@ public class Overview implements StatsPanel
     }
     
     
-    private void doResultsPanel(Result[] results, Panel panel)
+    private void doResultsPanel(SortedSet<Result> results, Panel panel)
     {
         if (panel.getComponentCount() > 1)
         {
@@ -187,20 +188,20 @@ public class Overview implements StatsPanel
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1.0;
-        for (int i = 0; i < results.length; i++)
+        for (Result result : results)
         {
             constraints.gridwidth = 1;
-            innerPanel.add(new Label(theme.getShortDateFormat().format(results[i].date)), constraints);
-            Label homeTeamLabel = new Label(results[i].homeTeam.getName());
-            homeTeamLabel.setFont(results[i].homeTeam.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            innerPanel.add(new Label(theme.getShortDateFormat().format(result.getDate())), constraints);
+            Label homeTeamLabel = new Label(result.getHomeTeam().getName());
+            homeTeamLabel.setFont(result.getHomeTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             innerPanel.add(homeTeamLabel, constraints);
             constraints.gridwidth = GridBagConstraints.RELATIVE;
-            Label scoreLabel = new Label(results[i].homeGoals + "-" + results[i].awayGoals, Label.CENTER);
+            Label scoreLabel = new Label(result.getHomeGoals() + "-" + result.getAwayGoals(), Label.CENTER);
             scoreLabel.setFont(theme.getBoldFont());
             innerPanel.add(scoreLabel, constraints);
             constraints.gridwidth = GridBagConstraints.REMAINDER;
-            Label awayTeamLabel = new Label(results[i].awayTeam.getName());
-            awayTeamLabel.setFont(results[i].awayTeam.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            Label awayTeamLabel = new Label(result.getAwayTeam().getName());
+            awayTeamLabel.setFont(result.getAwayTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             innerPanel.add(awayTeamLabel, constraints);
         }
         panel.add(Util.borderLayoutWrapper(innerPanel, BorderLayout.NORTH), BorderLayout.CENTER);

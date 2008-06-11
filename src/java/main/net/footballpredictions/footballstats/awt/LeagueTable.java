@@ -281,7 +281,7 @@ public class LeagueTable implements StatsPanel
     {
         if (positionsColumn == null)
         {
-            int teamCount = data.getTeamNames().length;
+            int teamCount = data.getTeamNames().size();
             positionsColumn = new Panel(new GridLayout(teamCount + 1, 1));
             positionsColumn.add(new Label()); // Blank space at the top.
             for (int i = 1; i <= teamCount; i++)

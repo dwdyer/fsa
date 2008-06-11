@@ -201,15 +201,15 @@ final class TeamRecordPanel extends Panel
         buffer.append(result.getGoalsFor(team));
         buffer.append('-');
         buffer.append(result.getGoalsAgainst(team));
-        if (result.homeTeam.equals(team))
+        if (result.getHomeTeam().equals(team))
         {
             buffer.append(" v ");
-            buffer.append(result.awayTeam.getName());
+            buffer.append(result.getAwayTeam().getName());
         }
         else
         {
             buffer.append(" at ");
-            buffer.append(result.homeTeam.getName());
+            buffer.append(result.getHomeTeam().getName());
         }
         return buffer.toString();
     }

@@ -24,8 +24,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 
@@ -42,9 +42,9 @@ public final class FootballStatsApplet extends Applet
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
     
     // Mapping from display name to file name for results files.
-    private final Hashtable dataFiles = new Hashtable();
+    private final Map<String, URL> dataFiles = new HashMap<String, URL>();
     // Mapping from display name to highlighted team.
-    private final Hashtable highlightedTeams = new Hashtable();
+    private final Map<String, String> highlightedTeams = new HashMap<String, String>();
     
     private Theme theme = null;
         
@@ -52,7 +52,7 @@ public final class FootballStatsApplet extends Applet
     private final Panel controlPanel = new Panel(new GridLayout(1, 1));
     private final Choice fileSelectorDropDown = new Choice();
     
-    private final Hashtable panels = new Hashtable();
+    private final Map<String, StatsPanel> panels = new HashMap<String, StatsPanel>();
     
     public FootballStatsApplet()
     {
@@ -160,7 +160,7 @@ public final class FootballStatsApplet extends Applet
         {
             public void actionPerformed(ActionEvent ev)
             {
-                StatsPanel statsPanel = (StatsPanel) panels.get(ev.getActionCommand());
+                StatsPanel statsPanel = panels.get(ev.getActionCommand());
                 mainView.removeAll();                
                 controlPanel.removeAll();
                 
@@ -169,10 +169,10 @@ public final class FootballStatsApplet extends Applet
                     addToContainer(mainView, statsPanel.getView());
                     addToContainer(controlPanel, statsPanel.getControls());
                 }
-              
-                for (int i = 0; i < buttons.length; i++)
+
+                for (Button button : buttons)
                 {
-                    buttons[i].setBackground(theme.getButtonColour());
+                    button.setBackground(theme.getButtonColour());
                 }
                 ((Component) ev.getSource()).setBackground(theme.getSelectedButtonColour());
                 
@@ -306,16 +306,15 @@ public final class FootballStatsApplet extends Applet
         String selection = fileSelectorDropDown.getSelectedItem();
         if (selection != null)
         {
-            URL dataFileURL = (URL) dataFiles.get(selection);
+            URL dataFileURL = dataFiles.get(selection);
             System.out.println("Loading results data...");
             LeagueSeason data = new LeagueSeason(dataFileURL);
             System.out.println("Done.");
         
-            Enumeration enumeration = panels.elements();
-            while (enumeration.hasMoreElements())
+            for (StatsPanel panel : panels.values())
             {
                 invalidate();
-                ((StatsPanel) enumeration.nextElement()).setLeagueData(data, (String) highlightedTeams.get(selection));
+                panel.setLeagueData(data, highlightedTeams.get(selection));
                 validate();
             }
         }

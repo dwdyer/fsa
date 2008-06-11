@@ -8,8 +8,9 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 /**
  * Class for combining together all customisable GUI data such as colours and fonts.
@@ -29,8 +30,8 @@ public class Theme
     private final Color controlPanelColour;
     private final Color controlPanelTextColour;
 
-    private final Color[] prizeColours;
-    private final Color[] relegationColours;
+    private final List<Color> prizeColours = new ArrayList<Color>(5);
+    private final List<Color> relegationColours = new ArrayList<Color>(5);
 
     private final Color winColour;
     private final Color drawColour;
@@ -81,31 +82,25 @@ public class Theme
         positiveGDColour = convertToColour(themeProperties.getProperty("colour.goaldiff.positive"));
         
         // Configure prize colours.
-        Vector colours = new Vector();
         int index = 1;
         String colourString = themeProperties.getProperty("colour.prize" + index);
         while (colourString != null)
         {
-            colours.addElement(convertToColour(colourString));
+            prizeColours.add(convertToColour(colourString));
             index++;
             colourString = themeProperties.getProperty("colour.prize" + index);
         }
-        prizeColours = new Color[colours.size()];
-        colours.copyInto(prizeColours);
-        
+
         // Configure relegation colours.
-        colours.setSize(0);
         index = 1;
         colourString = themeProperties.getProperty("colour.relegation" + index);
         while (colourString != null)
         {
-            colours.addElement(convertToColour(colourString));
+            relegationColours.add(convertToColour(colourString));
             index++;
             colourString = themeProperties.getProperty("colour.relegation" + index);
         }
-        relegationColours = new Color[colours.size()];
-        colours.copyInto(relegationColours);
-        
+
         // Notes colour.
         noteColour = convertToColour(themeProperties.getProperty("colour.notes"));
         
@@ -225,12 +220,12 @@ public class Theme
         }
         else if (zoneID > 0)
         {
-            return prizeColours[--zoneID];
+            return prizeColours.get(--zoneID);
         }
         else
         {
             zoneID = Math.abs(zoneID);
-            return relegationColours[--zoneID];
+            return relegationColours.get(--zoneID);
         }
     }
     

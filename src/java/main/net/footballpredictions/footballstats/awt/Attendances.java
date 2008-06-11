@@ -12,6 +12,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.Team;
@@ -122,58 +123,71 @@ public class Attendances implements StatsPanel
         if (data != null)
         {
             int type = Math.max(0, typeChoice.getSelectedIndex()); // A cheat really, we know that the indices correspond to the constant values.
+            positionsColumn.removeAll();
+            teamsColumn.removeAll();
+            attendanceColumn.removeAll();
             titleLabel.setText(TITLES[type]);
-            Object[] attendanceTable;
+
             switch (type)
             {
                 case 4: // Top 20 Highest
                 {
-                    attendanceTable = data.getHighestAttendances();
+                    updateView(data.getHighestAttendances());
                     break;
                 }
                 case 5: // Top 20 Lowest
                 {
-                    attendanceTable = data.getLowestAttendances();
+                    updateView(data.getLowestAttendances());
                     break;
                 }
-                default: attendanceTable = data.getAttendanceTable(type);
-            }
-            
-            positionsColumn.removeAll();
-            teamsColumn.removeAll();
-            attendanceColumn.removeAll();
-                
-            for (int i = 0; i < attendanceTable.length; i++)
-            {
-                positionsColumn.add(new Label(String.valueOf(i + 1), Label.CENTER));
-                Label textLabel;
-                Label valueLabel;
-                if (attendanceTable instanceof Team[])
+                default:
                 {
-                    Team team = (Team) attendanceTable[i];
-                    textLabel = new Label(team.getName());
-                    if (team.getName().equals(highlightedTeam))
-                    {
-                        textLabel.setFont(theme.getBoldFont());
-                    }
-                    valueLabel = new Label(String.valueOf(team.getAttendance(type)), Label.CENTER);
+                    updateView(data.getAttendanceTable(type), type);
                 }
-                else
-                {
-                    Result result = (Result) attendanceTable[i];
-                    textLabel = new Label(result.homeTeam.getName() + " vs. " + result.awayTeam.getName() + " (" + theme.getShortDateFormat().format(result.date) + ")");
-                    if (result.homeTeam.getName().equals(highlightedTeam))
-                    {
-                        textLabel.setFont(theme.getBoldFont());
-                    }
-                    valueLabel = new Label(String.valueOf(((Result) attendanceTable[i]).attendance), Label.CENTER);
-                }
-                teamsColumn.add(textLabel);
-                valueLabel.setFont(theme.getBoldFont());
-                attendanceColumn.add(valueLabel);
             }
-            
+
             view.validate();
+        }
+    }
+
+
+    private void updateView(SortedSet<Result> attendanceTable)
+    {
+        int index = 1;
+        for (Result result : attendanceTable)
+        {
+            positionsColumn.add(new Label(String.valueOf(index), Label.CENTER));
+            Label textLabel = new Label(result.getHomeTeam().getName() + " vs. " + result.getAwayTeam().getName() + " (" + theme.getShortDateFormat().format(
+                    result.getDate()) + ")");
+            if (result.getHomeTeam().getName().equals(highlightedTeam))
+            {
+                textLabel.setFont(theme.getBoldFont());
+            }
+            Label valueLabel = new Label(String.valueOf(result.getAttendance()), Label.CENTER);
+            teamsColumn.add(textLabel);
+            valueLabel.setFont(theme.getBoldFont());
+            attendanceColumn.add(valueLabel);
+            ++index;
+        }
+    }
+
+
+    private void updateView(Team[] attendanceTable, int type)
+    {
+        int index = 1;
+        for (Team team : attendanceTable)
+        {
+            positionsColumn.add(new Label(String.valueOf(index), Label.CENTER));
+            Label textLabel = new Label(team.getName());
+            if (team.getName().equals(highlightedTeam))
+            {
+                textLabel.setFont(theme.getBoldFont());
+            }
+            Label valueLabel = new Label(String.valueOf(team.getAttendance(type)), Label.CENTER);
+            teamsColumn.add(textLabel);
+            valueLabel.setFont(theme.getBoldFont());
+            attendanceColumn.add(valueLabel);
+            ++index;
         }
     }
 }

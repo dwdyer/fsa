@@ -13,10 +13,10 @@ class ResultAggregateComparator implements Comparator<Result>
         int compare = result2.getMatchAggregate() - result1.getMatchAggregate();  // Descending order.
         if (compare == 0) // If the aggregate is the same, earlier matches take precedence.
         {
-            compare = result1.date.compareTo(result2.date);
+            compare = result1.getDate().compareTo(result2.getDate());
             if (compare == 0) // And if that's the same, order alphabetically by home team.
             {
-                compare = result1.homeTeam.getName().toLowerCase().compareTo(result2.homeTeam.getName().toLowerCase());
+                compare = result1.getHomeTeam().getName().toLowerCase().compareTo(result2.getHomeTeam().getName().toLowerCase());
             }
         }
         return compare;        

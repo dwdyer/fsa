@@ -40,14 +40,13 @@ public class HeadToHead implements StatsPanel
         homeTeamChoice.removeAll();
         awayTeamChoice.removeAll();
 
-        String[] teamNames = data.getTeamNames();
-        for (int i = 0; i < teamNames.length; i++)
+        for (String teamName : data.getTeamNames())
         {
-            homeTeamChoice.add(teamNames[i]);
-            awayTeamChoice.add(teamNames[i]);
+            homeTeamChoice.add(teamName);
+            awayTeamChoice.add(teamName);
         }
-        
-        if (teamNames[0].equals(highlightedTeam) || highlightedTeam == null)
+
+        if (homeTeamChoice.getItem(0).equals(highlightedTeam) || highlightedTeam == null)
         {
             awayTeamChoice.select(1);
         }

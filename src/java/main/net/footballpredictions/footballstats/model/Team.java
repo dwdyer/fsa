@@ -110,8 +110,8 @@ public final class Team
             for (int i = 0; i < results.size() && count < resultsArray.length; i++)
             {
                 Result result = results.get(i);
-                if ((where == HOME && result.homeTeam.equals(this))
-                    || (where == AWAY && result.awayTeam.equals(this)))
+                if ((where == HOME && result.getHomeTeam().equals(this))
+                    || (where == AWAY && result.getAwayTeam().equals(this)))
                 {
                     resultsArray[count] = result;
                     count++;
@@ -418,7 +418,7 @@ public final class Team
     
     private void updateAggregatesAndSequences(Result result)
     {
-        int where = result.homeTeam.equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
+        int where = result.getHomeTeam().equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
         
         int goalsFor = result.getGoalsFor(this);
         int goalsAgainst = result.getGoalsAgainst(this);
@@ -535,7 +535,7 @@ public final class Team
     
     private void updateForm(Result result)
     {
-        int where = result.homeTeam.equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
+        int where = result.getHomeTeam().equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
         form[where][formPointers[where]] = result;
         form[BOTH][formPointers[BOTH]] = result;
         formPointers[where] = formPointers[where] < form[where].length - 1 ? formPointers[where] + 1 : 0;
@@ -549,18 +549,18 @@ public final class Team
      */
     private void updateAttendanceFigures(Result result)
     {
-        int where = result.homeTeam.equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
+        int where = result.getHomeTeam().equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
         
-        if (where == HOME && result.attendance >= 0) // Attendances away from home do not concern us.
+        if (where == HOME && result.getAttendance() >= 0) // Attendances away from home do not concern us.
         {
-            aggregateCrowd += result.attendance;
-            if (result.attendance > highestCrowd)
+            aggregateCrowd += result.getAttendance();
+            if (result.getAttendance() > highestCrowd)
             {
-                highestCrowd = result.attendance;
+                highestCrowd = result.getAttendance();
             }
-            if (result.attendance < lowestCrowd || lowestCrowd == 0)
+            if (result.getAttendance() < lowestCrowd || lowestCrowd == 0)
             {
-                lowestCrowd = result.attendance;
+                lowestCrowd = result.getAttendance();
             }
         }
     }

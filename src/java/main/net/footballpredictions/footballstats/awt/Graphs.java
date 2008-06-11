@@ -17,7 +17,8 @@ import java.awt.Panel;
 import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Team;
 
@@ -49,12 +50,11 @@ public class Graphs implements StatsPanel
             teamCheckboxes[i].setState(i == 0);
             teamChoices[i].setEnabled(i == 0);
         }
-        String[] teamNames = data.getTeamNames();
-        for (int i = 0; i < teamNames.length; i++)
+        for (String teamName : data.getTeamNames())
         {
-            teamChoices[0].add(teamNames[i]);
-            teamChoices[1].add(teamNames[i]);
-            teamChoices[2].add(teamNames[i]);
+            teamChoices[0].add(teamName);
+            teamChoices[1].add(teamName);
+            teamChoices[2].add(teamName);
         }
         if (highlightedTeam != null)
         {
@@ -154,12 +154,12 @@ public class Graphs implements StatsPanel
             
             int maxX = 0;
             int maxY = 0;
-            Vector plots = new Vector(teamChoices.length);
-            for (int i = 0; i < teamChoices.length; i++)
+            List<int[][]> plots = new ArrayList<int[][]>(teamChoices.length);
+            for (Choice teamChoice : teamChoices)
             {
-                if (teamChoices[i].isEnabled())
+                if (teamChoice.isEnabled())
                 {
-                    String teamName = teamChoices[i].getSelectedItem();
+                    String teamName = teamChoice.getSelectedItem();
                     if (typeChoice.getSelectedIndex() <= 0)
                     {
                         Team.LeaguePosition[] positions = data.getTeam(teamName).getLeaguePositions();
@@ -170,8 +170,8 @@ public class Graphs implements StatsPanel
                             points[j][1] = positions[j].position;
                         }
                         maxX = Math.max(maxX, points.length - 1);
-                        maxY = Math.max(maxY, data.getTeamNames().length);
-                        plots.addElement(points);
+                        maxY = Math.max(maxY, data.getTeamNames().size());
+                        plots.add(points);
                     }
                     else if (typeChoice.getSelectedIndex() == 1)
                     {
@@ -179,15 +179,15 @@ public class Graphs implements StatsPanel
                                                                               data.getPointsForDraw());
                         maxX = Math.max(maxX, points.length - 1);
                         maxY = Math.max(maxY, data.getHighestPointsTotal());
-                        plots.addElement(points);
+                        plots.add(points);
                     }
                 }
                 else
                 {
-                    plots.addElement(null);
+                    plots.add(null);
                 }
             }
-            
+
             Graph graph = null;
             if (typeChoice.getSelectedIndex() <= 0)
             {
@@ -203,7 +203,7 @@ public class Graphs implements StatsPanel
             }
             for (int i = 0; i < plots.size(); i++)
             {
-                int[][] plot = (int[][]) plots.elementAt(i);
+                int[][] plot = plots.get(i);
                 if (plot != null)
                 {
                     graph.addSeries(plot, theme.getGraphColour(i));
@@ -223,8 +223,8 @@ public class Graphs implements StatsPanel
     private static final class Graph extends Canvas
     {
         private final Insets insets = new Insets(20, 20, 10, 10);
-        private final Vector plots = new Vector();
-        private final Vector colours = new Vector();
+        private final List<int[][]> plots = new ArrayList<int[][]>(3);
+        private final List<Color> colours = new ArrayList<Color>(3);
         private final boolean inverted;
         private int maxX, maxY;
         private double scaleX, scaleY;
@@ -244,8 +244,8 @@ public class Graphs implements StatsPanel
         
         public void addSeries(int[][] points, Color colour)
         {
-            plots.addElement(points);
-            colours.addElement(colour);
+            plots.add(points);
+            colours.add(colour);
         }
         
         
@@ -264,7 +264,7 @@ public class Graphs implements StatsPanel
                 
         public void paint(Graphics graphics)
         {
-            if (plots.size() > 0)
+            if (!plots.isEmpty())
             {
                 Dimension size = getSize();
                 scaleX = (double) (size.width - insets.left - insets.right) / maxX;
@@ -273,8 +273,8 @@ public class Graphs implements StatsPanel
                 // Draw plots.
                 for (int i = 0; i < plots.size(); i++)
                 {
-                    int[][] plot = (int[][]) plots.elementAt(i);
-                    graphics.setColor((Color) colours.elementAt(i));
+                    int[][] plot = plots.get(i);
+                    graphics.setColor(colours.get(i));
                     Point lastPoint = mapToGraphCoordinates(plot[0][0], plot[0][1], inverted);
                     for (int j = 1; j < plot.length; j++)
                     {

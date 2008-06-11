@@ -42,7 +42,7 @@ public final class LeagueSeason
     
     private final Map<String, Team> teamMappings = new HashMap<String, Team>();
     private Team[] teams;
-    private String[] teamNames;
+    private SortedSet<String> teamNames;
     private final SortedSet<Date> dates = new TreeSet<Date>(Collections.reverseOrder()); // Most recent first.
     private final Map<Date, List<Result>> resultsByDate = new HashMap<Date, List<Result>>();
 
@@ -308,8 +308,8 @@ public final class LeagueSeason
             // Add current date's results to individual team records.
             for (Result result : results)
             {
-                result.homeTeam.addResult(result);
-                result.awayTeam.addResult(result);
+                result.getHomeTeam().addResult(result);
+                result.getAwayTeam().addResult(result);
             }
             // Calculate table for current date.
             table = getStandardLeagueTable(Team.BOTH);
@@ -330,7 +330,7 @@ public final class LeagueSeason
     {
         if (result.isDraw())
         {
-            if (result.homeGoals == 0)
+            if (result.getHomeGoals() == 0)
             {
                 aggregateNoScoreDraws++;
                 aggregateCleansheets += 2; // 0-0 draw means two cleansheets.
@@ -342,7 +342,7 @@ public final class LeagueSeason
         }
         else
         {
-            if (result.isWin(result.homeTeam))
+            if (result.isWin(result.getHomeTeam()))
             {
                 aggregateHomeWins++;
             }
@@ -351,13 +351,13 @@ public final class LeagueSeason
                 aggregateAwayWins++;
             }
             
-            if (result.homeGoals == 0 || result.awayGoals == 0) // Can't both be zero otherwise it would be a draw.
+            if (result.getHomeGoals() == 0 || result.getAwayGoals() == 0) // Can't both be zero otherwise it would be a draw.
             {
                 aggregateCleansheets++;
             }
         }
-        aggregateHomeGoals += result.homeGoals;
-        aggregateAwayGoals += result.awayGoals;
+        aggregateHomeGoals += result.getHomeGoals();
+        aggregateAwayGoals += result.getAwayGoals();
 
         updateKeyResults(result);
         updateAttendances(result);
@@ -366,11 +366,11 @@ public final class LeagueSeason
     
     private void updateKeyResults(Result result)
     {
-        if (result.isWin(result.homeTeam)) // Home Win
+        if (result.isWin(result.getHomeTeam())) // Home Win
         {
             biggestHomeWins.add(result);
         }
-        else if (result.isWin(result.awayTeam)) // Away Win
+        else if (result.isWin(result.getAwayTeam())) // Away Win
         {
             biggestAwayWins.add(result);
         }
@@ -380,9 +380,9 @@ public final class LeagueSeason
     
     private void updateAttendances(Result result)
     {
-        if (result.attendance >= 0)
+        if (result.getAttendance() >= 0)
         {
-            aggregateAttendance += result.attendance;
+            aggregateAttendance += result.getAttendance();
             topAttendances.add(result);
             bottomAttendances.add(result);
         }
@@ -392,21 +392,14 @@ public final class LeagueSeason
     /**
      * Get a list of the names of all the teams in the division, sorted in alphabetical order.
      */
-    public String[] getTeamNames()
+    public SortedSet<String> getTeamNames()
     {
         if (teamNames == null)
         {
-            Team[] alphabeticalTeams = sortTeams(teams, new Comparator<Team>()
+            teamNames = new TreeSet<String>();
+            for (Team team : teams)
             {
-                public int compare(Team team1, Team team2)
-                {
-                    return team1.getName().toLowerCase().compareTo(team2.getName().toLowerCase());
-                }
-            });
-            teamNames = new String[alphabeticalTeams.length];
-            for (int i = 0; i < alphabeticalTeams.length; i++)
-            {
-                teamNames[i] = alphabeticalTeams[i].getName();
+                teamNames.add(team.getName());
             }
         }
         return teamNames;
@@ -423,12 +416,11 @@ public final class LeagueSeason
     
     
     /**
-     * @return An array of dates on which matches took place, most recent first.
+     * @return An ordered collection of dates on which matches took place, most recent first.
      */
-    public Date[] getDates()
+    public SortedSet<Date> getDates()
     {
-        Date[] datesArray = new Date[dates.size()];
-        return dates.toArray(datesArray);
+        return dates;
     }
     
     
@@ -453,11 +445,9 @@ public final class LeagueSeason
     /**
      * @return An array of results for a particular date.
      */
-    public Result[] getResults(Date date)
+    public List<Result> getResults(Date date)
     {
-        List<Result> results = resultsByDate.get(date);
-        Result[] resultsArray = new Result[results.size()];
-        return results.toArray(resultsArray);
+        return resultsByDate.get(date);
     }
     
     
@@ -514,33 +504,33 @@ public final class LeagueSeason
     }
     
     
-    public Result[] getBiggestHomeWins()
+    public SortedSet<Result> getBiggestHomeWins()
     {
-        return biggestHomeWins.toArray(new Result[biggestHomeWins.size()]);
+        return biggestHomeWins;
     }
 
 
-    public Result[] getBiggestAwayWins()
+    public SortedSet<Result> getBiggestAwayWins()
     {
-        return biggestAwayWins.toArray(new Result[biggestAwayWins.size()]);
+        return biggestAwayWins;
     }
     
     
-    public Result[] getHighestMatchAggregates()
+    public SortedSet<Result> getHighestMatchAggregates()
     {
-        return highestMatchAggregates.toArray(new Result[highestMatchAggregates.size()]);
+        return highestMatchAggregates;
     }
 
     
-    public Result[] getHighestAttendances()
+    public SortedSet<Result> getHighestAttendances()
     {
-        return topAttendances.toArray(new Result[topAttendances.size()]);
+        return topAttendances;
     }
     
     
-    public Result[] getLowestAttendances()
+    public SortedSet<Result> getLowestAttendances()
     {
-        return bottomAttendances.toArray(new Result[bottomAttendances.size()]);
+        return bottomAttendances;
     }
     
     
