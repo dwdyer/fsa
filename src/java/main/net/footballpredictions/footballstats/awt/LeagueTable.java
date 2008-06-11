@@ -13,6 +13,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Team;
 
@@ -86,9 +87,9 @@ public class LeagueTable implements StatsPanel
                     if (ev.getSource() == zonesCheckbox)
                     {
                         positionsColumn = null;
-                        for (int i = 0; i < zoneTitleLabels.length; i++)
+                        for (Label zoneTitleLabel : zoneTitleLabels)
                         {
-                            zoneTitleLabels[i].setVisible(zonesCheckbox.getState());
+                            zoneTitleLabel.setVisible(zonesCheckbox.getState());
                         }
                     }
                     updateView();
@@ -191,7 +192,7 @@ public class LeagueTable implements StatsPanel
         int where = (index <= 0 ? Team.BOTH : (index == 1 ? Team.HOME : Team.AWAY));
         
         StringBuffer titleText = new StringBuffer();
-        Team[] table;
+        SortedSet<Team> table;
         
         boolean showOptionalColumn = true;
         if (isFormTable)
@@ -298,28 +299,30 @@ public class LeagueTable implements StatsPanel
     }
     
     
-    private Component getTeamsColumn(Team[] teams)
+    private Component getTeamsColumn(SortedSet<Team> teams)
     {
         teamsColumn.removeAll();
         teamsColumn.add(new Label()); // Blank space at the top.
-        for (int i = 0; i < teams.length; i++)
+        int index = 1;
+        for (Team team : teams)
         {
-            Label label = new Label(teams[i].getName());
-            if (teams[i].getName().equals(highlightedTeam))
+            Label label = new Label(team.getName());
+            if (team.getName().equals(highlightedTeam))
             {
                 label.setFont(theme.getBoldFont());
             }
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(i + 1)));
+                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
             }
             teamsColumn.add(label);
+            ++index;
         }
         return teamsColumn;
     }
     
     
-    private Component getStatsColumns(Team[] teams, int where, boolean highlightPoints)
+    private Component getStatsColumns(SortedSet<Team> teams, int where, boolean highlightPoints)
     {
         statsColumns.removeAll();
         statsColumns.add(new Label("P", Label.CENTER));
@@ -330,26 +333,27 @@ public class LeagueTable implements StatsPanel
         statsColumns.add(new Label("A", Label.CENTER));
         statsColumns.add(new Label("GD", Label.CENTER));
         statsColumns.add(new Label("Pts", Label.CENTER));
-        for (int i = 0; i < teams.length; i++)
+        int index = 1;
+        for (Team team : teams)
         {
-            Color backgroundColour = theme.getZoneColour(data.getZoneForPosition(i + 1));
-            Label playedLabel = new Label(String.valueOf(teams[i].getAggregate(where, Team.AGGREGATE_PLAYED, isFormTable)), Label.CENTER);
+            Color backgroundColour = theme.getZoneColour(data.getZoneForPosition(index));
+            Label playedLabel = new Label(String.valueOf(team.getAggregate(where, Team.AGGREGATE_PLAYED, isFormTable)), Label.CENTER);
             statsColumns.add(playedLabel);
-            Label wonLabel = new Label(String.valueOf(teams[i].getAggregate(where, Team.AGGREGATE_WON, isFormTable)), Label.CENTER);
+            Label wonLabel = new Label(String.valueOf(team.getAggregate(where, Team.AGGREGATE_WON, isFormTable)), Label.CENTER);
             statsColumns.add(wonLabel);
-            Label drawnLabel = new Label(String.valueOf(teams[i].getAggregate(where, Team.AGGREGATE_DRAWN, isFormTable)), Label.CENTER);
+            Label drawnLabel = new Label(String.valueOf(team.getAggregate(where, Team.AGGREGATE_DRAWN, isFormTable)), Label.CENTER);
             statsColumns.add(drawnLabel);
-            Label lostLabel = new Label(String.valueOf(teams[i].getAggregate(where, Team.AGGREGATE_LOST, isFormTable)), Label.CENTER);
+            Label lostLabel = new Label(String.valueOf(team.getAggregate(where, Team.AGGREGATE_LOST, isFormTable)), Label.CENTER);
             statsColumns.add(lostLabel);
-            Label forLabel = new Label(String.valueOf(teams[i].getAggregate(where, Team.AGGREGATE_SCORED, isFormTable)), Label.CENTER);
+            Label forLabel = new Label(String.valueOf(team.getAggregate(where, Team.AGGREGATE_SCORED, isFormTable)), Label.CENTER);
             statsColumns.add(forLabel);
-            Label againstLabel = new Label(String.valueOf(teams[i].getAggregate(where, Team.AGGREGATE_CONCEDED, isFormTable)), Label.CENTER);
+            Label againstLabel = new Label(String.valueOf(team.getAggregate(where, Team.AGGREGATE_CONCEDED, isFormTable)), Label.CENTER);
             statsColumns.add(againstLabel);
-            int goalDifference = teams[i].getGoalDifference(where, isFormTable);
+            int goalDifference = team.getGoalDifference(where, isFormTable);
             Label goalDifferenceLabel = new Label(goalDifferenceAsString(goalDifference), Label.CENTER);
             goalDifferenceLabel.setForeground(theme.getGoalDifferenceColour(goalDifference));
             statsColumns.add(goalDifferenceLabel);
-            Label pointsLabel = new Label(String.valueOf(data.getPoints(where, teams[i], isFormTable)), Label.CENTER);
+            Label pointsLabel = new Label(String.valueOf(data.getPoints(where, team, isFormTable)), Label.CENTER);
             if (highlightPoints)
             {
                 pointsLabel.setFont(theme.getBoldFont());
@@ -367,60 +371,67 @@ public class LeagueTable implements StatsPanel
                 goalDifferenceLabel.setBackground(backgroundColour);
                 pointsLabel.setBackground(backgroundColour);
             }
+            ++index;
         }
         return statsColumns;
     }
     
     
-    private Component getAverageColumn(Team[] teams, int where)
+    private Component getAverageColumn(SortedSet<Team> teams, int where)
     {
         optionalColumn.removeAll();
         optionalColumn.add(new Label("Pts/P", Label.CENTER));
-        for (int i = 0; i < teams.length; i++)
+        int index = 1;
+        for (Team team : teams)
         {
-            Label label = new Label(theme.getDecimalFormat().format(data.getAveragePoints(where, teams[i])), Label.CENTER);
+            Label label = new Label(theme.getDecimalFormat().format(data.getAveragePoints(where, team)), Label.CENTER);
             label.setFont(theme.getBoldFont());
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(i + 1)));
+                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
             }
             optionalColumn.add(label);
+            ++index;
         }
         return optionalColumn;
     }
     
     
-    private Component getDroppedColumn(Team[] teams, int where)
+    private Component getDroppedColumn(SortedSet<Team> teams, int where)
     {
         optionalColumn.removeAll();
         optionalColumn.add(new Label("Dropped", Label.CENTER));
-        for (int i = 0; i < teams.length; i++)
+        int index = 1;
+        for (Team team : teams)
         {
-            Label label = new Label(String.valueOf(data.getPointsDropped(where, teams[i])), Label.CENTER);
+            Label label = new Label(String.valueOf(data.getPointsDropped(where, team)), Label.CENTER);
             label.setFont(theme.getBoldFont());
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(i + 1)));
+                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
             }
             optionalColumn.add(label);
+            ++index;
         }
         return optionalColumn;
     }
     
     
-    private Component getFormColumn(Team[] teams, int where)
+    private Component getFormColumn(SortedSet<Team> teams, int where)
     {
         optionalColumn.removeAll();
         optionalColumn.add(new Label("Form", Label.CENTER));
-        for (int i = 0; i < teams.length; i++)
+        int index = 1;
+        for (Team team : teams)
         {
-            Label label = new Label(teams[i].getForm(where), Label.CENTER);
+            Label label = new Label(team.getForm(where), Label.CENTER);
             label.setFont(theme.getFixedWidthFont());
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(i + 1)));
+                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
             }
             optionalColumn.add(label);
+            ++index;
         }
         return optionalColumn;
     }

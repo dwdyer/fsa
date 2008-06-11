@@ -14,6 +14,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Team;
 
@@ -152,10 +153,10 @@ public class Sequences implements StatsPanel
         if (data != null)
         {
             int when = (seasonCheckbox != null && seasonCheckbox.getState()) ? Team.SEASON : Team.CURRENT;
-            int index = matchesChoice.getSelectedIndex();
-            int where = (index <= 0 ? Team.BOTH : (index == 1 ? Team.HOME : Team.AWAY));
+            int selectedIndex = matchesChoice.getSelectedIndex();
+            int where = (selectedIndex <= 0 ? Team.BOTH : (selectedIndex == 1 ? Team.HOME : Team.AWAY));
             int sequence = Math.max(0, sequenceChoice.getSelectedIndex()); // A cheat really, we know that the indexes correspond to the constant values.
-            Team[] sequenceTable = data.getSequenceTable(when, where, sequence);
+            SortedSet<Team> sequenceTable = data.getSequenceTable(when, where, sequence);
             
             titleLabel.setText(getTitleText(when, where, sequence));
             
@@ -165,7 +166,7 @@ public class Sequences implements StatsPanel
                 teamsColumn.removeAll();
                 sequenceColumn.removeAll();
                 
-                labels = new Label[sequenceTable.length][3];
+                labels = new Label[sequenceTable.size()][3];
                 for (int i = 0; i < labels.length; i++)
                 {
                     labels[i][0] = new Label(String.valueOf(i + 1), Label.CENTER);
@@ -177,12 +178,14 @@ public class Sequences implements StatsPanel
                     sequenceColumn.add(labels[i][2]);
                 }
             }
-            
-            for (int i = 0; i < sequenceTable.length; i++)
+
+            int index = 0;
+            for (Team team : sequenceTable)
             {
-                labels[i][1].setText(sequenceTable[i].getName());
-                labels[i][1].setFont(sequenceTable[i].getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
-                labels[i][2].setText(String.valueOf(sequenceTable[i].getSequence(when, where, sequence)));
+                labels[index][1].setText(team.getName());
+                labels[index][1].setFont(team.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+                labels[index][2].setText(String.valueOf(team.getSequence(when, where, sequence)));
+                ++index;
             }
             
             view.validate();

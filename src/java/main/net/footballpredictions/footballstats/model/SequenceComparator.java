@@ -6,7 +6,7 @@ import java.util.Comparator;
  * Comparator for sorting a set of teams by a particular sequences statistic.
  * @author Daniel Dyer
  */
-final class TeamSequenceComparator implements Comparator<Team>
+final class SequenceComparator implements Comparator<Team>
 {
     private int when, where, sequence;
         

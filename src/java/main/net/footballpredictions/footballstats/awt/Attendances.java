@@ -172,7 +172,7 @@ public class Attendances implements StatsPanel
     }
 
 
-    private void updateView(Team[] attendanceTable, int type)
+    private void updateView(SortedSet<Team> attendanceTable, int type)
     {
         int index = 1;
         for (Team team : attendanceTable)

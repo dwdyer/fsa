@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -16,9 +15,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.HashSet;
 import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
 
 /**
@@ -29,8 +30,8 @@ import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
  */
 public final class LeagueSeason
 {
-    public int pointsForWin = 3;
-    public int pointsForDraw = 1;
+    private int pointsForWin = 3;
+    private int pointsForDraw = 1;
     
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("ddMMyyyy");
 
@@ -41,7 +42,7 @@ public final class LeagueSeason
     private static final String DEDUCTED_TAG = "DEDUCTED";
     
     private final Map<String, Team> teamMappings = new HashMap<String, Team>();
-    private Team[] teams;
+    private Set<Team> teams;
     private SortedSet<String> teamNames;
     private final SortedSet<Date> dates = new TreeSet<Date>(Collections.reverseOrder()); // Most recent first.
     private final Map<Date, List<Result>> resultsByDate = new HashMap<Date, List<Result>>();
@@ -50,10 +51,8 @@ public final class LeagueSeason
     private final SortedSet<Result> topAttendances = new FixedSizeSortedSet<Result>(20, resultAttendanceComparator);
     private final SortedSet<Result> bottomAttendances = new FixedSizeSortedSet<Result>(20, Collections.reverseOrder(resultAttendanceComparator));
 
-    private final Comparator<Result> resultMarginComparator = new ResultMarginComparator();
-    private final SortedSet<Result> biggestHomeWins = new FixedSizeSortedSet<Result>(5, resultMarginComparator);
-    private final SortedSet<Result> biggestAwayWins = new FixedSizeSortedSet<Result>(5, resultMarginComparator);
-    
+    private final SortedSet<Result> biggestHomeWins = new FixedSizeSortedSet<Result>(5, new ResultMarginComparator());
+    private final SortedSet<Result> biggestAwayWins = new FixedSizeSortedSet<Result>(5, new ResultMarginComparator());
     private final SortedSet<Result> highestMatchAggregates = new FixedSizeSortedSet<Result>(5, new ResultAggregateComparator());
     
     private int matchCount = 0;
@@ -72,51 +71,7 @@ public final class LeagueSeason
     
     private int highestPointsTotal = 0;
  
-    /**
-     * Comparator for sorting a standard league/form table.
-     */
-    private final LeagueTableComparator standardComparator = new LeagueTableComparator()
-    {
-        public int doMainComparison(Team team1, Team team2)
-        {
-            return getPoints(where, team2, form) - getPoints(where, team1, form); // Swap teams for descending sort.
-        }
-    };
-    
-    
-    /**
-     * Comparator for sorting a league table by average points per game.
-     */
-    private final LeagueTableComparator averagesComparator = new LeagueTableComparator()
-    {
-        public int doMainComparison(Team team1, Team team2)
-        {
-            double difference = getAveragePoints(where, team2) - getAveragePoints(where, team1); // Swap teams for descending sort.
-            // Convert to int (sign is more important than value).
-            if (difference == 0)
-            {
-                return 0;
-            }
-            else
-            {
-                return difference > 0 ? 1 : -1;
-            }
-        }
-    };
-    
-    
-    /**
-     * Comparator for sorting a league table in order of fewest points dropped.
-     */
-    private final LeagueTableComparator invertedComparator = new LeagueTableComparator()
-    {
-        public int doMainComparison(Team team1, Team team2)
-        {
-            return getPointsDropped(where, team1) - getPointsDropped(where, team2);
-        }
-    };
-        
-    private final TeamSequenceComparator sequenceComparator = new TeamSequenceComparator();
+    private final SequenceComparator sequenceComparator = new SequenceComparator();
     private final TeamAttendanceComparator attendanceComparator = new TeamAttendanceComparator();
     
     
@@ -236,11 +191,11 @@ public final class LeagueSeason
                 nextLine = resultsFile.readLine();
             }
             System.out.println("Read " + matchCount + " results from " + resultsURL.toString());
-            teams = generateTeamsArray();
+            teams = new HashSet<Team>(teamMappings.values());
             processTeamRecords();
             
             // Workout positions info.
-            zones = new int[teams.length];
+            zones = new int[teams.size()];
             prizeZoneNames = new String[prizeZones.size()];
             int index = 0;
             for (LeagueZone zone : prizeZones)
@@ -280,28 +235,15 @@ public final class LeagueSeason
         {
             if (teams == null)
             {
-                teams = new Team[0];
+                teams = Collections.emptySet();
             }
         }
     }
-    
-    
-    private Team[] generateTeamsArray()
-    {
-        Team[] teams = new Team[teamMappings.size()];
-        int index = -1;
-        for (Team team : teamMappings.values())
-        {
-            teams[++index] = team;
-        }
-        return teams;
-    }
-    
-    
+
+
     private void processTeamRecords()
     {
         // Add result to the record of each team.
-        Team[] table = null;
         for (Date date : dates)
         {
             List<Result> results = resultsByDate.get(date);
@@ -312,14 +254,16 @@ public final class LeagueSeason
                 result.getAwayTeam().addResult(result);
             }
             // Calculate table for current date.
-            table = getStandardLeagueTable(Team.BOTH);
-            for (int i = 0; i < table.length; i++)
+            SortedSet<Team> table = getStandardLeagueTable(Team.BOTH);
+            int index = 1;
+            for (Team team : table)
             {
-                table[i].addLeaguePosition(date, i + 1);
+                team.addLeaguePosition(date, index);
+                ++index;
             }
             if (highestPointsTotal == 0) // Only set this for the most recent (first) date.
             {
-                highestPointsTotal = getPoints(Team.BOTH, table[0], false);
+                highestPointsTotal = getPoints(Team.BOTH, table.first(), false);
             }
             System.out.println("Processed results for " + date.toString());
         }
@@ -454,50 +398,44 @@ public final class LeagueSeason
     /**
      * Sorts the teams into standard league table order (in order of points won).
      */
-    public Team[] getStandardLeagueTable(int where)
+    public SortedSet<Team> getStandardLeagueTable(int where)
     {
-        standardComparator.setForm(false);
-        standardComparator.setWhere(where);
-        return sortTeams(teams, standardComparator);
+        return sortTeams(teams, new LeagueTableComparator(where, pointsForWin, pointsForDraw));
     }
     
     
     /**
      * Sorts the teams in order of average points won per game.
      */
-    public Team[] getAverageLeagueTable(int where)
+    public SortedSet<Team> getAverageLeagueTable(int where)
     {
-        averagesComparator.setWhere(where);
-        return sortTeams(teams, averagesComparator);
+        return sortTeams(teams, new PointsPerGameComparator(where, pointsForWin, pointsForDraw));
     }
     
     
     /**
      * Sorts the teams in order of fewest points lost.
      */
-    public Team[] getInvertedLeagueTable(int where)
+    public SortedSet<Team> getInvertedLeagueTable(int where)
     {
-        invertedComparator.setWhere(where);
-        return sortTeams(teams, invertedComparator);
+        return sortTeams(teams, new DroppedPointsComparator(where, pointsForWin, pointsForDraw));
     }
     
     
-    public Team[] getFormTable(int where)
+    public SortedSet<Team> getFormTable(int where)
     {
-        standardComparator.setForm(true);
-        standardComparator.setWhere(where);
-        return sortTeams(teams, standardComparator);
+        return sortTeams(teams, new FormTableComparator(where, pointsForWin, pointsForDraw));
     }
     
     
-    public Team[] getSequenceTable(int when, int where, int sequence)
+    public SortedSet<Team> getSequenceTable(int when, int where, int sequence)
     {
         sequenceComparator.configure(when, where, sequence);
         return sortTeams(teams, sequenceComparator);
     }
     
     
-    public Team[] getAttendanceTable(int type)
+    public SortedSet<Team> getAttendanceTable(int type)
     {
         attendanceComparator.setType(type);
         return sortTeams(teams, attendanceComparator);
@@ -637,11 +575,11 @@ public final class LeagueSeason
     /**
      * Perform a sort on an array of teams using the specified comparator.
      */
-    private Team[] sortTeams(Team[] teams, Comparator<Team> comparator)
+    private SortedSet<Team> sortTeams(Set<Team> teams, Comparator<Team> comparator)
     {
-        Team[] copy = teams.clone();
-        Arrays.sort(copy, comparator);
-        return copy;
+        SortedSet<Team> sortedTeams = new TreeSet<Team>(comparator);
+        sortedTeams.addAll(teams);
+        return sortedTeams;
     }
 
 

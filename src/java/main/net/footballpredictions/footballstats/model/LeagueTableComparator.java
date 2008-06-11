@@ -3,40 +3,40 @@ package net.footballpredictions.footballstats.model;
 import java.util.Comparator;
 
 /**
- * Convenience base class that provides most of the comparison logic for league tables.
- * Sub-classes just need to fill in the main comparison (i.e. the one that takes precedence
- * over all of the others).
+ * {@link Comparator} used to order teams in standard league table order.
  * @author Daniel Dyer
  */
-abstract class LeagueTableComparator implements Comparator<Team>
+class LeagueTableComparator implements Comparator<Team>
 {
-    protected int where = Team.BOTH;
-    protected boolean form = false; // Are we calculating a form table.
-        
-    public final void setWhere(int where)
+    private final int pointsForWin;
+    private final int pointsForDraw;
+    private final int where;
+
+
+    public LeagueTableComparator(int where,
+                                 int pointsForWin,
+                                 int pointsForDraw)
     {
         this.where = where;
+        this.pointsForWin = pointsForWin;
+        this.pointsForDraw = pointsForDraw;
     }
-        
-        
-    public final void setForm(boolean form)
-    {
-        this.form = form;
-    }
-        
-        
+
+
     public final int compare(Team team1, Team team2)
     {
-        int compare = doMainComparison(team1, team2);
+        int compare = getPoints(where, team2) - getPoints(where, team1);// Swap teams for descending order.
         if (compare == 0)
         {
-            compare = team2.getGoalDifference(where, form) - team1.getGoalDifference(where, form); // Swap teams for descending sort.
+            compare = team2.getGoalDifference(where, false) - team1.getGoalDifference(where, false); // Swap teams for descending order.
             if (compare == 0)
             {
-                compare = team2.getAggregate(where, Team.AGGREGATE_SCORED, form) - team1.getAggregate(where, Team.AGGREGATE_SCORED, form); // Swap teams for descending sort.
+                compare = team2.getAggregate(where, Team.AGGREGATE_SCORED, false) - team1.getAggregate(where, Team.AGGREGATE_SCORED,
+                                                                                                       false); // Swap teams for descending order.
                 if (compare == 0)
                 {
-                    compare = team2.getAggregate(where, Team.AGGREGATE_WON, form) - team1.getAggregate(where, Team.AGGREGATE_WON, form); // Swap teams for descending sort.
+                    compare = team2.getAggregate(where, Team.AGGREGATE_WON, false) - team1.getAggregate(where, Team.AGGREGATE_WON,
+                                                                                                        false); // Swap teams for descending order.
                     if (compare == 0)
                     {
                         // If records are the same, sort on alphabetical order.
@@ -47,6 +47,13 @@ abstract class LeagueTableComparator implements Comparator<Team>
         }
         return compare;
     }
-        
-    protected abstract int doMainComparison(Team team1, Team team2);
+
+
+    private int getPoints(int where, Team team)
+    {
+        int points = team.getAggregate(where, Team.AGGREGATE_WON, false) * pointsForWin
+                     + team.getAggregate(where, Team.AGGREGATE_DRAWN, false) * pointsForDraw;
+        points += team.getPointsAdjustment(where);
+        return points;
+    }
 }
