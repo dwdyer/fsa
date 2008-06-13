@@ -15,7 +15,7 @@ import java.awt.event.ItemListener;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
-import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.FullRecord;
 
 /**
  * @author Daniel Dyer
@@ -172,10 +172,10 @@ public class Attendances implements StatsPanel
     }
 
 
-    private void updateView(SortedSet<Team> attendanceTable, int type)
+    private void updateView(SortedSet<FullRecord> attendanceTable, int type)
     {
         int index = 1;
-        for (Team team : attendanceTable)
+        for (FullRecord team : attendanceTable)
         {
             positionsColumn.add(new Label(String.valueOf(index), Label.CENTER));
             Label textLabel = new Label(team.getName());

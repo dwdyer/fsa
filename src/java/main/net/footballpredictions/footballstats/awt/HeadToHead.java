@@ -11,7 +11,7 @@ import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.TeamRecord;
 
 /**
  * @author Daniel Dyer
@@ -125,8 +125,8 @@ public class HeadToHead implements StatsPanel
         if (data != null)
         {
             boolean overall = typeChoice.getSelectedIndex() <= 0;
-            homeTeamPanel.setTeam(data.getTeam(homeTeamChoice.getSelectedItem()), overall ? Team.BOTH : Team.HOME);
-            awayTeamPanel.setTeam(data.getTeam(awayTeamChoice.getSelectedItem()), overall ? Team.BOTH : Team.AWAY);
+            homeTeamPanel.setTeam(data.getTeam(homeTeamChoice.getSelectedItem()), overall ? TeamRecord.BOTH : TeamRecord.HOME);
+            awayTeamPanel.setTeam(data.getTeam(awayTeamChoice.getSelectedItem()), overall ? TeamRecord.BOTH : TeamRecord.AWAY);
             view.validate();
         }
     }

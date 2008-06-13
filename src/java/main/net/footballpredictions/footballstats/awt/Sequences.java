@@ -16,7 +16,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.FullRecord;
+import net.footballpredictions.footballstats.model.TeamRecord;
 
 /**
  * @author Daniel Dyer
@@ -152,11 +153,11 @@ public class Sequences implements StatsPanel
     {
         if (data != null)
         {
-            int when = (seasonCheckbox != null && seasonCheckbox.getState()) ? Team.SEASON : Team.CURRENT;
+            int when = (seasonCheckbox != null && seasonCheckbox.getState()) ? FullRecord.SEASON : FullRecord.CURRENT;
             int selectedIndex = matchesChoice.getSelectedIndex();
-            int where = (selectedIndex <= 0 ? Team.BOTH : (selectedIndex == 1 ? Team.HOME : Team.AWAY));
+            int where = (selectedIndex <= 0 ? TeamRecord.BOTH : (selectedIndex == 1 ? TeamRecord.HOME : TeamRecord.AWAY));
             int sequence = Math.max(0, sequenceChoice.getSelectedIndex()); // A cheat really, we know that the indexes correspond to the constant values.
-            SortedSet<Team> sequenceTable = data.getSequenceTable(when, where, sequence);
+            SortedSet<FullRecord> sequenceTable = data.getSequenceTable(when, where, sequence);
             
             titleLabel.setText(getTitleText(when, where, sequence));
             
@@ -180,7 +181,7 @@ public class Sequences implements StatsPanel
             }
 
             int index = 0;
-            for (Team team : sequenceTable)
+            for (FullRecord team : sequenceTable)
             {
                 labels[index][1].setText(team.getName());
                 labels[index][1].setFont(team.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
@@ -196,16 +197,16 @@ public class Sequences implements StatsPanel
     private String getTitleText(int when, int where, int sequence)
     {
         StringBuffer buffer = new StringBuffer(SEQUENCE_NAMES[sequence]);
-        if (where == Team.HOME)
+        if (where == TeamRecord.HOME)
         {
             buffer.insert(0, "Home ");
         }
-        else if (where == Team.AWAY)
+        else if (where == TeamRecord.AWAY)
         {
             buffer.insert(0, "Away ");
         }
         
-        if (when == Team.CURRENT)
+        if (when == FullRecord.CURRENT)
         {
             buffer.insert(0, "Current Consecutive ");
         }

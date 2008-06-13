@@ -6,7 +6,7 @@ import java.util.Comparator;
  * Comparator for sorting a set of teams by a particular attendance statistic.
  * @author Daniel Dyer.
  */
-final class TeamAttendanceComparator implements Comparator<Team>
+final class TeamAttendanceComparator implements Comparator<FullRecord>
 {
     private int type;
         
@@ -16,7 +16,7 @@ final class TeamAttendanceComparator implements Comparator<Team>
     }
 
         
-    public int compare(Team team1, Team team2)
+    public int compare(FullRecord team1, FullRecord team2)
     {
         int compare = team2.getAttendance(type) - team1.getAttendance(type); // Swap teams for descending sort.
         if (compare == 0)

@@ -12,20 +12,8 @@ import java.util.List;
  * @since 21/12/2003
  * @version $Revision: $
  */
-public final class Team
+public final class FullRecord extends AbstractTeamRecord
 {
-    // Constants for home/away/both.
-    public static final int HOME = 0;
-    public static final int AWAY = 1;
-    public static final int BOTH = 2;
-    
-    // Constants for standards stats.
-    public static final int AGGREGATE_PLAYED = 0;
-    public static final int AGGREGATE_WON = 1;
-    public static final int AGGREGATE_DRAWN = 2;
-    public static final int AGGREGATE_LOST = 3;
-    public static final int AGGREGATE_SCORED = 4;
-    public static final int AGGREGATE_CONCEDED = 5;
 
     // Constants for sequence types.
     public static final int SEQUENCE_WIN = 0;
@@ -52,11 +40,11 @@ public final class Team
     public static final int ATTENDANCE_LOWEST = 2;
     public static final int ATTENDANCE_AGGREGATE = 3;
 
-    // Team data.
-    private final String name;    
     private final List<Result> results = new ArrayList<Result>(46); // Most leagues have no more than 46 games per team.
     private final List<LeaguePosition> leaguePositions = new ArrayList<LeaguePosition>(46);
-           
+
+    private final FormRecord form;
+
     /**
      * Two dimensional array for storing aggregates (i.e. league table data).
      * Only store home and away totals because overall totals can be calculated from these.
@@ -69,9 +57,6 @@ public final class Team
      */
     private final int[][][] sequences = new int[2][3][8];
     
-    private final Result[][] form = new Result[][]{new Result[4], new Result[4], new Result[6]};
-    private final int[] formPointers = new int[3]; // Indices of most recent results in form array.
-    
     private final Result[][] keyResults = new Result[3][3];
     
     private int lowestCrowd;
@@ -83,18 +68,13 @@ public final class Team
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
      */
-    public Team(String name)
+    public FullRecord(String name)
     {
-        this.name = name;
+        super(name);
+        this.form = new FormRecord(name);
     }
-    
-    
-    public String getName()
-    {
-        return name;
-    }
-    
-    
+
+
     public Result[] getResults(int where)
     {
         Result[] resultsArray;
@@ -166,8 +146,8 @@ public final class Team
     public void addResult(Result result)
     {
         results.add(result);
+        form.addResult(result);        
         updateAggregatesAndSequences(result);
-        updateForm(result);
         updateAttendanceFigures(result);
     }
     
@@ -182,18 +162,12 @@ public final class Team
     {
         pointsAdjustment += amount;
     }
-    
-    
-    public int getAggregate(int where, int aggregate, boolean form)
-    {
-        return form ? getFormAggregate(where, aggregate) : getAggregate(where, aggregate);
-    }
-    
-    
+
+
     /**
      * Helper method for three parameter version of getAggregate.
      */
-    private int getAggregate(int where, int aggregate)
+    public int getAggregate(int where, int aggregate)
     {
         if (where == BOTH)
         {
@@ -204,127 +178,30 @@ public final class Team
             return aggregates[where][aggregate];
         }
     }
-    
-    
-    /**
-     * @return The difference between the number of goals scored by this team and the number
-     * conceded.  A positive value indicates more goals scored than conceded, a negative value
-     * indicates more conceded than scored.
-     */
-    public int getGoalDifference(int where, boolean form)
-    {
-        return getAggregate(where, AGGREGATE_SCORED, form) - getAggregate(where, AGGREGATE_CONCEDED, form);
-    }
-    
-    
+
+
     public int getSequence(int when, int where, int sequence)
     {
         return sequences[when][where][sequence];
     }
-    
 
-    /**
-     * @return A String representation of this teams current form.  Either home form,
-     * away form or combined form depending on the method argument.
-     */
+
     public String getForm(int where)
     {
-        StringBuffer formString = new StringBuffer();
-        for (int i = 0; i < form[where].length; i++)
-        {
-            int index = (formPointers[where] + i) % form[where].length;
-            if (form[where][index] == null)
-            {
-                formString.append('-');
-            }
-            else if (form[where][index].isDraw())
-            {
-                formString.append('D');
-            }
-            else if (form[where][index].isWin(this))
-            {
-                formString.append('W');
-            }
-            else
-            {
-                formString.append('L');
-            }
-        }
-        return formString.toString();
+        return form.getForm(where);
     }
-    
-    
+
+
     /**
-     * Calculates the value for one of the columns in a form table.
+     * @return A {@link TeamRecord} that contains only data relating to the team's current
+     * form.
      */
-    private int getFormAggregate(int where, int aggregate)
+    public FormRecord getFormRecord()
     {
-        int value = 0;
-        switch (aggregate)
-        {
-            case AGGREGATE_PLAYED:
-            {
-                return Math.min(getAggregate(where, AGGREGATE_PLAYED), form[where].length);
-            }
-            case AGGREGATE_WON:
-            {
-                for (int i = 0; i < form[where].length; i++)
-                {
-                    if (form[where][i] != null && form[where][i].isWin(this))
-                    {
-                        value++;
-                    }
-                }
-                break;
-            }
-            case AGGREGATE_DRAWN:
-            {
-                for (int i = 0; i < form[where].length; i++)
-                {
-                    if (form[where][i] != null && form[where][i].isDraw())
-                    {
-                        value++;
-                    }
-                }
-                break;
-            }
-            case AGGREGATE_LOST:
-            {
-                for (int i = 0; i < form[where].length; i++)
-                {
-                    if (form[where][i] != null && form[where][i].isDefeat(this))
-                    {
-                        value++;
-                    }
-                }
-                break;
-            }
-            case AGGREGATE_SCORED:
-            {
-                for (int i = 0; i < form[where].length; i++)
-                {
-                    if (form[where][i] != null)
-                    {
-                        value += form[where][i].getGoalsFor(this);
-                    }
-                }
-                break;
-            }
-            case AGGREGATE_CONCEDED:
-            {
-                for (int i = 0; i < form[where].length; i++)
-                {
-                    if (form[where][i] != null)
-                    {
-                        value += form[where][i].getGoalsAgainst(this);
-                    }
-                }
-            }
-        }
-        return value;
+        return form;
     }
-    
-    
+
+
     public Result getKeyResult(int where, int key)
     {
         return keyResults[where][key];
@@ -533,16 +410,6 @@ public final class Team
     }
     
     
-    private void updateForm(Result result)
-    {
-        int where = result.getHomeTeam().equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
-        form[where][formPointers[where]] = result;
-        form[BOTH][formPointers[BOTH]] = result;
-        formPointers[where] = formPointers[where] < form[where].length - 1 ? formPointers[where] + 1 : 0;
-        formPointers[BOTH] = formPointers[BOTH] < form[BOTH].length - 1 ? formPointers[BOTH] + 1 : 0;
-    }
-    
-    
     /**
      * Update the aggregate attendance and, if necessary, the
      * highest or lowest attendance.
@@ -568,28 +435,13 @@ public final class Team
     
     /**
      * Over-ride equals.  Teams are equal if the names are equal.
+     * No need to also over-ride {@link #hashCode()} because this
+     * method is consistent with the superclass hash code.
      */
+    @Override
     public boolean equals(Object obj)
     {
-        if (obj instanceof Team)
-        {
-            Team other = (Team) obj;
-            return name.equals(other.name);
-        }
-        return false;
-    }
-    
-    
-    /**
-     * Over-ride hashCode because equals has also been over-ridden, to satisfy general contract
-     * of equals.
-     * Algorithm from Effective Java by Joshua Bloch.
-     */
-    public int hashCode()
-    {
-        int result = 17;
-        result = 37 * result + name.hashCode();
-        return result;
+        return obj instanceof FullRecord && super.equals(obj);
     }
     
     

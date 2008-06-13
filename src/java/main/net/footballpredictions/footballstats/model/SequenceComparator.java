@@ -6,7 +6,7 @@ import java.util.Comparator;
  * Comparator for sorting a set of teams by a particular sequences statistic.
  * @author Daniel Dyer
  */
-final class SequenceComparator implements Comparator<Team>
+final class SequenceComparator implements Comparator<FullRecord>
 {
     private int when, where, sequence;
         
@@ -17,7 +17,7 @@ final class SequenceComparator implements Comparator<Team>
         this.sequence = sequence;
     }
         
-    public int compare(Team team1, Team team2)
+    public int compare(FullRecord team1, FullRecord team2)
     {
         int compare = team2.getSequence(when, where, sequence) - team1.getSequence(when, where, sequence); // Swap teams for descending sort.
         if (compare == 0)

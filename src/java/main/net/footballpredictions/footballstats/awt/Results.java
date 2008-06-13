@@ -16,12 +16,13 @@ import java.awt.ScrollPane;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import net.footballpredictions.footballstats.model.FullRecord;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
-import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.TeamRecord;
 
 /**
  * @author Daniel Dyer
@@ -189,7 +190,7 @@ public class Results implements StatsPanel
     /**
      * Show the specified teams results for the season.
      */
-    private void showResults(Team team)
+    private void showResults(FullRecord team)
     {
         StringBuffer titleText = new StringBuffer("Results for ");
         titleText.append(team.getName());
@@ -198,16 +199,16 @@ public class Results implements StatsPanel
         int index = matchesChoice.getSelectedIndex();
         if (index == 0)
         {
-            results = team.getResults(Team.BOTH);
+            results = team.getResults(TeamRecord.BOTH);
         }
         else if (index == 1)
         {
-            results = team.getResults(Team.HOME);
+            results = team.getResults(TeamRecord.HOME);
             titleText.append(" (Home Matches Only)");
         }
         else
         {
-            results = team.getResults(Team.AWAY);
+            results = team.getResults(TeamRecord.AWAY);
             titleText.append(" (Away Matches Only)");
         }        
         
