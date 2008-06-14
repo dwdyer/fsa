@@ -427,7 +427,7 @@ public final class LeagueSeason
         Set<FormRecord> formTeams = new HashSet<FormRecord>();
         for (FullRecord team : teams)
         {
-            formTeams.add(team.getFormRecord());
+            formTeams.add(team.getFormRecord(where));
         }
         return sortTeams(formTeams, new LeagueTableComparator(where, pointsForWin, pointsForDraw));
     }

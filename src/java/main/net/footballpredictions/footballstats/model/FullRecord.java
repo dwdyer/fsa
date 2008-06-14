@@ -3,7 +3,6 @@ package net.footballpredictions.footballstats.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,25 +39,12 @@ public final class FullRecord extends AbstractTeamRecord
     public static final int ATTENDANCE_LOWEST = 2;
     public static final int ATTENDANCE_AGGREGATE = 3;
 
-    private final List<Result> results = new ArrayList<Result>(46); // Most leagues have no more than 46 games per team.
     private final List<LeaguePosition> leaguePositions = new ArrayList<LeaguePosition>(46);
 
-    private final FormRecord form;
+    private final PartialRecord homeRecord;
+    private final PartialRecord awayRecord;
+    private final PartialRecord overallRecord;
 
-    /**
-     * Two dimensional array for storing aggregates (i.e. league table data).
-     * Only store home and away totals because overall totals can be calculated from these.
-     */
-    private final int[][] aggregates = new int[2][6];
-
-    /**
-     * Three-dimensional array for storing sequence data.  First dimension is
-     * current/season, second is venue (home/away/both), third is sequence type.
-     */
-    private final int[][][] sequences = new int[2][3][8];
-    
-    private final Result[][] keyResults = new Result[3][3];
-    
     private int lowestCrowd;
     private int highestCrowd;
     private int aggregateCrowd;
@@ -71,34 +57,27 @@ public final class FullRecord extends AbstractTeamRecord
     public FullRecord(String name)
     {
         super(name);
-        this.form = new FormRecord(name);
+        this.homeRecord = new PartialRecord(name, HOME);
+        this.awayRecord = new PartialRecord(name, AWAY);
+        this.overallRecord = new PartialRecord(name, BOTH);
+    }
+
+
+    private PartialRecord getRecord(int where)
+    {
+        switch (where)
+        {
+            case HOME: return homeRecord;
+            case AWAY: return awayRecord;
+            case BOTH: return overallRecord;
+            default: throw new IllegalArgumentException("Invalid venue type: " + where);
+        }
     }
 
 
     public Result[] getResults(int where)
     {
-        Result[] resultsArray;
-        if (where == BOTH)
-        {
-            resultsArray = new Result[results.size()];
-            results.toArray(resultsArray);
-        }
-        else
-        {
-            resultsArray = new Result[getAggregate(where, AGGREGATE_PLAYED)];
-            int count = 0;
-            for (int i = 0; i < results.size() && count < resultsArray.length; i++)
-            {
-                Result result = results.get(i);
-                if ((where == HOME && result.getHomeTeam().equals(this))
-                    || (where == AWAY && result.getAwayTeam().equals(this)))
-                {
-                    resultsArray[count] = result;
-                    count++;
-                }
-            }
-        }
-        return resultsArray;
+        return getRecord(where).getResults(where);
     }
     
     
@@ -119,13 +98,14 @@ public final class FullRecord extends AbstractTeamRecord
     
     public int[][] getPointsData(int pointsForWin, int pointsForDraw)
     {
-        int[][] data = new int[results.size() + 1][2];
+        Result[] results = overallRecord.getResults(BOTH);
+        int[][] data = new int[results.length + 1][2];
         int total = 0;
         data[0][0] = 0;
         data[0][1] = total;
-        for (int i = 0; i < results.size(); i++)
+        for (int i = 0; i < results.length; i++)
         {
-            Result result = results.get(i);
+            Result result = results[i];
             if (result.isDraw())
             {
                 total += pointsForDraw;
@@ -145,9 +125,9 @@ public final class FullRecord extends AbstractTeamRecord
     
     public void addResult(Result result)
     {
-        results.add(result);
-        form.addResult(result);        
-        updateAggregatesAndSequences(result);
+        homeRecord.addResult(result);
+        awayRecord.addResult(result);
+        overallRecord.addResult(result);
         updateAttendanceFigures(result);
     }
     
@@ -169,26 +149,19 @@ public final class FullRecord extends AbstractTeamRecord
      */
     public int getAggregate(int where, int aggregate)
     {
-        if (where == BOTH)
-        {
-            return aggregates[HOME][aggregate] + aggregates[AWAY][aggregate];
-        }
-        else
-        {
-            return aggregates[where][aggregate];
-        }
+        return getRecord(where).getAggregate(where, aggregate);
     }
 
 
     public int getSequence(int when, int where, int sequence)
     {
-        return sequences[when][where][sequence];
+        return getRecord(where).getSequence(when, sequence);
     }
 
 
     public String getForm(int where)
     {
-        return form.getForm(where);
+        return getFormRecord(where).getForm(where);
     }
 
 
@@ -196,15 +169,15 @@ public final class FullRecord extends AbstractTeamRecord
      * @return A {@link TeamRecord} that contains only data relating to the team's current
      * form.
      */
-    public FormRecord getFormRecord()
+    public FormRecord getFormRecord(int where)
     {
-        return form;
+        return getRecord(where).getFormRecord();
     }
 
 
     public Result getKeyResult(int where, int key)
     {
-        return keyResults[where][key];
+        return getRecord(where).getKeyResult(key);
     }
     
     
@@ -238,177 +211,9 @@ public final class FullRecord extends AbstractTeamRecord
      */
     public String[] getNotes(int where)
     {
-        List<String> notes = new LinkedList<String>();
-        String end = " matches.";
-        if (where == HOME)
-        {
-            end = " home matches.";
-        }
-        else if (where == AWAY)
-        {
-            end = " away matches.";
-        }
-        
-        // Check unbeatean/without win sequences.
-        if (getSequence(CURRENT, where, SEQUENCE_UNBEATEN) >= 3)
-        {
-            notes.add("Unbeaten in last " + getSequence(CURRENT, where, SEQUENCE_UNBEATEN) + end);
-        }
-        if (getSequence(CURRENT, where, SEQUENCE_NO_WIN) >= 3)
-        {
-            notes.add("Haven't won in last " + getSequence(CURRENT, where, SEQUENCE_NO_WIN) + end);
-        }        
-        
-        // Check win/loss sequences.
-        if (getSequence(CURRENT, where, SEQUENCE_WIN) >= 3)
-        {
-            notes.add("Won last " + getSequence(CURRENT, where, SEQUENCE_WIN) + end);
-        }
-        else if (getSequence(CURRENT, where, SEQUENCE_DRAW) >= 3)
-        {
-            notes.add("Drawn last " + getSequence(CURRENT, where, SEQUENCE_DRAW) + end);
-        }
-        else if (getSequence(CURRENT, where, SEQUENCE_DEFEAT) >= 3)
-        {
-            notes.add("Lost last " + getSequence(CURRENT, where, SEQUENCE_DEFEAT) + end);
-        }
-        
-        // Check cleansheet/scoring sequences.
-        if (getSequence(CURRENT, where, SEQUENCE_NO_GOAL) >= 3)
-        {
-            notes.add("Haven't scored in last " + getSequence(CURRENT, where, SEQUENCE_NO_GOAL) + end);
-        }
-        if (getSequence(CURRENT, where, SEQUENCE_CLEANSHEET) >= 3)
-        {
-            notes.add("Haven't conceded in last " + getSequence(CURRENT, where, SEQUENCE_CLEANSHEET) + end);
-        }
-        if (getSequence(CURRENT, where, SEQUENCE_SCORED) >= 10)
-        {
-            notes.add("Scored in last " + getSequence(CURRENT, where, SEQUENCE_SCORED) + end);
-        }
-        
-        String[] noteStrings = new String[notes.size()];
-        notes.toArray(noteStrings);
-        return noteStrings;
+        return getRecord(where).getNotes();
     }
-    
-    
-    private void updateAggregatesAndSequences(Result result)
-    {
-        int where = result.getHomeTeam().equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
-        
-        int goalsFor = result.getGoalsFor(this);
-        int goalsAgainst = result.getGoalsAgainst(this);
-        int marginOfVictory = result.getMarginOfVictory();
-        
-        // Update last result.
-        keyResults[where][LAST_RESULT] = result;
-        keyResults[BOTH][LAST_RESULT] = result;
-        
-        aggregates[where][AGGREGATE_PLAYED]++;
-        
-        // Update result aggregates/sequences.
-        if (result.isDefeat(this))
-        {
-            aggregates[where][AGGREGATE_LOST]++;
-            
-            sequences[CURRENT][where][SEQUENCE_NO_WIN]++;
-            sequences[CURRENT][where][SEQUENCE_DEFEAT]++;
-            sequences[CURRENT][where][SEQUENCE_UNBEATEN] = 0;
-            sequences[CURRENT][where][SEQUENCE_WIN] = 0;
-            sequences[CURRENT][where][SEQUENCE_DRAW] = 0;
-            sequences[CURRENT][BOTH][SEQUENCE_NO_WIN]++;
-            sequences[CURRENT][BOTH][SEQUENCE_DEFEAT]++;
-            sequences[CURRENT][BOTH][SEQUENCE_UNBEATEN] = 0;
-            sequences[CURRENT][BOTH][SEQUENCE_WIN] = 0;
-            sequences[CURRENT][BOTH][SEQUENCE_DRAW] = 0;
-            
-            if (keyResults[where][BIGGEST_DEFEAT] == null || marginOfVictory > keyResults[where][BIGGEST_DEFEAT].getMarginOfVictory())
-            {
-                keyResults[where][BIGGEST_DEFEAT] = result;
-            }
-            if (keyResults[BOTH][BIGGEST_DEFEAT] == null || marginOfVictory > keyResults[BOTH][BIGGEST_DEFEAT].getMarginOfVictory())
-            {
-                keyResults[BOTH][BIGGEST_DEFEAT] = result;
-            }
-        }
-        else
-        {
-            sequences[CURRENT][where][SEQUENCE_UNBEATEN]++;
-            sequences[CURRENT][where][SEQUENCE_DEFEAT] = 0;
-            sequences[CURRENT][BOTH][SEQUENCE_UNBEATEN]++;
-            sequences[CURRENT][BOTH][SEQUENCE_DEFEAT] = 0;
-            
-            if (result.isDraw())
-            {
-                aggregates[where][AGGREGATE_DRAWN]++;
-                
-                sequences[CURRENT][where][SEQUENCE_DRAW]++;
-                sequences[CURRENT][where][SEQUENCE_NO_WIN]++;
-                sequences[CURRENT][where][SEQUENCE_WIN] = 0;
-                sequences[CURRENT][BOTH][SEQUENCE_DRAW]++;
-                sequences[CURRENT][BOTH][SEQUENCE_NO_WIN]++;
-                sequences[CURRENT][BOTH][SEQUENCE_WIN] = 0;
-            }
-            else // Must be a win
-            {
-                aggregates[where][AGGREGATE_WON]++;
-                
-                sequences[CURRENT][where][SEQUENCE_WIN]++;
-                sequences[CURRENT][where][SEQUENCE_NO_WIN] = 0;
-                sequences[CURRENT][where][SEQUENCE_DRAW] = 0;
-                sequences[CURRENT][BOTH][SEQUENCE_WIN]++;
-                sequences[CURRENT][BOTH][SEQUENCE_NO_WIN] = 0;
-                sequences[CURRENT][BOTH][SEQUENCE_DRAW] = 0;
-                
-                if (keyResults[where][BIGGEST_WIN] == null || marginOfVictory > keyResults[where][BIGGEST_WIN].getMarginOfVictory())
-                {
-                    keyResults[where][BIGGEST_WIN] = result;
-                }
-                if (keyResults[BOTH][BIGGEST_WIN] == null || marginOfVictory > keyResults[BOTH][BIGGEST_WIN].getMarginOfVictory())
-                {
-                    keyResults[BOTH][BIGGEST_WIN] = result;
-                }
-            }
-        }
-        
-        // Update score aggregates/sequences.
-        aggregates[where][AGGREGATE_SCORED] += goalsFor;
-        aggregates[where][AGGREGATE_CONCEDED] += goalsAgainst;
-        if (goalsFor == 0)
-        {
-            sequences[CURRENT][where][SEQUENCE_NO_GOAL]++;
-            sequences[CURRENT][BOTH][SEQUENCE_NO_GOAL]++;
-            sequences[CURRENT][where][SEQUENCE_SCORED] = 0;
-            sequences[CURRENT][BOTH][SEQUENCE_SCORED] = 0;
-        }
-        else
-        {
-            sequences[CURRENT][where][SEQUENCE_NO_GOAL] = 0;
-            sequences[CURRENT][BOTH][SEQUENCE_NO_GOAL] = 0;
-            sequences[CURRENT][where][SEQUENCE_SCORED]++;
-            sequences[CURRENT][BOTH][SEQUENCE_SCORED]++;
-        }
-        
-        if (goalsAgainst == 0)
-        {
-            sequences[CURRENT][where][SEQUENCE_CLEANSHEET]++;
-            sequences[CURRENT][BOTH][SEQUENCE_CLEANSHEET]++;
-        }
-        else
-        {
-            sequences[CURRENT][where][SEQUENCE_CLEANSHEET] = 0;
-            sequences[CURRENT][BOTH][SEQUENCE_CLEANSHEET] = 0;
-        }
-        
-        // Update season's best sequences, if necessary.
-        for (int i = 0; i < 8; i++) // 8 is number of sequences.
-        {
-            sequences[SEASON][where][i] = Math.max(sequences[SEASON][where][i], sequences[CURRENT][where][i]);
-            sequences[SEASON][BOTH][i] = Math.max(sequences[SEASON][BOTH][i], sequences[CURRENT][BOTH][i]);
-        }
-    }
-    
+
     
     /**
      * Update the aggregate attendance and, if necessary, the

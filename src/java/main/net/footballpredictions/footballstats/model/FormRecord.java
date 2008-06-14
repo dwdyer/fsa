@@ -1,7 +1,7 @@
 package net.footballpredictions.footballstats.model;
 
-import java.util.SortedSet;
 import java.util.Collections;
+import java.util.SortedSet;
 import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
 
 /**
@@ -9,59 +9,42 @@ import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
  */
 public class FormRecord extends AbstractTeamRecord
 {
-    private final FixedSizeSortedSet<Result> homeForm
-        = new FixedSizeSortedSet<Result>(4, Collections.reverseOrder(new ResultDateComparator()));
-    private final FixedSizeSortedSet<Result> awayForm
-        = new FixedSizeSortedSet<Result>(4, Collections.reverseOrder(new ResultDateComparator()));
-    private final FixedSizeSortedSet<Result> overallForm
-        = new FixedSizeSortedSet<Result>(6, Collections.reverseOrder(new ResultDateComparator()));
+    private final int where;
+    private final int length;
+    private final SortedSet<Result> formResults;
 
-    public FormRecord(String name)
+    public FormRecord(String name, int where, int length)
     {
         super(name);
-    }
-
-
-    private FixedSizeSortedSet<Result> getFormResults(int where)
-    {
-        switch (where)
-        {
-            case HOME: return homeForm;
-            case AWAY: return awayForm;
-            case BOTH: return overallForm;
-            default: throw new IllegalArgumentException("where = " + where);
-        }
+        this.where = where;
+        this.length = length;
+        this.formResults = new FixedSizeSortedSet<Result>(length, Collections.reverseOrder(new ResultDateComparator()));
     }
 
 
     public void addResult(Result result)
     {
-        overallForm.add(result);
-        if (result.getHomeTeam().getName().equals(getName()))
+        if (where == BOTH
+            || (where == HOME && result.getHomeTeam().getName().equals(getName()))
+            || (where == AWAY && result.getAwayTeam().getName().equals(getName())))
         {
-            homeForm.add(result);
-        }
-        else if (result.getAwayTeam().getName().equals(getName()))
-        {
-            awayForm.add(result);
+            formResults.add(result);
         }
     }
 
 
     public String getForm(int where)
     {
-        FixedSizeSortedSet<Result> results = getFormResults(where);
         StringBuilder formString = new StringBuilder();
 
         // If we don't have a full set of results (because not enough games have been played
         // yet), uses dashes in place of the missing results.
-        int dashCount = results.getMaxSize() - results.size();
-        for (int i = 0; i < dashCount; i++)
+        for (int i = formResults.size(); i < length; i++)
         {
             formString.append('-');
         }
 
-        for (Result result : results)
+        for (Result result : formResults)
         {
             if (result.isDraw())
             {
@@ -86,16 +69,15 @@ public class FormRecord extends AbstractTeamRecord
     public int getAggregate(int where, int aggregate)
     {
         int value = 0;
-        SortedSet<Result> results = getFormResults(where);
         switch (aggregate)
         {
             case AGGREGATE_PLAYED:
             {
-                return results.size();
+                return formResults.size();
             }
             case AGGREGATE_WON:
             {
-                for (Result result : results)
+                for (Result result : formResults)
                 {
                     if (result.isWin(this))
                     {
@@ -106,7 +88,7 @@ public class FormRecord extends AbstractTeamRecord
             }
             case AGGREGATE_DRAWN:
             {
-                for (Result result : results)
+                for (Result result : formResults)
                 {
                     if (result.isDraw())
                     {
@@ -117,7 +99,7 @@ public class FormRecord extends AbstractTeamRecord
             }
             case AGGREGATE_LOST:
             {
-                for (Result result : results)
+                for (Result result : formResults)
                 {
                     if (result.isDefeat(this))
                     {
@@ -128,7 +110,7 @@ public class FormRecord extends AbstractTeamRecord
             }
             case AGGREGATE_SCORED:
             {
-                for (Result result : results)
+                for (Result result : formResults)
                 {
                     value += result.getGoalsFor(this);
                 }
@@ -136,7 +118,7 @@ public class FormRecord extends AbstractTeamRecord
             }
             case AGGREGATE_CONCEDED:
             {
-                for (Result result : results)
+                for (Result result : formResults)
                 {
                     value += result.getGoalsAgainst(this);
                 }
