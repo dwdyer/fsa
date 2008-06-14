@@ -28,15 +28,15 @@ class LeagueTableComparator implements Comparator<TeamRecord>
         int compare = getPoints(where, team2) - getPoints(where, team1);// Swap teams for descending order.
         if (compare == 0)
         {
-            compare = team2.getGoalDifference(where) - team1.getGoalDifference(where); // Swap teams for descending order.
+            compare = team2.getGoalDifference() - team1.getGoalDifference(); // Swap teams for descending order.
             if (compare == 0)
             {
-                compare = team2.getAggregate(where, TeamRecord.AGGREGATE_SCORED)
-                          - team1.getAggregate(where, TeamRecord.AGGREGATE_SCORED); // Swap teams for descending order.
+                compare = team2.getAggregate(TeamRecord.AGGREGATE_SCORED)
+                          - team1.getAggregate(TeamRecord.AGGREGATE_SCORED); // Swap teams for descending order.
                 if (compare == 0)
                 {
-                    compare = team2.getAggregate(where, TeamRecord.AGGREGATE_WON)
-                              - team1.getAggregate(where, TeamRecord.AGGREGATE_WON); // Swap teams for descending order.
+                    compare = team2.getAggregate(TeamRecord.AGGREGATE_WON)
+                              - team1.getAggregate(TeamRecord.AGGREGATE_WON); // Swap teams for descending order.
                     if (compare == 0)
                     {
                         // If records are the same, sort on alphabetical order.
@@ -51,9 +51,9 @@ class LeagueTableComparator implements Comparator<TeamRecord>
 
     private int getPoints(int where, TeamRecord team)
     {
-        int points = team.getAggregate(where, TeamRecord.AGGREGATE_WON) * pointsForWin
-                     + team.getAggregate(where, TeamRecord.AGGREGATE_DRAWN) * pointsForDraw;
-        points += team.getPointsAdjustment(where);
+        int points = team.getAggregate(TeamRecord.AGGREGATE_WON) * pointsForWin
+                     + team.getAggregate(TeamRecord.AGGREGATE_DRAWN) * pointsForDraw;
+        points += team.getTeam().getPointsAdjustment(where);
         return points;
     }
 }

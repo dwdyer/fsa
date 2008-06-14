@@ -19,7 +19,7 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import net.footballpredictions.footballstats.model.FullRecord;
+import net.footballpredictions.footballstats.model.Team;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.TeamRecord;
@@ -190,7 +190,7 @@ public class Results implements StatsPanel
     /**
      * Show the specified teams results for the season.
      */
-    private void showResults(FullRecord team)
+    private void showResults(Team team)
     {
         StringBuffer titleText = new StringBuffer("Results for ");
         titleText.append(team.getName());

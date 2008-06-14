@@ -20,7 +20,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.FullRecord;
+import net.footballpredictions.footballstats.model.Team;
 
 /**
  * @author Daniel Dyer
@@ -162,7 +162,7 @@ public class Graphs implements StatsPanel
                     String teamName = teamChoice.getSelectedItem();
                     if (typeChoice.getSelectedIndex() <= 0)
                     {
-                        FullRecord.LeaguePosition[] positions = data.getTeam(teamName).getLeaguePositions();
+                        Team.LeaguePosition[] positions = data.getTeam(teamName).getLeaguePositions();
                         int[][] points = new int[positions.length][2];
                         for (int j = 0; j < positions.length; j++)
                         {

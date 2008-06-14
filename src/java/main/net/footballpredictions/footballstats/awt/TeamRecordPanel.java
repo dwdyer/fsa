@@ -8,7 +8,7 @@ import java.awt.Panel;
 import java.text.DecimalFormat;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
-import net.footballpredictions.footballstats.model.FullRecord;
+import net.footballpredictions.footballstats.model.Team;
 import net.footballpredictions.footballstats.model.TeamRecord;
 
 /**
@@ -123,14 +123,14 @@ final class TeamRecordPanel extends Panel
     }
 
         
-    public void setTeam(FullRecord team, int venue)
+    public void setTeam(Team team, int where)
     {
         nameLabel.setText(team.getName());
         int pos = team.getLastLeaguePosition();
         positionLabel.setText("Current league position: " + pos + getSuffix(pos));
-        String venueText = getVenueText(venue);
+        String venueText = getVenueText(where);
         playingRecordTitleLabel.setText(venueText + " Playing Record");
-        if (venue == TeamRecord.BOTH)
+        if (where == TeamRecord.BOTH)
         {
             bigWinTitleLabel.setText("Biggest Win");
             bigDefeatTitleLabel.setText("Biggest Defeat");
@@ -143,26 +143,26 @@ final class TeamRecordPanel extends Panel
             mostRecentTitleLabel.setText("Most Recent " + venueText + " Result");
         }
             
-        int played = team.getAggregate(venue, TeamRecord.AGGREGATE_PLAYED);
+        int played = team.getAggregate(where, TeamRecord.AGGREGATE_PLAYED);
         playedLabel.setText(String.valueOf(played));
-        wonLabel.setText(String.valueOf(team.getAggregate(venue, TeamRecord.AGGREGATE_WON)));
-        wonPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(team.getAggregate(venue, TeamRecord.AGGREGATE_WON), played)) + "%)");
-        drawnLabel.setText(String.valueOf(team.getAggregate(venue, TeamRecord.AGGREGATE_DRAWN)));
-        drawnPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(team.getAggregate(venue, TeamRecord.AGGREGATE_DRAWN), played)) + "%)");
-        lostLabel.setText(String.valueOf(team.getAggregate(venue, TeamRecord.AGGREGATE_LOST)));
-        lostPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(team.getAggregate(venue, TeamRecord.AGGREGATE_LOST), played)) + "%)");
-        int gd = team.getGoalDifference(venue);
+        wonLabel.setText(String.valueOf(team.getAggregate(where, TeamRecord.AGGREGATE_WON)));
+        wonPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(team.getAggregate(where, TeamRecord.AGGREGATE_WON), played)) + "%)");
+        drawnLabel.setText(String.valueOf(team.getAggregate(where, TeamRecord.AGGREGATE_DRAWN)));
+        drawnPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(team.getAggregate(where, TeamRecord.AGGREGATE_DRAWN), played)) + "%)");
+        lostLabel.setText(String.valueOf(team.getAggregate(where, TeamRecord.AGGREGATE_LOST)));
+        lostPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(team.getAggregate(where, TeamRecord.AGGREGATE_LOST), played)) + "%)");
+        int gd = team.getRecord(where).getGoalDifference();
         gdLabel.setText(gd > 0 ? "+" + gd : String.valueOf(gd));
         gdLabel.setForeground(theme.getGoalDifferenceColour(gd));
-        gdDetailsLabel.setText("(F" + team.getAggregate(venue, TeamRecord.AGGREGATE_SCORED) + ", A" + team.getAggregate(venue, TeamRecord.AGGREGATE_CONCEDED) + ")");
-        int points = data.getPoints(venue, team);
+        gdDetailsLabel.setText("(F" + team.getAggregate(where, TeamRecord.AGGREGATE_SCORED) + ", A" + team.getAggregate(where, TeamRecord.AGGREGATE_CONCEDED) + ")");
+        int points = data.getPoints(where, team.getRecord(where));
         pointsLabel.setText(String.valueOf(points));
         pointsAverageLabel.setText("(Av. " + DECIMAL_FORMAT.format(((double) points) / played) + ")");
-        formLabel.setText(team.getForm(venue));
+        formLabel.setText(team.getForm(where));
             
-        Result bigWin = team.getKeyResult(venue, FullRecord.BIGGEST_WIN);
-        Result bigDefeat = team.getKeyResult(venue, FullRecord.BIGGEST_DEFEAT);
-        Result mostRecent = team.getKeyResult(venue, FullRecord.LAST_RESULT);
+        Result bigWin = team.getKeyResult(where, Team.BIGGEST_WIN);
+        Result bigDefeat = team.getKeyResult(where, Team.BIGGEST_DEFEAT);
+        Result mostRecent = team.getKeyResult(where, Team.LAST_RESULT);
         bigWinLabel.setText(resultAsString(team, bigWin));
         bigWinLabel.setForeground(getResultColour(team, bigWin));
         bigDefeatLabel.setText(resultAsString(team, bigDefeat));
@@ -172,7 +172,7 @@ final class TeamRecordPanel extends Panel
             
         for (int i = 0; i < notesLabels.length; i++)
         {
-            String[] notes = team.getNotes(venue);
+            String[] notes = team.getNotes(where);
             notesLabels[i].setText(i < notes.length ? notes[i] : "");
         }
     }
@@ -192,7 +192,7 @@ final class TeamRecordPanel extends Panel
     }
             
             
-    private String resultAsString(FullRecord team, Result result)
+    private String resultAsString(Team team, Result result)
     {
         if (result == null)
         {
@@ -216,7 +216,7 @@ final class TeamRecordPanel extends Panel
     }
         
         
-    private Color getResultColour(FullRecord team, Result result)
+    private Color getResultColour(Team team, Result result)
     {
         if (result == null)
         {

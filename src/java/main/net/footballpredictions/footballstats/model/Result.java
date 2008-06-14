@@ -11,8 +11,8 @@ import java.util.Date;
  */
 public final class Result
 {
-    private final FullRecord homeTeam;
-    private final FullRecord awayTeam;
+    private final Team homeTeam;
+    private final Team awayTeam;
     private final int homeGoals;
     private final int awayGoals;
     private final int attendance;
@@ -23,8 +23,8 @@ public final class Result
      * Constructor, sets all of the immutable fields.  Attendance should be set to -1 if the
      * data is not available.
      */
-    public Result(FullRecord homeTeam,
-                  FullRecord awayTeam,
+    public Result(Team homeTeam,
+                  Team awayTeam,
                   int homeGoals,
                   int awayGoals,
                   int attendance,
@@ -44,7 +44,7 @@ public final class Result
      * team is one of the two teams that contested the match.
      * @return true if this is a win for the specified team, false otherwise.
      */
-    public boolean isWin(TeamRecord team)
+    public boolean isWin(Team team)
     {
         return team.getName().equals(homeTeam.getName())
                ? (homeGoals > awayGoals)
@@ -57,7 +57,7 @@ public final class Result
      * team is one of the two teams that contested the match.
      * @return true if this is a defeat for the specified team, false otherwise.
      */
-    public boolean isDefeat(TeamRecord team)
+    public boolean isDefeat(Team team)
     {
         return team.getName().equals(homeTeam.getName())
                ? (homeGoals < awayGoals)
@@ -75,15 +75,15 @@ public final class Result
     }
     
     
-    public int getGoalsFor(TeamRecord team)
+    public int getGoalsFor(Team team)
     {
-        return team.getName().equals(homeTeam.getName()) ? homeGoals : awayGoals;
+        return team.equals(homeTeam) ? homeGoals : awayGoals;
     }
     
     
-    public int getGoalsAgainst(TeamRecord team)
+    public int getGoalsAgainst(Team team)
     {
-        return team.getName().equals(homeTeam.getName()) ? awayGoals : homeGoals;
+        return team.equals(homeTeam) ? awayGoals : homeGoals;
     }
     
     
@@ -102,13 +102,13 @@ public final class Result
     }
 
 
-    public FullRecord getHomeTeam()
+    public Team getHomeTeam()
     {
         return homeTeam;
     }
 
 
-    public FullRecord getAwayTeam()
+    public Team getAwayTeam()
     {
         return awayTeam;
     }

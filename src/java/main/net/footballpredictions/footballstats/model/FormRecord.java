@@ -13,9 +13,9 @@ public class FormRecord extends AbstractTeamRecord
     private final int length;
     private final SortedSet<Result> formResults;
 
-    public FormRecord(String name, int where, int length)
+    public FormRecord(Team team, int where, int length)
     {
-        super(name);
+        super(team);
         this.where = where;
         this.length = length;
         this.formResults = new FixedSizeSortedSet<Result>(length, Collections.reverseOrder(new ResultDateComparator()));
@@ -33,7 +33,7 @@ public class FormRecord extends AbstractTeamRecord
     }
 
 
-    public String getForm(int where)
+    public String getForm()
     {
         StringBuilder formString = new StringBuilder();
 
@@ -50,7 +50,7 @@ public class FormRecord extends AbstractTeamRecord
             {
                 formString.append('D');
             }
-            else if (result.isWin(this))
+            else if (result.isWin(getTeam()))
             {
                 formString.append('W');
             }
@@ -66,7 +66,7 @@ public class FormRecord extends AbstractTeamRecord
     /**
      * Calculates the value for one of the columns in a form table.
      */
-    public int getAggregate(int where, int aggregate)
+    public int getAggregate(int aggregate)
     {
         int value = 0;
         switch (aggregate)
@@ -79,7 +79,7 @@ public class FormRecord extends AbstractTeamRecord
             {
                 for (Result result : formResults)
                 {
-                    if (result.isWin(this))
+                    if (result.isWin(getTeam()))
                     {
                         value++;
                     }
@@ -101,7 +101,7 @@ public class FormRecord extends AbstractTeamRecord
             {
                 for (Result result : formResults)
                 {
-                    if (result.isDefeat(this))
+                    if (result.isDefeat(getTeam()))
                     {
                         value++;
                     }
@@ -112,7 +112,7 @@ public class FormRecord extends AbstractTeamRecord
             {
                 for (Result result : formResults)
                 {
-                    value += result.getGoalsFor(this);
+                    value += result.getGoalsFor(getTeam());
                 }
                 break;
             }
@@ -120,16 +120,10 @@ public class FormRecord extends AbstractTeamRecord
             {
                 for (Result result : formResults)
                 {
-                    value += result.getGoalsAgainst(this);
+                    value += result.getGoalsAgainst(getTeam());
                 }
             }
         }
         return value;
-    }
-
-
-    public int getPointsAdjustment(int where)
-    {
-        return 0; // Points adjustments are not applied to form tables.
     }
 }

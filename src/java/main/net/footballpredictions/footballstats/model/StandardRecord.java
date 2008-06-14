@@ -12,9 +12,8 @@ import java.util.List;
  * @since 21/12/2003
  * @version $Revision: $
  */
-public final class PartialRecord extends AbstractTeamRecord
+public final class StandardRecord extends AbstractTeamRecord
 {
-
     // Constants for sequence types.
     public static final int SEQUENCE_WIN = 0;
     public static final int SEQUENCE_DRAW = 1;
@@ -59,11 +58,11 @@ public final class PartialRecord extends AbstractTeamRecord
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
      */
-    public PartialRecord(String name, int where)
+    public StandardRecord(Team team, int where)
     {
-        super(name);
+        super(team);
         this.where = where;
-        this.form = new FormRecord(name, where, where == BOTH ? 6 : 4);
+        this.form = new FormRecord(team, where, where == BOTH ? 6 : 4);
     }
 
 
@@ -77,7 +76,7 @@ public final class PartialRecord extends AbstractTeamRecord
         }
         else
         {
-            resultsArray = new Result[getAggregate(where, AGGREGATE_PLAYED)];
+            resultsArray = new Result[getAggregate(AGGREGATE_PLAYED)];
             int count = 0;
             for (int i = 0; i < results.size() && count < resultsArray.length; i++)
             {
@@ -110,7 +109,7 @@ public final class PartialRecord extends AbstractTeamRecord
     /**
      * Helper method for three parameter version of getAggregate.
      */
-    public int getAggregate(int where, int aggregate)
+    public int getAggregate(int aggregate)
     {
         return aggregates[aggregate];
     }
@@ -122,9 +121,9 @@ public final class PartialRecord extends AbstractTeamRecord
     }
 
 
-    public String getForm(int where)
+    public String getForm()
     {
-        return getFormRecord().getForm(where);
+        return getFormRecord().getForm();
     }
 
 
@@ -141,12 +140,6 @@ public final class PartialRecord extends AbstractTeamRecord
     public Result getKeyResult(int key)
     {
         return keyResults[key];
-    }
-
-
-    public int getPointsAdjustment(int where)
-    {
-        return 0;
     }
 
 
@@ -212,8 +205,8 @@ public final class PartialRecord extends AbstractTeamRecord
 
     private void updateAggregatesAndSequences(Result result)
     {
-        int goalsFor = result.getGoalsFor(this);
-        int goalsAgainst = result.getGoalsAgainst(this);
+        int goalsFor = result.getGoalsFor(getTeam());
+        int goalsAgainst = result.getGoalsAgainst(getTeam());
         int marginOfVictory = result.getMarginOfVictory();
 
         // Update last result.
@@ -222,7 +215,7 @@ public final class PartialRecord extends AbstractTeamRecord
         aggregates[AGGREGATE_PLAYED]++;
 
         // Update result aggregates/sequences.
-        if (result.isDefeat(this))
+        if (result.isDefeat(getTeam()))
         {
             aggregates[AGGREGATE_LOST]++;
 
@@ -304,7 +297,7 @@ public final class PartialRecord extends AbstractTeamRecord
     @Override
     public boolean equals(Object obj)
     {
-        return obj instanceof FullRecord && super.equals(obj);
+        return obj instanceof Team && super.equals(obj);
     }
 
 

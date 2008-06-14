@@ -7,7 +7,7 @@ import java.util.Comparator;
  * {@link Comparator} for sorting a league table in order of fewest points dropped.
  * @author Daniel Dyer
  */
-class DroppedPointsComparator implements Comparator<FullRecord>
+class DroppedPointsComparator implements Comparator<StandardRecord>
 {
     private final int pointsForWin;
     private final int pointsForDraw;
@@ -24,20 +24,20 @@ class DroppedPointsComparator implements Comparator<FullRecord>
     }
 
 
-    public final int compare(FullRecord team1, FullRecord team2)
+    public final int compare(StandardRecord team1, StandardRecord team2)
     {
         int compare = getPointsDropped(where, team1) - getPointsDropped(where, team2); // Swap teams for descending order.
         if (compare == 0)
         {
-            compare = team2.getGoalDifference(where) - team1.getGoalDifference(where); // Swap teams for descending order.
+            compare = team2.getGoalDifference() - team1.getGoalDifference(); // Swap teams for descending order.
             if (compare == 0)
             {
-                compare = team2.getAggregate(where, TeamRecord.AGGREGATE_SCORED)
-                          - team1.getAggregate(where, TeamRecord.AGGREGATE_SCORED); // Swap teams for descending order.
+                compare = team2.getAggregate(TeamRecord.AGGREGATE_SCORED)
+                          - team1.getAggregate(TeamRecord.AGGREGATE_SCORED); // Swap teams for descending order.
                 if (compare == 0)
                 {
-                    compare = team2.getAggregate(where, TeamRecord.AGGREGATE_WON)
-                               - team1.getAggregate(where, TeamRecord.AGGREGATE_WON); // Swap teams for descending order.
+                    compare = team2.getAggregate(TeamRecord.AGGREGATE_WON)
+                               - team1.getAggregate(TeamRecord.AGGREGATE_WON); // Swap teams for descending order.
                     if (compare == 0)
                     {
                         // If records are the same, sort on alphabetical order.
@@ -50,17 +50,17 @@ class DroppedPointsComparator implements Comparator<FullRecord>
     }
 
 
-    private int getPointsDropped(int where, FullRecord team)
+    private int getPointsDropped(int where, StandardRecord team)
     {
-        return team.getAggregate(where, TeamRecord.AGGREGATE_PLAYED) * pointsForWin - getPoints(where, team);
+        return team.getAggregate(TeamRecord.AGGREGATE_PLAYED) * pointsForWin - getPoints(where, team);
     }
 
 
-    private int getPoints(int where, FullRecord team)
+    private int getPoints(int where, StandardRecord team)
     {
-        int points = team.getAggregate(where, TeamRecord.AGGREGATE_WON) * pointsForWin
-                     + team.getAggregate(where, TeamRecord.AGGREGATE_DRAWN) * pointsForDraw;
-        points += team.getPointsAdjustment(where);
+        int points = team.getAggregate(TeamRecord.AGGREGATE_WON) * pointsForWin
+                     + team.getAggregate(TeamRecord.AGGREGATE_DRAWN) * pointsForDraw;
+        points += team.getTeam().getPointsAdjustment(where);
         return points;
     }
 }

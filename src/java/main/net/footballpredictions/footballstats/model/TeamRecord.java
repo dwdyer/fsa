@@ -20,21 +20,20 @@ public interface TeamRecord
 
     void addResult(Result result);
 
-    int getAggregate(int where, int aggregate);
+    int getAggregate(int aggregate);
 
     /**
      * @return The difference between the number of goals scored by this team and the number
      * conceded.  A positive value indicates more goals scored than conceded, a negative value
      * indicates more conceded than scored.
      */
-    int getGoalDifference(int where);
+    int getGoalDifference();
 
     /**
      * @return A String representation of this teams current form.  Either home form,
      * away form or combined form depending on the method argument.
      */
-    String getForm(int where);
+    String getForm();
 
-
-    int getPointsAdjustment(int where);
+    Team getTeam();
 }

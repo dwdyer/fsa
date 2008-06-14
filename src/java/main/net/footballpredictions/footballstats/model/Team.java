@@ -11,7 +11,7 @@ import java.util.List;
  * @since 21/12/2003
  * @version $Revision: $
  */
-public final class FullRecord extends AbstractTeamRecord
+public final class Team
 {
 
     // Constants for sequence types.
@@ -39,11 +39,13 @@ public final class FullRecord extends AbstractTeamRecord
     public static final int ATTENDANCE_LOWEST = 2;
     public static final int ATTENDANCE_AGGREGATE = 3;
 
+    private final String name;
+
     private final List<LeaguePosition> leaguePositions = new ArrayList<LeaguePosition>(46);
 
-    private final PartialRecord homeRecord;
-    private final PartialRecord awayRecord;
-    private final PartialRecord overallRecord;
+    private final StandardRecord homeRecord;
+    private final StandardRecord awayRecord;
+    private final StandardRecord overallRecord;
 
     private int lowestCrowd;
     private int highestCrowd;
@@ -54,22 +56,28 @@ public final class FullRecord extends AbstractTeamRecord
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
      */
-    public FullRecord(String name)
+    public Team(String name)
     {
-        super(name);
-        this.homeRecord = new PartialRecord(name, HOME);
-        this.awayRecord = new PartialRecord(name, AWAY);
-        this.overallRecord = new PartialRecord(name, BOTH);
+        this.name = name;
+        this.homeRecord = new StandardRecord(this, TeamRecord.HOME);
+        this.awayRecord = new StandardRecord(this, TeamRecord.AWAY);
+        this.overallRecord = new StandardRecord(this, TeamRecord.BOTH);
     }
 
 
-    private PartialRecord getRecord(int where)
+    public String getName()
+    {
+        return name;
+    }
+
+    
+    public StandardRecord getRecord(int where)
     {
         switch (where)
         {
-            case HOME: return homeRecord;
-            case AWAY: return awayRecord;
-            case BOTH: return overallRecord;
+            case TeamRecord.HOME: return homeRecord;
+            case TeamRecord.AWAY: return awayRecord;
+            case TeamRecord.BOTH: return overallRecord;
             default: throw new IllegalArgumentException("Invalid venue type: " + where);
         }
     }
@@ -98,7 +106,7 @@ public final class FullRecord extends AbstractTeamRecord
     
     public int[][] getPointsData(int pointsForWin, int pointsForDraw)
     {
-        Result[] results = overallRecord.getResults(BOTH);
+        Result[] results = overallRecord.getResults(TeamRecord.BOTH);
         int[][] data = new int[results.length + 1][2];
         int total = 0;
         data[0][0] = 0;
@@ -149,7 +157,7 @@ public final class FullRecord extends AbstractTeamRecord
      */
     public int getAggregate(int where, int aggregate)
     {
-        return getRecord(where).getAggregate(where, aggregate);
+        return getRecord(where).getAggregate(aggregate);
     }
 
 
@@ -161,7 +169,7 @@ public final class FullRecord extends AbstractTeamRecord
 
     public String getForm(int where)
     {
-        return getFormRecord(where).getForm(where);
+        return getFormRecord(where).getForm();
     }
 
 
@@ -185,7 +193,8 @@ public final class FullRecord extends AbstractTeamRecord
     {
         switch (type)
         {
-            case ATTENDANCE_AVERAGE: return (int) ((double) aggregateCrowd / getAggregate(HOME, AGGREGATE_PLAYED) + 0.5);
+            case ATTENDANCE_AVERAGE: return (int) ((double) aggregateCrowd / getAggregate(TeamRecord.HOME,
+                                                                                          TeamRecord.AGGREGATE_PLAYED) + 0.5);
             case ATTENDANCE_HIGHEST: return highestCrowd;
             case ATTENDANCE_LOWEST: return lowestCrowd;
             case ATTENDANCE_AGGREGATE: return aggregateCrowd;
@@ -202,7 +211,7 @@ public final class FullRecord extends AbstractTeamRecord
      */
     public int getPointsAdjustment(int where)
     {
-        return where == BOTH ? pointsAdjustment: 0;
+        return where == TeamRecord.BOTH ? pointsAdjustment: 0;
     }
     
     
@@ -221,9 +230,9 @@ public final class FullRecord extends AbstractTeamRecord
      */
     private void updateAttendanceFigures(Result result)
     {
-        int where = result.getHomeTeam().equals(this) ? HOME : AWAY; // No error checking, assumes result is for this team.
+        int where = result.getHomeTeam().equals(this) ? TeamRecord.HOME : TeamRecord.AWAY; // No error checking, assumes result is for this team.
         
-        if (where == HOME && result.getAttendance() >= 0) // Attendances away from home do not concern us.
+        if (where == TeamRecord.HOME && result.getAttendance() >= 0) // Attendances away from home do not concern us.
         {
             aggregateCrowd += result.getAttendance();
             if (result.getAttendance() > highestCrowd)
@@ -246,7 +255,7 @@ public final class FullRecord extends AbstractTeamRecord
     @Override
     public boolean equals(Object obj)
     {
-        return obj instanceof FullRecord && super.equals(obj);
+        return obj instanceof Team && super.equals(obj);
     }
     
     

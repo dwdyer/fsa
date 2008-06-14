@@ -7,35 +7,41 @@ package net.footballpredictions.footballstats.model;
 public abstract class AbstractTeamRecord implements TeamRecord
 {
     // Team data.
-    private final String name;
+    private final Team team;
 
-    protected AbstractTeamRecord(String name)
+    protected AbstractTeamRecord(Team team)
     {
-        this.name = name;
+        this.team = team;
     }
 
 
+    public Team getTeam()
+    {
+        return team;
+    }
+
+    
     public String getName()
     {
-        return name;
+        return team.getName();
     }
 
 
-    public int getGoalDifference(int where)
+    public int getGoalDifference()
     {
-        return getAggregate(where, AGGREGATE_SCORED) - getAggregate(where, AGGREGATE_CONCEDED);
+        return getAggregate(AGGREGATE_SCORED) - getAggregate(AGGREGATE_CONCEDED);
     }
 
 
     /**
-     * Over-ride equals.  Teams are equal if the names are equal.
+     * Over-ride equals.  Records are equal if the teams are the same.
      */
     public boolean equals(Object obj)
     {
         if (obj instanceof AbstractTeamRecord)
         {
             AbstractTeamRecord other = (AbstractTeamRecord) obj;
-            return name.equals(other.getName());
+            return team.equals(other.getTeam());
         }
         return false;
     }
@@ -50,7 +56,7 @@ public abstract class AbstractTeamRecord implements TeamRecord
     public int hashCode()
     {
         int result = 17;
-        result = 37 * result + name.hashCode();
+        result = 37 * result + team.hashCode();
         return result;
     }
 }
