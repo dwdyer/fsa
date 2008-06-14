@@ -342,17 +342,17 @@ public class LeagueTable implements StatsPanel
         for (TeamRecord team : teams)
         {
             Color backgroundColour = theme.getZoneColour(data.getZoneForPosition(index));
-            Label playedLabel = new Label(String.valueOf(team.getAggregate(TeamRecord.AGGREGATE_PLAYED)), Label.CENTER);
+            Label playedLabel = new Label(String.valueOf(team.getPlayed()), Label.CENTER);
             statsColumns.add(playedLabel);
-            Label wonLabel = new Label(String.valueOf(team.getAggregate(TeamRecord.AGGREGATE_WON)), Label.CENTER);
+            Label wonLabel = new Label(String.valueOf(team.getWon()), Label.CENTER);
             statsColumns.add(wonLabel);
-            Label drawnLabel = new Label(String.valueOf(team.getAggregate(TeamRecord.AGGREGATE_DRAWN)), Label.CENTER);
+            Label drawnLabel = new Label(String.valueOf(team.getDrawn()), Label.CENTER);
             statsColumns.add(drawnLabel);
-            Label lostLabel = new Label(String.valueOf(team.getAggregate(TeamRecord.AGGREGATE_LOST)), Label.CENTER);
+            Label lostLabel = new Label(String.valueOf(team.getLost()), Label.CENTER);
             statsColumns.add(lostLabel);
-            Label forLabel = new Label(String.valueOf(team.getAggregate(TeamRecord.AGGREGATE_SCORED)), Label.CENTER);
+            Label forLabel = new Label(String.valueOf(team.getScored()), Label.CENTER);
             statsColumns.add(forLabel);
-            Label againstLabel = new Label(String.valueOf(team.getAggregate(TeamRecord.AGGREGATE_CONCEDED)), Label.CENTER);
+            Label againstLabel = new Label(String.valueOf(team.getConceded()), Label.CENTER);
             statsColumns.add(againstLabel);
             int goalDifference = team.getGoalDifference();
             Label goalDifferenceLabel = new Label(goalDifferenceAsString(goalDifference), Label.CENTER);

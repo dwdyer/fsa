@@ -2,12 +2,12 @@
 package net.footballpredictions.footballstats.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Models a single team's record for the season.
+ * Models a single team's record for the season.  This may be their overall record
+ * or it may be their home record or their away record.
  * @author Daniel Dyer
  * @since 21/12/2003
  * @version $Revision: $
@@ -24,11 +24,6 @@ public final class StandardRecord extends AbstractTeamRecord
     public static final int SEQUENCE_SCORED = 6;
     public static final int SEQUENCE_NO_GOAL = 7;
 
-    // Constants for key results types.
-    public static final int LAST_RESULT = 0;
-    public static final int BIGGEST_WIN = 1;
-    public static final int BIGGEST_DEFEAT = 2;
-
     // Constants for current/season sequence.
     public static final int CURRENT = 0;
     public static final int SEASON = 1;
@@ -41,11 +36,15 @@ public final class StandardRecord extends AbstractTeamRecord
 
     private final int where;
 
-    private final List<Result> results = new ArrayList<Result>(23); // Most leagues have no more than 46 games per team.
+    private final List<Result> results = new ArrayList<Result>(46); // Most leagues have no more than 46 games per team.
 
     private final FormRecord form;
 
-    private final int[] aggregates = new int[6];
+    private int won = 0;
+    private int drawn = 0;
+    private int lost = 0 ;
+    private int scored = 0;
+    private int conceded = 0;
 
     /**
      * Two-dimensional array for storing sequence data.  First dimension is
@@ -53,7 +52,8 @@ public final class StandardRecord extends AbstractTeamRecord
      */
     private final int[][] sequences = new int[2][8];
 
-    private final Result[] keyResults = new Result[3];
+    private Result biggestWin = null;
+    private Result biggestDefeat = null;
 
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
@@ -62,34 +62,13 @@ public final class StandardRecord extends AbstractTeamRecord
     {
         super(team);
         this.where = where;
-        this.form = new FormRecord(team, where, where == BOTH ? 6 : 4);
+        this.form = new FormRecord(team, where == BOTH ? 6 : 4);
     }
 
 
-    public Result[] getResults(int where)
+    public List<Result> getResults()
     {
-        Result[] resultsArray;
-        if (where == BOTH)
-        {
-            resultsArray = new Result[results.size()];
-            results.toArray(resultsArray);
-        }
-        else
-        {
-            resultsArray = new Result[getAggregate(AGGREGATE_PLAYED)];
-            int count = 0;
-            for (int i = 0; i < results.size() && count < resultsArray.length; i++)
-            {
-                Result result = results.get(i);
-                if ((where == HOME && result.getHomeTeam().equals(this))
-                    || (where == AWAY && result.getAwayTeam().equals(this)))
-                {
-                    resultsArray[count] = result;
-                    count++;
-                }
-            }
-        }
-        return resultsArray;
+        return results;
     }
 
 
@@ -106,12 +85,39 @@ public final class StandardRecord extends AbstractTeamRecord
     }
 
 
-    /**
-     * Helper method for three parameter version of getAggregate.
-     */
-    public int getAggregate(int aggregate)
+    public int getPlayed()
     {
-        return aggregates[aggregate];
+        return results.size();
+    }
+
+
+    public int getWon()
+    {
+        return won;
+    }
+
+
+    public int getDrawn()
+    {
+        return drawn;
+    }
+
+
+    public int getLost()
+    {
+        return lost;
+    }
+
+
+    public int getScored()
+    {
+        return scored;
+    }
+
+
+    public int getConceded()
+    {
+        return conceded;
     }
 
 
@@ -137,9 +143,21 @@ public final class StandardRecord extends AbstractTeamRecord
     }
 
 
-    public Result getKeyResult(int key)
+    public Result getLatestResult()
     {
-        return keyResults[key];
+        return results.isEmpty() ? null : results.get(results.size() - 1);
+    }
+
+
+    public Result getBiggestWin()
+    {
+        return biggestWin;
+    }
+
+
+    public Result getBiggestDefeat()
+    {
+        return biggestDefeat;
     }
 
 
@@ -209,15 +227,10 @@ public final class StandardRecord extends AbstractTeamRecord
         int goalsAgainst = result.getGoalsAgainst(getTeam());
         int marginOfVictory = result.getMarginOfVictory();
 
-        // Update last result.
-        keyResults[LAST_RESULT] = result;
-
-        aggregates[AGGREGATE_PLAYED]++;
-
         // Update result aggregates/sequences.
         if (result.isDefeat(getTeam()))
         {
-            aggregates[AGGREGATE_LOST]++;
+            lost++;
 
             sequences[CURRENT][SEQUENCE_NO_WIN]++;
             sequences[CURRENT][SEQUENCE_DEFEAT]++;
@@ -225,9 +238,9 @@ public final class StandardRecord extends AbstractTeamRecord
             sequences[CURRENT][SEQUENCE_WIN] = 0;
             sequences[CURRENT][SEQUENCE_DRAW] = 0;
 
-            if (keyResults[BIGGEST_DEFEAT] == null || marginOfVictory > keyResults[BIGGEST_DEFEAT].getMarginOfVictory())
+            if (biggestDefeat == null || marginOfVictory > biggestDefeat.getMarginOfVictory())
             {
-                keyResults[BIGGEST_DEFEAT] = result;
+                biggestDefeat = result;
             }
         }
         else
@@ -237,7 +250,7 @@ public final class StandardRecord extends AbstractTeamRecord
 
             if (result.isDraw())
             {
-                aggregates[AGGREGATE_DRAWN]++;
+                drawn++;
 
                 sequences[CURRENT][SEQUENCE_DRAW]++;
                 sequences[CURRENT][SEQUENCE_NO_WIN]++;
@@ -245,22 +258,22 @@ public final class StandardRecord extends AbstractTeamRecord
             }
             else // Must be a win
             {
-                aggregates[AGGREGATE_WON]++;
+                won++;
 
                 sequences[CURRENT][SEQUENCE_WIN]++;
                 sequences[CURRENT][SEQUENCE_NO_WIN] = 0;
                 sequences[CURRENT][SEQUENCE_DRAW] = 0;
 
-                if (keyResults[BIGGEST_WIN] == null || marginOfVictory > keyResults[BIGGEST_WIN].getMarginOfVictory())
+                if (biggestWin == null || marginOfVictory > biggestWin.getMarginOfVictory())
                 {
-                    keyResults[BIGGEST_WIN] = result;
+                    biggestWin = result;
                 }
             }
         }
 
         // Update score aggregates/sequences.
-        aggregates[AGGREGATE_SCORED] += goalsFor;
-        aggregates[AGGREGATE_CONCEDED] += goalsAgainst;
+        scored += goalsFor;
+        conceded += goalsAgainst;
         if (goalsFor == 0)
         {
             sequences[CURRENT][SEQUENCE_NO_GOAL]++;
@@ -297,19 +310,6 @@ public final class StandardRecord extends AbstractTeamRecord
     @Override
     public boolean equals(Object obj)
     {
-        return obj instanceof Team && super.equals(obj);
-    }
-
-
-    public static final class LeaguePosition
-    {
-        public final Date date;
-        public final int position;
-
-        public LeaguePosition(Date date, int position)
-        {
-            this.date = date;
-            this.position = position;
-        }
+        return obj instanceof StandardRecord && super.equals(obj);
     }
 }

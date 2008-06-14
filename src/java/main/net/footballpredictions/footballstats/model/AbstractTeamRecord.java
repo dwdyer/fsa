@@ -6,7 +6,6 @@ package net.footballpredictions.footballstats.model;
  */
 public abstract class AbstractTeamRecord implements TeamRecord
 {
-    // Team data.
     private final Team team;
 
     protected AbstractTeamRecord(Team team)
@@ -29,7 +28,7 @@ public abstract class AbstractTeamRecord implements TeamRecord
 
     public int getGoalDifference()
     {
-        return getAggregate(AGGREGATE_SCORED) - getAggregate(AGGREGATE_CONCEDED);
+        return getScored() - getConceded();
     }
 
 

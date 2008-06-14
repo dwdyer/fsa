@@ -8,19 +8,23 @@ public interface TeamRecord
     // Constants for home/away/both.
     int HOME = 0;
     int AWAY = 1;
-    int BOTH = 2;// Constants for standards stats.
-    int AGGREGATE_PLAYED = 0;
-    int AGGREGATE_WON = 1;
-    int AGGREGATE_DRAWN = 2;
-    int AGGREGATE_LOST = 3;
-    int AGGREGATE_SCORED = 4;
-    int AGGREGATE_CONCEDED = 5;
+    int BOTH = 2;
 
     String getName();
 
     void addResult(Result result);
 
-    int getAggregate(int aggregate);
+    int getPlayed();
+
+    int getWon();
+
+    int getDrawn();
+
+    int getLost();
+
+    int getScored();
+
+    int getConceded();
 
     /**
      * @return The difference between the number of goals scored by this team and the number

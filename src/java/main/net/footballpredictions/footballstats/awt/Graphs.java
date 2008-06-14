@@ -18,9 +18,10 @@ import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.SortedMap;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.Team;
 
 /**
  * @author Daniel Dyer
@@ -162,12 +163,14 @@ public class Graphs implements StatsPanel
                     String teamName = teamChoice.getSelectedItem();
                     if (typeChoice.getSelectedIndex() <= 0)
                     {
-                        Team.LeaguePosition[] positions = data.getTeam(teamName).getLeaguePositions();
-                        int[][] points = new int[positions.length][2];
-                        for (int j = 0; j < positions.length; j++)
+                        SortedMap<Date, Integer> positions = data.getTeam(teamName).getLeaguePositions();
+                        int[][] points = new int[positions.size()][2];
+                        int index = 0;
+                        for (Integer position : positions.values())
                         {
-                            points[j][0] = j;
-                            points[j][1] = positions[j].position;
+                            points[index][0] = index;
+                            points[index][1] = position;
+                            ++index;
                         }
                         maxX = Math.max(maxX, points.length - 1);
                         maxY = Math.max(maxY, data.getTeamNames().size());

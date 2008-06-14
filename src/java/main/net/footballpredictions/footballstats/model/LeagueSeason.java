@@ -565,8 +565,7 @@ public final class LeagueSeason
     
     public int getPoints(int where, TeamRecord team)
     {
-        int points = team.getAggregate(TeamRecord.AGGREGATE_WON) * pointsForWin
-                + team.getAggregate(TeamRecord.AGGREGATE_DRAWN) * pointsForDraw;
+        int points = team.getWon() * pointsForWin + team.getDrawn() * pointsForDraw;
         points += team.getTeam().getPointsAdjustment(where);
         return points;
     }
@@ -574,13 +573,13 @@ public final class LeagueSeason
     
     public double getAveragePoints(int where, TeamRecord team)
     {
-        return (double) getPoints(where, team) / team.getAggregate(TeamRecord.AGGREGATE_PLAYED);
+        return (double) getPoints(where, team) / team.getPlayed();
     }
 
     
     public int getPointsDropped(int where, StandardRecord team)
     {
-        return team.getAggregate(TeamRecord.AGGREGATE_PLAYED) * pointsForWin - getPoints(where, team);
+        return team.getPlayed() * pointsForWin - getPoints(where, team);
     }
     
     

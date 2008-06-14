@@ -1,8 +1,9 @@
 // $Header: $
 package net.footballpredictions.footballstats.model;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.List;
 
 /**
@@ -13,17 +14,6 @@ import java.util.List;
  */
 public final class Team
 {
-
-    // Constants for sequence types.
-    public static final int SEQUENCE_WIN = 0;
-    public static final int SEQUENCE_DRAW = 1;
-    public static final int SEQUENCE_DEFEAT = 2;
-    public static final int SEQUENCE_UNBEATEN = 3;
-    public static final int SEQUENCE_NO_WIN = 4;
-    public static final int SEQUENCE_CLEANSHEET = 5;
-    public static final int SEQUENCE_SCORED = 6;    
-    public static final int SEQUENCE_NO_GOAL = 7;
-
     // Constants for key results types.
     public static final int LAST_RESULT = 0;
     public static final int BIGGEST_WIN = 1;
@@ -41,7 +31,7 @@ public final class Team
 
     private final String name;
 
-    private final List<LeaguePosition> leaguePositions = new ArrayList<LeaguePosition>(46);
+    private final SortedMap<Date, Integer> leaguePositions = new TreeMap<Date, Integer>();
 
     private final StandardRecord homeRecord;
     private final StandardRecord awayRecord;
@@ -83,37 +73,35 @@ public final class Team
     }
 
 
-    public Result[] getResults(int where)
+    public List<Result> getResults(int where)
     {
-        return getRecord(where).getResults(where);
+        return getRecord(where).getResults();
     }
     
     
-    public LeaguePosition[] getLeaguePositions()
+    public SortedMap<Date, Integer> getLeaguePositions()
     {
-        LeaguePosition[] positions = new LeaguePosition[leaguePositions.size()];
-        leaguePositions.toArray(positions);
-        return positions;
+        return leaguePositions;
     }
     
     
     public int getLastLeaguePosition()
     {
-        return (leaguePositions.get(leaguePositions.size() - 1)).position;
+        return leaguePositions.get(leaguePositions.lastKey());
         
     }
     
     
     public int[][] getPointsData(int pointsForWin, int pointsForDraw)
     {
-        Result[] results = overallRecord.getResults(TeamRecord.BOTH);
-        int[][] data = new int[results.length + 1][2];
+        List<Result> results = overallRecord.getResults();
+        int[][] data = new int[results.size() + 1][2];
         int total = 0;
         data[0][0] = 0;
         data[0][1] = total;
-        for (int i = 0; i < results.length; i++)
+        int index = 1;
+        for (Result result : results)
         {
-            Result result = results[i];
             if (result.isDraw())
             {
                 total += pointsForDraw;
@@ -122,9 +110,9 @@ public final class Team
             {
                 total += pointsForWin;
             }
-            int x = i + 1;
-            data[x][0] = x;
-            data[x][1] = total;
+            data[index][0] = index;
+            data[index][1] = total;
+            ++index;
         }
         // TO DO: What about points adjustments?
         return data;
@@ -142,22 +130,13 @@ public final class Team
     
     public void addLeaguePosition(Date date, int position)
     {
-        leaguePositions.add(new LeaguePosition(date, position));
+        leaguePositions.put(date, position);
     }
     
     
     public void adjustPoints(int amount)
     {
         pointsAdjustment += amount;
-    }
-
-
-    /**
-     * Helper method for three parameter version of getAggregate.
-     */
-    public int getAggregate(int where, int aggregate)
-    {
-        return getRecord(where).getAggregate(aggregate);
     }
 
 
@@ -183,18 +162,11 @@ public final class Team
     }
 
 
-    public Result getKeyResult(int where, int key)
-    {
-        return getRecord(where).getKeyResult(key);
-    }
-    
-    
     public int getAttendance(int type)
     {
         switch (type)
         {
-            case ATTENDANCE_AVERAGE: return (int) ((double) aggregateCrowd / getAggregate(TeamRecord.HOME,
-                                                                                          TeamRecord.AGGREGATE_PLAYED) + 0.5);
+            case ATTENDANCE_AVERAGE: return (int) ((double) aggregateCrowd / homeRecord.getPlayed() + 0.5);
             case ATTENDANCE_HIGHEST: return highestCrowd;
             case ATTENDANCE_LOWEST: return lowestCrowd;
             case ATTENDANCE_AGGREGATE: return aggregateCrowd;
@@ -256,18 +228,5 @@ public final class Team
     public boolean equals(Object obj)
     {
         return obj instanceof Team && super.equals(obj);
-    }
-    
-    
-    public static final class LeaguePosition
-    {
-        public final Date date;
-        public final int position;
-        
-        public LeaguePosition(Date date, int position)
-        {
-            this.date = date;
-            this.position = position;
-        }
     }
 }

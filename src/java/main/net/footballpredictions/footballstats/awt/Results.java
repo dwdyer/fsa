@@ -195,7 +195,7 @@ public class Results implements StatsPanel
         StringBuffer titleText = new StringBuffer("Results for ");
         titleText.append(team.getName());
 
-        Result[] results;
+        List<Result> results;
         int index = matchesChoice.getSelectedIndex();
         if (index == 0)
         {

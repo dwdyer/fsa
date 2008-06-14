@@ -9,14 +9,12 @@ import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
  */
 public class FormRecord extends AbstractTeamRecord
 {
-    private final int where;
     private final int length;
     private final SortedSet<Result> formResults;
 
-    public FormRecord(Team team, int where, int length)
+    public FormRecord(Team team, int length)
     {
         super(team);
-        this.where = where;
         this.length = length;
         this.formResults = new FixedSizeSortedSet<Result>(length, Collections.reverseOrder(new ResultDateComparator()));
     }
@@ -24,12 +22,7 @@ public class FormRecord extends AbstractTeamRecord
 
     public void addResult(Result result)
     {
-        if (where == BOTH
-            || (where == HOME && result.getHomeTeam().getName().equals(getName()))
-            || (where == AWAY && result.getAwayTeam().getName().equals(getName())))
-        {
-            formResults.add(result);
-        }
+        formResults.add(result);
     }
 
 
@@ -63,67 +56,72 @@ public class FormRecord extends AbstractTeamRecord
     }
 
 
-    /**
-     * Calculates the value for one of the columns in a form table.
-     */
-    public int getAggregate(int aggregate)
+    public int getPlayed()
     {
-        int value = 0;
-        switch (aggregate)
+        return formResults.size();
+    }
+
+
+    public int getWon()
+    {
+        int won = 0;
+        for (Result result : formResults)
         {
-            case AGGREGATE_PLAYED:
+            if (result.isWin(getTeam()))
             {
-                return formResults.size();
-            }
-            case AGGREGATE_WON:
-            {
-                for (Result result : formResults)
-                {
-                    if (result.isWin(getTeam()))
-                    {
-                        value++;
-                    }
-                }
-                break;
-            }
-            case AGGREGATE_DRAWN:
-            {
-                for (Result result : formResults)
-                {
-                    if (result.isDraw())
-                    {
-                        value++;
-                    }
-                }
-                break;
-            }
-            case AGGREGATE_LOST:
-            {
-                for (Result result : formResults)
-                {
-                    if (result.isDefeat(getTeam()))
-                    {
-                        value++;
-                    }
-                }
-                break;
-            }
-            case AGGREGATE_SCORED:
-            {
-                for (Result result : formResults)
-                {
-                    value += result.getGoalsFor(getTeam());
-                }
-                break;
-            }
-            case AGGREGATE_CONCEDED:
-            {
-                for (Result result : formResults)
-                {
-                    value += result.getGoalsAgainst(getTeam());
-                }
+                won++;
             }
         }
-        return value;
+        return won;
+    }
+
+
+    public int getDrawn()
+    {
+        int drawn = 0;
+        for (Result result : formResults)
+        {
+            if (result.isDraw())
+            {
+                drawn++;
+            }
+        }
+        return drawn;
+    }
+
+
+    public int getLost()
+    {
+        int lost = 0;
+        for (Result result : formResults)
+        {
+            if (result.isDefeat(getTeam()))
+            {
+                lost++;
+            }
+        }
+        return lost;
+    }
+
+    
+    public int getScored()
+    {
+        int scored = 0;
+        for (Result result : formResults)
+        {
+            scored += result.getGoalsFor(getTeam());
+        }
+        return scored;
+    }
+
+
+    public int getConceded()
+    {
+        int conceded = 0;
+        for (Result result : formResults)
+        {
+            conceded += result.getGoalsAgainst(getTeam());
+        }
+        return conceded;
     }
 }
