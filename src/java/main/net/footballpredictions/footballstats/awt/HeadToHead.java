@@ -11,7 +11,7 @@ import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.TeamRecord;
+import net.footballpredictions.footballstats.model.VenueType;
 
 /**
  * @author Daniel Dyer
@@ -34,8 +34,6 @@ public class HeadToHead implements StatsPanel
     public void setLeagueData(LeagueSeason data, String highlightedTeam)
     {
         this.data = data;
-        homeTeamPanel.setLeagueData(data);
-        awayTeamPanel.setLeagueData(data);
         
         homeTeamChoice.removeAll();
         awayTeamChoice.removeAll();
@@ -125,8 +123,8 @@ public class HeadToHead implements StatsPanel
         if (data != null)
         {
             boolean overall = typeChoice.getSelectedIndex() <= 0;
-            homeTeamPanel.setTeam(data.getTeam(homeTeamChoice.getSelectedItem()), overall ? TeamRecord.BOTH : TeamRecord.HOME);
-            awayTeamPanel.setTeam(data.getTeam(awayTeamChoice.getSelectedItem()), overall ? TeamRecord.BOTH : TeamRecord.AWAY);
+            homeTeamPanel.setTeam(data.getTeam(homeTeamChoice.getSelectedItem()), overall ? VenueType.BOTH : VenueType.HOME);
+            awayTeamPanel.setTeam(data.getTeam(awayTeamChoice.getSelectedItem()), overall ? VenueType.BOTH : VenueType.AWAY);
             view.validate();
         }
     }

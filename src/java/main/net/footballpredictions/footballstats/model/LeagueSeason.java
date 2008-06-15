@@ -251,7 +251,7 @@ public final class LeagueSeason
                 result.getAwayTeam().addResult(result);
             }
             // Calculate table for current date.
-            SortedSet<StandardRecord> table = getStandardLeagueTable(TeamRecord.BOTH);
+            SortedSet<StandardRecord> table = getStandardLeagueTable(VenueType.BOTH);
             int index = 1;
             for (StandardRecord team : table)
             {
@@ -260,7 +260,7 @@ public final class LeagueSeason
             }
             if (highestPointsTotal == 0) // Only set this for the most recent (first) date.
             {
-                highestPointsTotal = getPoints(TeamRecord.BOTH, table.first());
+                highestPointsTotal = table.first().getPoints();
             }
             System.out.println("Processed results for " + date.toString());
         }
@@ -395,11 +395,9 @@ public final class LeagueSeason
     /**
      * Sorts the teams into standard league table order (in order of points won).
      */
-    public SortedSet<StandardRecord> getStandardLeagueTable(int where)
+    public SortedSet<StandardRecord> getStandardLeagueTable(VenueType where)
     {
-        SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new LeagueTableComparator(where,
-                                                                                                    pointsForWin,
-                                                                                                    pointsForDraw));
+        SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new LeagueTableComparator());
         for (Team team : teams)
         {
             leagueTable.add(team.getRecord(where));
@@ -411,11 +409,9 @@ public final class LeagueSeason
     /**
      * Sorts the teams in order of average points won per game.
      */
-    public SortedSet<StandardRecord> getAverageLeagueTable(int where)
+    public SortedSet<StandardRecord> getAverageLeagueTable(VenueType where)
     {
-        SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new PointsPerGameComparator(where,
-                                                                                                      pointsForWin,
-                                                                                                      pointsForDraw));
+        SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new PointsPerGameComparator());
         for (Team team : teams)
         {
             leagueTable.add(team.getRecord(where));
@@ -427,11 +423,9 @@ public final class LeagueSeason
     /**
      * Sorts the teams in order of fewest points lost.
      */
-    public SortedSet<StandardRecord> getInvertedLeagueTable(int where)
+    public SortedSet<StandardRecord> getInvertedLeagueTable(VenueType where)
     {
-        SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new DroppedPointsComparator(where,
-                                                                                                      pointsForWin,
-                                                                                                      pointsForDraw));
+        SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new DroppedPointsComparator());
         for (Team team : teams)
         {
             leagueTable.add(team.getRecord(where));
@@ -440,20 +434,18 @@ public final class LeagueSeason
     }
     
     
-    public SortedSet<FormRecord> getFormTable(int where)
+    public SortedSet<FormRecord> getFormTable(VenueType where)
     {
-        SortedSet<FormRecord> formTeams = new TreeSet<FormRecord>(new LeagueTableComparator(where,
-                                                                                            pointsForWin,
-                                                                                            pointsForDraw));
+        SortedSet<FormRecord> formTeams = new TreeSet<FormRecord>(new LeagueTableComparator());
         for (Team team : teams)
         {
-            formTeams.add(team.getFormRecord(where));
+            formTeams.add(team.getRecord(where).getFormRecord());
         }
         return formTeams;
     }
     
     
-    public SortedSet<StandardRecord> getSequenceTable(int when, int where, int sequence)
+    public SortedSet<StandardRecord> getSequenceTable(int when, VenueType where, int sequence)
     {
         SortedSet<StandardRecord> sequenceTable = new TreeSet<StandardRecord>(new SequenceComparator(when,
                                                                                                    sequence));
@@ -560,26 +552,6 @@ public final class LeagueSeason
     public int getAverageAttendance()
     {
         return (int) ((float) aggregateAttendance / matchCount + 0.5);
-    }
-    
-    
-    public int getPoints(int where, TeamRecord team)
-    {
-        int points = team.getWon() * pointsForWin + team.getDrawn() * pointsForDraw;
-        points += team.getTeam().getPointsAdjustment(where);
-        return points;
-    }
-    
-    
-    public double getAveragePoints(int where, TeamRecord team)
-    {
-        return (double) getPoints(where, team) / team.getPlayed();
-    }
-
-    
-    public int getPointsDropped(int where, StandardRecord team)
-    {
-        return team.getPlayed() * pointsForWin - getPoints(where, team);
     }
     
     

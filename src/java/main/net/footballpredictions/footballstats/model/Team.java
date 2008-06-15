@@ -14,11 +14,6 @@ import java.util.List;
  */
 public final class Team
 {
-    // Constants for key results types.
-    public static final int LAST_RESULT = 0;
-    public static final int BIGGEST_WIN = 1;
-    public static final int BIGGEST_DEFEAT = 2;
-
     // Constants for current/season sequence.
     public static final int CURRENT = 0;
     public static final int SEASON = 1;    
@@ -41,17 +36,16 @@ public final class Team
     private int highestCrowd;
     private int aggregateCrowd;
     
-    private int pointsAdjustment = 0;
-    
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
+     * @param name The name of the team.
      */
     public Team(String name)
     {
         this.name = name;
-        this.homeRecord = new StandardRecord(this, TeamRecord.HOME);
-        this.awayRecord = new StandardRecord(this, TeamRecord.AWAY);
-        this.overallRecord = new StandardRecord(this, TeamRecord.BOTH);
+        this.homeRecord = new StandardRecord(this, VenueType.HOME);
+        this.awayRecord = new StandardRecord(this, VenueType.AWAY);
+        this.overallRecord = new StandardRecord(this, VenueType.BOTH);
     }
 
 
@@ -61,24 +55,18 @@ public final class Team
     }
 
     
-    public StandardRecord getRecord(int where)
+    public StandardRecord getRecord(VenueType where)
     {
         switch (where)
         {
-            case TeamRecord.HOME: return homeRecord;
-            case TeamRecord.AWAY: return awayRecord;
-            case TeamRecord.BOTH: return overallRecord;
+            case HOME: return homeRecord;
+            case AWAY: return awayRecord;
+            case BOTH: return overallRecord;
             default: throw new IllegalArgumentException("Invalid venue type: " + where);
         }
     }
 
 
-    public List<Result> getResults(int where)
-    {
-        return getRecord(where).getResults();
-    }
-    
-    
     public SortedMap<Date, Integer> getLeaguePositions()
     {
         return leaguePositions;
@@ -96,9 +84,9 @@ public final class Team
     {
         List<Result> results = overallRecord.getResults();
         int[][] data = new int[results.size() + 1][2];
-        int total = 0;
         data[0][0] = 0;
-        data[0][1] = total;
+        data[0][1] = 0;
+        int total = 0;
         int index = 1;
         for (Result result : results)
         {
@@ -121,10 +109,17 @@ public final class Team
     
     public void addResult(Result result)
     {
-        homeRecord.addResult(result);
-        awayRecord.addResult(result);
         overallRecord.addResult(result);
-        updateAttendanceFigures(result);
+        if (result.getHomeTeam().getName().equals(getName()))
+        {
+            homeRecord.addResult(result);
+            // Attendances away from home do not concern us.
+            updateAttendanceFigures(result);
+        }
+        else if (result.getAwayTeam().getName().equals(getName()))
+        {
+            awayRecord.addResult(result);
+        }
     }
     
     
@@ -136,29 +131,8 @@ public final class Team
     
     public void adjustPoints(int amount)
     {
-        pointsAdjustment += amount;
-    }
-
-
-    public int getSequence(int when, int where, int sequence)
-    {
-        return getRecord(where).getSequence(when, sequence);
-    }
-
-
-    public String getForm(int where)
-    {
-        return getFormRecord(where).getForm();
-    }
-
-
-    /**
-     * @return A {@link TeamRecord} that contains only data relating to the team's current
-     * form.
-     */
-    public FormRecord getFormRecord(int where)
-    {
-        return getRecord(where).getFormRecord();
+        // Only apply the points adjustment to the overall record.
+        overallRecord.adjustPoints(amount);
     }
 
 
@@ -176,35 +150,15 @@ public final class Team
     
     
     /**
-     * Returns the number of points awarded to or deducted from this team during
-     * the season.  This is not points for results but points adjustments made by
-     * the league administrators for rules infringements.
-     * @return The adjustment if where is set to BOTH, zero otherwise.
-     */
-    public int getPointsAdjustment(int where)
-    {
-        return where == TeamRecord.BOTH ? pointsAdjustment: 0;
-    }
-    
-    
-    /**
-     * Returns interesting facts about the team's form.
-     */
-    public String[] getNotes(int where)
-    {
-        return getRecord(where).getNotes();
-    }
-
-    
-    /**
      * Update the aggregate attendance and, if necessary, the
-     * highest or lowest attendance.
+     * highest or lowest attendance.  This method assumes that only
+     * home results will be passed in.
+     * @param result The attendance from this result will be recorded.
      */
     private void updateAttendanceFigures(Result result)
     {
-        int where = result.getHomeTeam().equals(this) ? TeamRecord.HOME : TeamRecord.AWAY; // No error checking, assumes result is for this team.
-        
-        if (where == TeamRecord.HOME && result.getAttendance() >= 0) // Attendances away from home do not concern us.
+        assert result.getHomeTeam().equals(this) : "Not a home game for this team.";
+        if (result.getAttendance() >= 0) // Negative value means attendance data is not available.
         {
             aggregateCrowd += result.getAttendance();
             if (result.getAttendance() > highestCrowd)

@@ -16,9 +16,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.Team;
-import net.footballpredictions.footballstats.model.TeamRecord;
 import net.footballpredictions.footballstats.model.StandardRecord;
+import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.VenueType;
 
 /**
  * @author Daniel Dyer
@@ -156,7 +156,7 @@ public class Sequences implements StatsPanel
         {
             int when = (seasonCheckbox != null && seasonCheckbox.getState()) ? Team.SEASON : Team.CURRENT;
             int selectedIndex = matchesChoice.getSelectedIndex();
-            int where = (selectedIndex <= 0 ? TeamRecord.BOTH : (selectedIndex == 1 ? TeamRecord.HOME : TeamRecord.AWAY));
+            VenueType where = (selectedIndex <= 0 ? VenueType.BOTH : (selectedIndex == 1 ? VenueType.HOME : VenueType.AWAY));
             int sequence = Math.max(0, sequenceChoice.getSelectedIndex()); // A cheat really, we know that the indexes correspond to the constant values.
             SortedSet<StandardRecord> sequenceTable = data.getSequenceTable(when, where, sequence);
             
@@ -195,17 +195,10 @@ public class Sequences implements StatsPanel
     }
     
     
-    private String getTitleText(int when, int where, int sequence)
+    private String getTitleText(int when, VenueType where, int sequence)
     {
-        StringBuffer buffer = new StringBuffer(SEQUENCE_NAMES[sequence]);
-        if (where == TeamRecord.HOME)
-        {
-            buffer.insert(0, "Home ");
-        }
-        else if (where == TeamRecord.AWAY)
-        {
-            buffer.insert(0, "Away ");
-        }
+        StringBuffer buffer = new StringBuffer(where.getDescription());
+        buffer.append(SEQUENCE_NAMES[sequence]);
         
         if (when == Team.CURRENT)
         {
@@ -214,7 +207,6 @@ public class Sequences implements StatsPanel
         else
         {
             buffer.insert(0, "Most Consecutive ");
-            // buffer.append(" This Season");
         }
         return buffer.toString();
     }

@@ -6,11 +6,11 @@ import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
 import java.text.DecimalFormat;
-import net.footballpredictions.footballstats.model.LeagueSeason;
+import java.util.Iterator;
 import net.footballpredictions.footballstats.model.Result;
-import net.footballpredictions.footballstats.model.Team;
-import net.footballpredictions.footballstats.model.TeamRecord;
 import net.footballpredictions.footballstats.model.StandardRecord;
+import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.VenueType;
 
 /**
  * Sub-panel of Head-to-Head display.
@@ -20,7 +20,6 @@ final class TeamRecordPanel extends Panel
 {
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.00");
     
-    private LeagueSeason data;
     private Theme theme;
     
     private final Label nameLabel = new Label("", Label.CENTER);
@@ -100,12 +99,6 @@ final class TeamRecordPanel extends Panel
     }
     
     
-    public void setLeagueData(LeagueSeason data)
-    {
-        this.data = data;
-    }
-    
-    
     public void setTheme(Theme theme)
     {
         this.theme = theme;
@@ -124,7 +117,7 @@ final class TeamRecordPanel extends Panel
     }
 
         
-    public void setTeam(Team team, int where)
+    public void setTeam(Team team, VenueType where)
     {
         StandardRecord record = team.getRecord(where);
         
@@ -133,7 +126,7 @@ final class TeamRecordPanel extends Panel
         positionLabel.setText("Current league position: " + pos + getSuffix(pos));
         String venueText = getVenueText(where);
         playingRecordTitleLabel.setText(venueText + " Playing Record");
-        if (where == TeamRecord.BOTH)
+        if (where == VenueType.BOTH)
         {
             bigWinTitleLabel.setText("Biggest Win");
             bigDefeatTitleLabel.setText("Biggest Defeat");
@@ -154,14 +147,14 @@ final class TeamRecordPanel extends Panel
         drawnPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(record.getDrawn(), played)) + "%)");
         lostLabel.setText(String.valueOf(record.getLost()));
         lostPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(record.getLost(), played)) + "%)");
-        int gd = team.getRecord(where).getGoalDifference();
+        int gd = record.getGoalDifference();
         gdLabel.setText(gd > 0 ? "+" + gd : String.valueOf(gd));
         gdLabel.setForeground(theme.getGoalDifferenceColour(gd));
         gdDetailsLabel.setText("(F" + record.getScored() + ", A" + record.getConceded() + ")");
-        int points = data.getPoints(where, team.getRecord(where));
+        int points = record.getPoints();
         pointsLabel.setText(String.valueOf(points));
         pointsAverageLabel.setText("(Av. " + DECIMAL_FORMAT.format(((double) points) / played) + ")");
-        formLabel.setText(team.getForm(where));
+        formLabel.setText(record.getFormRecord().getForm());
             
         Result bigWin = record.getBiggestWin();
         Result bigDefeat = record.getBiggestDefeat();
@@ -173,21 +166,21 @@ final class TeamRecordPanel extends Panel
         mostRecentLabel.setText(resultAsString(team, mostRecent));
         mostRecentLabel.setForeground(getResultColour(team, mostRecent));
             
-        for (int i = 0; i < notesLabels.length; i++)
+        Iterator<String> notes = record.getNotes().iterator();
+        for (Label notesLabel : notesLabels)
         {
-            String[] notes = team.getNotes(where);
-            notesLabels[i].setText(i < notes.length ? notes[i] : "");
+            notesLabel.setText(notes.hasNext() ? notes.next() : "");
         }
     }
         
         
-    private String getVenueText(int venue)
+    private String getVenueText(VenueType venue)
     {
-        if (venue == TeamRecord.HOME)
+        if (venue == VenueType.HOME)
         {
             return "Home";
         }
-        else if (venue == TeamRecord.AWAY)
+        else if (venue == VenueType.AWAY)
         {
             return "Away";
         }

@@ -8,24 +8,9 @@ import java.util.Comparator;
  */
 class LeagueTableComparator implements Comparator<TeamRecord>
 {
-    private final int pointsForWin;
-    private final int pointsForDraw;
-    private final int where;
-
-
-    public LeagueTableComparator(int where,
-                                 int pointsForWin,
-                                 int pointsForDraw)
-    {
-        this.where = where;
-        this.pointsForWin = pointsForWin;
-        this.pointsForDraw = pointsForDraw;
-    }
-
-
     public final int compare(TeamRecord team1, TeamRecord team2)
     {
-        int compare = getPoints(where, team2) - getPoints(where, team1);// Swap teams for descending order.
+        int compare = team2.getPoints() - team1.getPoints();// Swap teams for descending order.
         if (compare == 0)
         {
             compare = team2.getGoalDifference() - team1.getGoalDifference(); // Swap teams for descending order.
@@ -44,13 +29,5 @@ class LeagueTableComparator implements Comparator<TeamRecord>
             }
         }
         return compare;
-    }
-
-
-    private int getPoints(int where, TeamRecord team)
-    {
-        int points = team.getWon() * pointsForWin + team.getDrawn() * pointsForDraw;
-        points += team.getTeam().getPointsAdjustment(where);
-        return points;
     }
 }

@@ -6,7 +6,11 @@ package net.footballpredictions.footballstats.model;
  */
 public abstract class AbstractTeamRecord implements TeamRecord
 {
+    private static int pointsForWin = 3;
+    private static int pointsForDraw = 1;
+
     private final Team team;
+    private int pointsAdjustment = 0;
 
     protected AbstractTeamRecord(Team team)
     {
@@ -29,6 +33,30 @@ public abstract class AbstractTeamRecord implements TeamRecord
     public int getGoalDifference()
     {
         return getScored() - getConceded();
+    }
+
+
+    public int getPoints()
+    {
+        return (getWon() * pointsForWin) + (getDrawn() * pointsForDraw) + pointsAdjustment;
+    }
+
+
+    public int getDroppedPoints()
+    {
+        return getPlayed() * pointsForWin - getPoints();
+    }
+
+
+    public double getAveragePoints()
+    {
+        return getPlayed() == 0 ? 0 : getPoints() / getPlayed();
+    }
+
+
+    public void adjustPoints(int amount)
+    {
+        pointsAdjustment += amount;
     }
 
 

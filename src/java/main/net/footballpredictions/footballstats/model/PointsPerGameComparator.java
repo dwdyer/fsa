@@ -8,21 +8,6 @@ import java.util.Comparator;
  */
 class PointsPerGameComparator implements Comparator<StandardRecord>
 {
-    private final int pointsForWin;
-    private final int pointsForDraw;
-    private final int where;
-
-
-    public PointsPerGameComparator(int where,
-                                   int pointsForWin,
-                                   int pointsForDraw)
-    {
-        this.where = where;
-        this.pointsForWin = pointsForWin;
-        this.pointsForDraw = pointsForDraw;
-    }
-
-
     public final int compare(StandardRecord team1, StandardRecord team2)
     {
         int compare = doMainComparison(team1, team2);
@@ -49,7 +34,7 @@ class PointsPerGameComparator implements Comparator<StandardRecord>
 
     public int doMainComparison(StandardRecord team1, StandardRecord team2)
     {
-        double difference = getAveragePoints(where, team2) - getAveragePoints(where, team1); // Swap teams for descending sort.
+        double difference = team2.getAveragePoints() - team1.getAveragePoints(); // Swap teams for descending sort.
         // Convert to int (sign is more important than value).
         if (difference == 0)
         {
@@ -59,20 +44,5 @@ class PointsPerGameComparator implements Comparator<StandardRecord>
         {
             return difference > 0 ? 1 : -1;
         }
-    }
-
-
-    public double getAveragePoints(int where, StandardRecord team)
-    {
-        return (double) getPoints(where, team) / team.getPlayed();
-    }
-
-
-
-    private int getPoints(int where, StandardRecord team)
-    {
-        int points = team.getWon() * pointsForWin + team.getDrawn() * pointsForDraw;
-        points += team.getTeam().getPointsAdjustment(where);
-        return points;
     }
 }

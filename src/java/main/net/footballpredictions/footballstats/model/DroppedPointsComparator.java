@@ -9,24 +9,9 @@ import java.util.Comparator;
  */
 class DroppedPointsComparator implements Comparator<StandardRecord>
 {
-    private final int pointsForWin;
-    private final int pointsForDraw;
-    private final int where;
-
-
-    public DroppedPointsComparator(int where,
-                                   int pointsForWin,
-                                   int pointsForDraw)
-    {
-        this.where = where;
-        this.pointsForWin = pointsForWin;
-        this.pointsForDraw = pointsForDraw;
-    }
-
-
     public final int compare(StandardRecord team1, StandardRecord team2)
     {
-        int compare = getPointsDropped(where, team1) - getPointsDropped(where, team2); // Swap teams for descending order.
+        int compare = team1.getDroppedPoints() - team2.getDroppedPoints(); // Swap teams for descending order.
         if (compare == 0)
         {
             compare = team2.getGoalDifference() - team1.getGoalDifference(); // Swap teams for descending order.
@@ -45,19 +30,5 @@ class DroppedPointsComparator implements Comparator<StandardRecord>
             }
         }
         return compare;
-    }
-
-
-    private int getPointsDropped(int where, StandardRecord team)
-    {
-        return team.getPlayed() * pointsForWin - getPoints(where, team);
-    }
-
-
-    private int getPoints(int where, StandardRecord team)
-    {
-        int points = team.getWon() * pointsForWin + team.getDrawn() * pointsForDraw;
-        points += team.getTeam().getPointsAdjustment(where);
-        return points;
     }
 }

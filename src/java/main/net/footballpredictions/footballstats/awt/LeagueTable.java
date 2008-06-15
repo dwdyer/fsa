@@ -18,6 +18,7 @@ import net.footballpredictions.footballstats.model.FormRecord;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.StandardRecord;
 import net.footballpredictions.footballstats.model.TeamRecord;
+import net.footballpredictions.footballstats.model.VenueType;
 
 /**
  * @author Daniel Dyer
@@ -192,7 +193,7 @@ public class LeagueTable implements StatsPanel
         constraints.anchor = GridBagConstraints.NORTH;
         
         int index = matchesChoice.getSelectedIndex();
-        int where = (index <= 0 ? TeamRecord.BOTH : (index == 1 ? TeamRecord.HOME : TeamRecord.AWAY));
+        VenueType where = (index <= 0 ? VenueType.BOTH : (index == 1 ? VenueType.HOME : VenueType.AWAY));
         
         StringBuffer titleText = new StringBuffer();
         SortedSet<? extends TeamRecord> table;
@@ -201,11 +202,11 @@ public class LeagueTable implements StatsPanel
         if (isFormTable)
         {
             titleText.append("Form Table");
-            if (where == TeamRecord.HOME)
+            if (where == VenueType.HOME)
             {
                 titleText.append(" (Last 4 Home Matches)");
             }
-            else if (where == TeamRecord.AWAY)
+            else if (where == VenueType.AWAY)
             {
                 titleText.append(" (Last 4 Away Matches)");
             }   
@@ -236,11 +237,11 @@ public class LeagueTable implements StatsPanel
                 table = data.getInvertedLeagueTable(where);
             }
             
-            if (where == TeamRecord.HOME)
+            if (where == VenueType.HOME)
             {
                 titleText.append(" (Home Matches Only)");
             }
-            else if (where == TeamRecord.AWAY)
+            else if (where == VenueType.AWAY)
             {
                 titleText.append(" (Away Matches Only)");
             }            
@@ -267,12 +268,12 @@ public class LeagueTable implements StatsPanel
             if (index == 1)
             {
                 constraints.gridwidth = GridBagConstraints.REMAINDER;
-                tablePanel.add(getAverageColumn((SortedSet<StandardRecord>) table, where), constraints);
+                tablePanel.add(getAverageColumn((SortedSet<StandardRecord>) table), constraints);
             }
             else if (index == 2)
             {
                 constraints.gridwidth = GridBagConstraints.REMAINDER;
-                tablePanel.add(getDroppedColumn((SortedSet<StandardRecord>) table, where), constraints);
+                tablePanel.add(getDroppedColumn((SortedSet<StandardRecord>) table), constraints);
             }
         }
         
@@ -326,7 +327,7 @@ public class LeagueTable implements StatsPanel
     
     
     private Component getStatsColumns(SortedSet<? extends TeamRecord> teams,
-                                      int where,
+                                      VenueType where,
                                       boolean highlightPoints)
     {
         statsColumns.removeAll();
@@ -358,7 +359,7 @@ public class LeagueTable implements StatsPanel
             Label goalDifferenceLabel = new Label(goalDifferenceAsString(goalDifference), Label.CENTER);
             goalDifferenceLabel.setForeground(theme.getGoalDifferenceColour(goalDifference));
             statsColumns.add(goalDifferenceLabel);
-            Label pointsLabel = new Label(String.valueOf(data.getPoints(where, team)), Label.CENTER);
+            Label pointsLabel = new Label(String.valueOf(team.getPoints()), Label.CENTER);
             if (highlightPoints)
             {
                 pointsLabel.setFont(theme.getBoldFont());
@@ -382,14 +383,14 @@ public class LeagueTable implements StatsPanel
     }
     
     
-    private Component getAverageColumn(SortedSet<StandardRecord> teams, int where)
+    private Component getAverageColumn(SortedSet<StandardRecord> teams)
     {
         optionalColumn.removeAll();
         optionalColumn.add(new Label("Pts/P", Label.CENTER));
         int index = 1;
         for (StandardRecord team : teams)
         {
-            Label label = new Label(theme.getDecimalFormat().format(data.getAveragePoints(where, team)), Label.CENTER);
+            Label label = new Label(theme.getDecimalFormat().format(team.getAveragePoints()), Label.CENTER);
             label.setFont(theme.getBoldFont());
             if (zonesCheckbox.getState())
             {
@@ -402,14 +403,14 @@ public class LeagueTable implements StatsPanel
     }
     
     
-    private Component getDroppedColumn(SortedSet<StandardRecord> teams, int where)
+    private Component getDroppedColumn(SortedSet<StandardRecord> teams)
     {
         optionalColumn.removeAll();
         optionalColumn.add(new Label("Dropped", Label.CENTER));
         int index = 1;
         for (StandardRecord team : teams)
         {
-            Label label = new Label(String.valueOf(data.getPointsDropped(where, team)), Label.CENTER);
+            Label label = new Label(String.valueOf(team.getDroppedPoints()), Label.CENTER);
             label.setFont(theme.getBoldFont());
             if (zonesCheckbox.getState())
             {

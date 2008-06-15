@@ -19,10 +19,10 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import net.footballpredictions.footballstats.model.Team;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
-import net.footballpredictions.footballstats.model.TeamRecord;
+import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.VenueType;
 
 /**
  * @author Daniel Dyer
@@ -199,19 +199,19 @@ public class Results implements StatsPanel
         int index = matchesChoice.getSelectedIndex();
         if (index == 0)
         {
-            results = team.getResults(TeamRecord.BOTH);
+            results = team.getRecord(VenueType.BOTH).getResults();
         }
         else if (index == 1)
         {
-            results = team.getResults(TeamRecord.HOME);
+            results = team.getRecord(VenueType.HOME).getResults();
             titleText.append(" (Home Matches Only)");
         }
         else
         {
-            results = team.getResults(TeamRecord.AWAY);
+            results = team.getRecord(VenueType.AWAY).getResults();
             titleText.append(" (Away Matches Only)");
-        }        
-        
+        }
+
         titleLabel.setText(titleText.toString());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;

@@ -5,11 +5,6 @@ package net.footballpredictions.footballstats.model;
  */
 public interface TeamRecord
 {
-    // Constants for home/away/both.
-    int HOME = 0;
-    int AWAY = 1;
-    int BOTH = 2;
-
     String getName();
 
     void addResult(Result result);
@@ -33,6 +28,12 @@ public interface TeamRecord
      */
     int getGoalDifference();
 
+    int getPoints();
+
+    int getDroppedPoints();
+
+    double getAveragePoints();
+
     /**
      * @return A String representation of this teams current form.  Either home form,
      * away form or combined form depending on the method argument.
@@ -40,4 +41,12 @@ public interface TeamRecord
     String getForm();
 
     Team getTeam();
+
+    /**
+     * Used to apply points adjustments (positive or negative) made by the league
+     * administrators for rules infringements.
+     * @param amount A positive number means points have been awarded, a negative value
+     * means points have been deducted.
+     */
+    void adjustPoints(int amount);
 }

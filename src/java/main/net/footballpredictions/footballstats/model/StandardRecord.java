@@ -34,7 +34,7 @@ public final class StandardRecord extends AbstractTeamRecord
     public static final int ATTENDANCE_LOWEST = 2;
     public static final int ATTENDANCE_AGGREGATE = 3;
 
-    private final int where;
+    private final VenueType where;
 
     private final List<Result> results = new ArrayList<Result>(46); // Most leagues have no more than 46 games per team.
 
@@ -58,11 +58,11 @@ public final class StandardRecord extends AbstractTeamRecord
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
      */
-    public StandardRecord(Team team, int where)
+    public StandardRecord(Team team, VenueType where)
     {
         super(team);
         this.where = where;
-        this.form = new FormRecord(team, where == BOTH ? 6 : 4);
+        this.form = new FormRecord(team, where == VenueType.BOTH ? 6 : 4);
     }
 
 
@@ -74,14 +74,9 @@ public final class StandardRecord extends AbstractTeamRecord
 
     public void addResult(Result result)
     {
-        if (where == BOTH
-            || (where == HOME && result.getHomeTeam().getName().equals(getName()))
-            || (where == AWAY && result.getAwayTeam().getName().equals(getName())))
-        {
-            results.add(result);
-            form.addResult(result);
-            updateAggregatesAndSequences(result);
-        }
+        results.add(result);
+        form.addResult(result);
+        updateAggregatesAndSequences(result);
     }
 
 
@@ -164,18 +159,10 @@ public final class StandardRecord extends AbstractTeamRecord
     /**
      * Returns interesting facts about the team's form.
      */
-    public String[] getNotes()
+    public List<String> getNotes()
     {
         List<String> notes = new LinkedList<String>();
-        String end = " matches.";
-        if (where == HOME)
-        {
-            end = " home matches.";
-        }
-        else if (where == AWAY)
-        {
-            end = " away matches.";
-        }
+        String end = " " + where.getDescription().toLowerCase() + "matches.";
 
         // Check unbeatean/without win sequences.
         if (getSequence(CURRENT, SEQUENCE_UNBEATEN) >= 3)
@@ -215,9 +202,7 @@ public final class StandardRecord extends AbstractTeamRecord
             notes.add("Scored in last " + getSequence(CURRENT, SEQUENCE_SCORED) + end);
         }
 
-        String[] noteStrings = new String[notes.size()];
-        notes.toArray(noteStrings);
-        return noteStrings;
+        return notes;
     }
 
 
