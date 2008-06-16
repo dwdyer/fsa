@@ -4,6 +4,8 @@ package net.footballpredictions.footballstats.model;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.EnumMap;
 
 /**
  * Models a single team's record for the season.  This may be their overall record
@@ -14,26 +16,6 @@ import java.util.List;
  */
 public final class StandardRecord extends AbstractTeamRecord
 {
-    // Constants for sequence types.
-    public static final int SEQUENCE_WIN = 0;
-    public static final int SEQUENCE_DRAW = 1;
-    public static final int SEQUENCE_DEFEAT = 2;
-    public static final int SEQUENCE_UNBEATEN = 3;
-    public static final int SEQUENCE_NO_WIN = 4;
-    public static final int SEQUENCE_CLEANSHEET = 5;
-    public static final int SEQUENCE_SCORED = 6;
-    public static final int SEQUENCE_NO_GOAL = 7;
-
-    // Constants for current/season sequence.
-    public static final int CURRENT = 0;
-    public static final int SEASON = 1;
-
-    // Constants for attendance stats.
-    public static final int ATTENDANCE_AVERAGE = 0;
-    public static final int ATTENDANCE_HIGHEST = 1;
-    public static final int ATTENDANCE_LOWEST = 2;
-    public static final int ATTENDANCE_AGGREGATE = 3;
-
     private final VenueType where;
 
     private final List<Result> results = new ArrayList<Result>(46); // Most leagues have no more than 46 games per team.
@@ -46,11 +28,8 @@ public final class StandardRecord extends AbstractTeamRecord
     private int scored = 0;
     private int conceded = 0;
 
-    /**
-     * Two-dimensional array for storing sequence data.  First dimension is
-     * current/season, second is sequence type.
-     */
-    private final int[][] sequences = new int[2][8];
+    private final Map<SequenceType, Integer> currentSequences = new EnumMap<SequenceType, Integer>(SequenceType.class);
+    private final Map<SequenceType, Integer> bestSequences = new EnumMap<SequenceType, Integer>(SequenceType.class);
 
     private Result biggestWin = null;
     private Result biggestDefeat = null;
@@ -63,6 +42,12 @@ public final class StandardRecord extends AbstractTeamRecord
         super(team);
         this.where = where;
         this.form = new FormRecord(team, where == VenueType.BOTH ? 6 : 4);
+        // Intialise sequences to zero.
+        for (SequenceType sequence : SequenceType.values())
+        {
+            currentSequences.put(sequence, 0);
+            bestSequences.put(sequence, 0);
+        }
     }
 
 
@@ -116,9 +101,15 @@ public final class StandardRecord extends AbstractTeamRecord
     }
 
 
-    public int getSequence(int when, int sequence)
+    public int getCurrentSequence(SequenceType sequence)
     {
-        return sequences[when][sequence];
+        return currentSequences.get(sequence);
+    }
+
+
+    public int getBestSequence(SequenceType sequence)
+    {
+        return bestSequences.get(sequence);
     }
 
 
@@ -138,18 +129,27 @@ public final class StandardRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * @return The result of the most recent match played.
+     */
     public Result getLatestResult()
     {
         return results.isEmpty() ? null : results.get(results.size() - 1);
     }
 
 
+    /**
+     * @return The {@link Result} that represents the team's biggest margin of victory achieved.
+     */
     public Result getBiggestWin()
     {
         return biggestWin;
     }
 
 
+    /**
+     * @return The {@link Result} that represents the team's biggest margin of defeat suffered.
+     */
     public Result getBiggestDefeat()
     {
         return biggestDefeat;
@@ -165,41 +165,41 @@ public final class StandardRecord extends AbstractTeamRecord
         String end = " " + where.getDescription().toLowerCase() + "matches.";
 
         // Check unbeatean/without win sequences.
-        if (getSequence(CURRENT, SEQUENCE_UNBEATEN) >= 3)
+        if (getCurrentSequence(SequenceType.UNBEATEN) >= 3)
         {
-            notes.add("Unbeaten in last " + getSequence(CURRENT, SEQUENCE_UNBEATEN) + end);
+            notes.add("Unbeaten in last " + getCurrentSequence(SequenceType.UNBEATEN) + end);
         }
-        if (getSequence(CURRENT, SEQUENCE_NO_WIN) >= 3)
+        if (getCurrentSequence(SequenceType.NO_WIN) >= 3)
         {
-            notes.add("Haven't won in last " + getSequence(CURRENT, SEQUENCE_NO_WIN) + end);
+            notes.add("Haven't won in last " + getCurrentSequence(SequenceType.NO_WIN) + end);
         }
 
         // Check win/loss sequences.
-        if (getSequence(CURRENT, SEQUENCE_WIN) >= 3)
+        if (getCurrentSequence(SequenceType.WINS) >= 3)
         {
-            notes.add("Won last " + getSequence(CURRENT, SEQUENCE_WIN) + end);
+            notes.add("Won last " + getCurrentSequence(SequenceType.WINS) + end);
         }
-        else if (getSequence(CURRENT, SEQUENCE_DRAW) >= 3)
+        else if (getCurrentSequence(SequenceType.DRAWS) >= 3)
         {
-            notes.add("Drawn last " + getSequence(CURRENT, SEQUENCE_DRAW) + end);
+            notes.add("Drawn last " + getCurrentSequence(SequenceType.DRAWS) + end);
         }
-        else if (getSequence(CURRENT, SEQUENCE_DEFEAT) >= 3)
+        else if (getCurrentSequence(SequenceType.DEFEATS) >= 3)
         {
-            notes.add("Lost last " + getSequence(CURRENT, SEQUENCE_DEFEAT) + end);
+            notes.add("Lost last " + getCurrentSequence(SequenceType.DEFEATS) + end);
         }
 
         // Check cleansheet/scoring sequences.
-        if (getSequence(CURRENT, SEQUENCE_NO_GOAL) >= 3)
+        if (getCurrentSequence(SequenceType.GAMES_NOT_SCORED_IN) >= 3)
         {
-            notes.add("Haven't scored in last " + getSequence(CURRENT, SEQUENCE_NO_GOAL) + end);
+            notes.add("Haven't scored in last " + getCurrentSequence(SequenceType.GAMES_NOT_SCORED_IN) + end);
         }
-        if (getSequence(CURRENT, SEQUENCE_CLEANSHEET) >= 3)
+        if (getCurrentSequence(SequenceType.CLEANSHEETS) >= 3)
         {
-            notes.add("Haven't conceded in last " + getSequence(CURRENT, SEQUENCE_CLEANSHEET) + end);
+            notes.add("Haven't conceded in last " + getCurrentSequence(SequenceType.CLEANSHEETS) + end);
         }
-        if (getSequence(CURRENT, SEQUENCE_SCORED) >= 10)
+        if (getCurrentSequence(SequenceType.GAMES_SCORED_IN) >= 10)
         {
-            notes.add("Scored in last " + getSequence(CURRENT, SEQUENCE_SCORED) + end);
+            notes.add("Scored in last " + getCurrentSequence(SequenceType.GAMES_SCORED_IN) + end);
         }
 
         return notes;
@@ -217,11 +217,11 @@ public final class StandardRecord extends AbstractTeamRecord
         {
             lost++;
 
-            sequences[CURRENT][SEQUENCE_NO_WIN]++;
-            sequences[CURRENT][SEQUENCE_DEFEAT]++;
-            sequences[CURRENT][SEQUENCE_UNBEATEN] = 0;
-            sequences[CURRENT][SEQUENCE_WIN] = 0;
-            sequences[CURRENT][SEQUENCE_DRAW] = 0;
+            incrementSequence(SequenceType.NO_WIN);
+            incrementSequence(SequenceType.DEFEATS);
+            resetSequence(SequenceType.UNBEATEN);
+            resetSequence(SequenceType.WINS);
+            resetSequence(SequenceType.DRAWS);
 
             if (biggestDefeat == null || marginOfVictory > biggestDefeat.getMarginOfVictory())
             {
@@ -230,24 +230,24 @@ public final class StandardRecord extends AbstractTeamRecord
         }
         else
         {
-            sequences[CURRENT][SEQUENCE_UNBEATEN]++;
-            sequences[CURRENT][SEQUENCE_DEFEAT] = 0;
+            incrementSequence(SequenceType.UNBEATEN);
+            resetSequence(SequenceType.DEFEATS);
 
             if (result.isDraw())
             {
                 drawn++;
 
-                sequences[CURRENT][SEQUENCE_DRAW]++;
-                sequences[CURRENT][SEQUENCE_NO_WIN]++;
-                sequences[CURRENT][SEQUENCE_WIN] = 0;
+                incrementSequence(SequenceType.DRAWS);
+                incrementSequence(SequenceType.NO_WIN);
+                resetSequence(SequenceType.WINS);
             }
             else // Must be a win
             {
                 won++;
 
-                sequences[CURRENT][SEQUENCE_WIN]++;
-                sequences[CURRENT][SEQUENCE_NO_WIN] = 0;
-                sequences[CURRENT][SEQUENCE_DRAW] = 0;
+                incrementSequence(SequenceType.WINS);
+                resetSequence(SequenceType.NO_WIN);
+                resetSequence(SequenceType.DRAWS);
 
                 if (biggestWin == null || marginOfVictory > biggestWin.getMarginOfVictory())
                 {
@@ -261,29 +261,42 @@ public final class StandardRecord extends AbstractTeamRecord
         conceded += goalsAgainst;
         if (goalsFor == 0)
         {
-            sequences[CURRENT][SEQUENCE_NO_GOAL]++;
-            sequences[CURRENT][SEQUENCE_SCORED] = 0;
+            incrementSequence(SequenceType.GAMES_NOT_SCORED_IN);
+            resetSequence(SequenceType.GAMES_SCORED_IN);
         }
         else
         {
-            sequences[CURRENT][SEQUENCE_NO_GOAL] = 0;
-            sequences[CURRENT][SEQUENCE_SCORED]++;
+            resetSequence(SequenceType.GAMES_NOT_SCORED_IN);
+            incrementSequence(SequenceType.GAMES_SCORED_IN);
         }
 
         if (goalsAgainst == 0)
         {
-            sequences[CURRENT][SEQUENCE_CLEANSHEET]++;
+            incrementSequence(SequenceType.CLEANSHEETS);
         }
         else
         {
-            sequences[CURRENT][SEQUENCE_CLEANSHEET] = 0;
+            resetSequence(SequenceType.CLEANSHEETS);
         }
+    }
 
-        // Update season's best sequences, if necessary.
-        for (int i = 0; i < 8; i++) // 8 is number of sequences.
+
+    private void incrementSequence(SequenceType sequence)
+    {
+        int newValue = currentSequences.get(sequence) + 1;
+        currentSequences.put(sequence, newValue);
+        // If the current sequence is better than the best this season, then
+        // update the best this season.
+        if (newValue > bestSequences.get(sequence))
         {
-            sequences[SEASON][i] = Math.max(sequences[SEASON][i], sequences[CURRENT][i]);
+            bestSequences.put(sequence, newValue);
         }
+    }
+
+
+    private void resetSequence(SequenceType sequence)
+    {
+        currentSequences.put(sequence, 0);
     }
 
 

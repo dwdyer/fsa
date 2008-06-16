@@ -8,18 +8,26 @@ import java.util.Comparator;
  */
 final class SequenceComparator implements Comparator<StandardRecord>
 {
-    private final int when;
-    private final int sequence;
+    private final boolean current;
+    private final SequenceType sequence;
         
-    public SequenceComparator(int when, int sequence)
+    public SequenceComparator(SequenceType sequence, boolean current)
     {
-        this.when = when;
         this.sequence = sequence;
+        this.current = current;
     }
         
     public int compare(StandardRecord team1, StandardRecord team2)
     {
-        int compare = team2.getSequence(when, sequence) - team1.getSequence(when, sequence); // Swap teams for descending sort.
+        int compare;
+        if (current)
+        {
+            compare = team2.getCurrentSequence(sequence) - team1.getCurrentSequence(sequence); // Swap teams for descending sort.
+        }
+        else
+        {
+            compare = team2.getBestSequence(sequence) - team1.getBestSequence(sequence); // Swap teams for descending sort.
+        }
         if (compare == 0)
         {
             // If records are the same, sort on alphabetical order.

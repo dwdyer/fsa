@@ -16,8 +16,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.model.SequenceType;
 import net.footballpredictions.footballstats.model.StandardRecord;
-import net.footballpredictions.footballstats.model.Team;
 import net.footballpredictions.footballstats.model.VenueType;
 
 /**
@@ -27,15 +27,6 @@ import net.footballpredictions.footballstats.model.VenueType;
  */
 public class Sequences implements StatsPanel
 {
-    private static final String[] SEQUENCE_NAMES = new String[]{"Wins",
-                                                                "Draws",
-                                                                "Defeats",
-                                                                "Games Without Defeat",
-                                                                "Games Without Winning",
-                                                                "Cleansheets",
-                                                                "Games Scored In",
-                                                                "Games Without Scoring"};
-    
     private LeagueSeason data = null;
     private Theme theme = null;
     private String highlightedTeam = null;
@@ -79,14 +70,10 @@ public class Sequences implements StatsPanel
             Panel innerPanel = new Panel(new GridLayout(5, 1));
             
             innerPanel.add(new Label("Sequence Type:"));
-            sequenceChoice.add("Wins");
-            sequenceChoice.add("Draws");
-            sequenceChoice.add("Defeats");
-            sequenceChoice.add("Matches Unbeaten");
-            sequenceChoice.add("Matches Without A Win");
-            sequenceChoice.add("Cleansheets");
-            sequenceChoice.add("Matches Scored In");
-            sequenceChoice.add("Matches Without Scoring");
+            for (SequenceType sequence : SequenceType.values())
+            {
+                sequenceChoice.add(sequence.toString());
+            }
             innerPanel.add(sequenceChoice);
             
             Panel checkboxPanel = new Panel(new GridLayout(1, 2));
@@ -154,13 +141,13 @@ public class Sequences implements StatsPanel
     {
         if (data != null)
         {
-            int when = (seasonCheckbox != null && seasonCheckbox.getState()) ? Team.SEASON : Team.CURRENT;
+            boolean current = !seasonCheckbox.getState();
             int selectedIndex = matchesChoice.getSelectedIndex();
             VenueType where = (selectedIndex <= 0 ? VenueType.BOTH : (selectedIndex == 1 ? VenueType.HOME : VenueType.AWAY));
-            int sequence = Math.max(0, sequenceChoice.getSelectedIndex()); // A cheat really, we know that the indexes correspond to the constant values.
-            SortedSet<StandardRecord> sequenceTable = data.getSequenceTable(when, where, sequence);
+            SequenceType sequence = SequenceType.values()[Math.max(0, sequenceChoice.getSelectedIndex())];
+            SortedSet<StandardRecord> sequenceTable = data.getSequenceTable(sequence, where, current);
             
-            titleLabel.setText(getTitleText(when, where, sequence));
+            titleLabel.setText(getTitleText(current, where, sequence));
             
             if (labels == null)
             {
@@ -186,21 +173,28 @@ public class Sequences implements StatsPanel
             {
                 labels[index][1].setText(team.getName());
                 labels[index][1].setFont(team.getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
-                labels[index][2].setText(String.valueOf(team.getSequence(when, sequence)));
+                labels[index][2].setText(String.valueOf(current ? team.getCurrentSequence(sequence)
+                                                                : team.getBestSequence(sequence)));
                 ++index;
             }
             
             view.validate();
         }
     }
-    
-    
-    private String getTitleText(int when, VenueType where, int sequence)
+
+
+    /**
+     * @param current Use the current sequence if true, the season's best sequence if false.
+     * @param where Home matches, away matches or both.
+     * @param sequence The type of sequence.
+     * @return Text that describes the sequence as defined by the above parameters.
+     */
+    private String getTitleText(boolean current, VenueType where, SequenceType sequence)
     {
         StringBuffer buffer = new StringBuffer(where.getDescription());
-        buffer.append(SEQUENCE_NAMES[sequence]);
+        buffer.append(sequence.toString());
         
-        if (when == Team.CURRENT)
+        if (current)
         {
             buffer.insert(0, "Current Consecutive ");
         }

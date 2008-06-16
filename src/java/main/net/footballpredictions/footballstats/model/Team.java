@@ -14,10 +14,6 @@ import java.util.List;
  */
 public final class Team
 {
-    // Constants for current/season sequence.
-    public static final int CURRENT = 0;
-    public static final int SEASON = 1;    
-    
     // Constants for attendance stats.
     public static final int ATTENDANCE_AVERAGE = 0;
     public static final int ATTENDANCE_HIGHEST = 1;
@@ -147,7 +143,7 @@ public final class Team
         }
         return -1;
     }
-    
+
     
     /**
      * Update the aggregate attendance and, if necessary, the
