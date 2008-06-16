@@ -59,6 +59,7 @@
       <fileset dir="${src.dir}/conf" includes="*"/>
       <fileset dir="${src.dir}/data" includes="*"/>
       <fileset dir="${src.dir}/html" includes="*"/>
+      <fileset dir="." includes="*.txt"/>
     </copy>
   </target>
   

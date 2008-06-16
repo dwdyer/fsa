@@ -21,6 +21,7 @@ import net.footballpredictions.footballstats.model.TeamRecord;
 import net.footballpredictions.footballstats.model.VenueType;
 
 /**
+ * AWT panel for displaying league tables and form tables.
  * @author Daniel Dyer
  * @since 27/12/2003
  * @version $Revision: $

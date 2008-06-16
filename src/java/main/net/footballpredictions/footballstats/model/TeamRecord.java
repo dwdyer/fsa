@@ -1,3 +1,20 @@
+// ============================================================================
+//   The Football Statistics Applet (http://fsa.footballpredictions.net)
+//   © Copyright 2000-2008 Daniel W. Dyer
+//
+//   This program is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   (at your option) any later version.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// ============================================================================
 package net.footballpredictions.footballstats.model;
 
 /**
@@ -5,6 +22,9 @@ package net.footballpredictions.footballstats.model;
  */
 public interface TeamRecord
 {
+    /**
+     * @return The name of the team.
+     */
     String getName();
 
     void addResult(Result result);
@@ -30,8 +50,16 @@ public interface TeamRecord
 
     int getPoints();
 
+    /**
+     * @return The total number of points that have been dropped by the team
+     * (this is the total number of available points minus the number of points
+     * actually achieved).
+     */
     int getDroppedPoints();
 
+    /**
+     * @return The average number of points earned per game.
+     */
     double getAveragePoints();
 
     /**

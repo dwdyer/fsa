@@ -1,4 +1,20 @@
-// $Header: $
+// ============================================================================
+//   The Football Statistics Applet (http://fsa.footballpredictions.net)
+//   © Copyright 2000-2008 Daniel W. Dyer
+//
+//   This program is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   (at your option) any later version.
+//
+//   This program is distributed in the hope that it will be useful,
+//   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//   GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// ============================================================================
 package net.footballpredictions.footballstats.awt;
 
 import java.awt.BorderLayout;
@@ -21,9 +37,9 @@ import net.footballpredictions.footballstats.model.StandardRecord;
 import net.footballpredictions.footballstats.model.VenueType;
 
 /**
+ * AWT panel for displaying sequence tables.
  * @author Daniel Dyer
  * @since 4/1/2004
- * @version $Revision: $
  */
 public class Sequences implements StatsPanel
 {
@@ -141,7 +157,7 @@ public class Sequences implements StatsPanel
     {
         if (data != null)
         {
-            boolean current = !seasonCheckbox.getState();
+            boolean current = seasonCheckbox == null || !seasonCheckbox.getState();
             int selectedIndex = matchesChoice.getSelectedIndex();
             VenueType where = (selectedIndex <= 0 ? VenueType.BOTH : (selectedIndex == 1 ? VenueType.HOME : VenueType.AWAY));
             SequenceType sequence = SequenceType.values()[Math.max(0, sequenceChoice.getSelectedIndex())];

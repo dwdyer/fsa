@@ -10,6 +10,7 @@ import java.awt.Label;
 import java.awt.Panel;
 
 /**
+ * AWT utility methods used by the Football Statistics Applet.
  * @author Daniel Dyer
  * @since 6/9/2005
  * @version $Revision: $
