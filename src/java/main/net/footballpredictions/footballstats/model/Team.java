@@ -147,7 +147,7 @@ public final class Team
     }
 
 
-    public int getAttendance(int type)
+    public int getAttendanceRecord(int type)
     {
         switch (type)
         {

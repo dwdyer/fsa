@@ -109,8 +109,11 @@ public final class Result
     {
         return Math.abs(homeGoals - awayGoals);
     }
-    
-    
+
+
+    /**
+     * @return The total number of goals scored by both teams.
+     */
     public int getMatchAggregate()
     {
         return homeGoals + awayGoals;

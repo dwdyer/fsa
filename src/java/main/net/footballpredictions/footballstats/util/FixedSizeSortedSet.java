@@ -51,7 +51,8 @@ public class FixedSizeSortedSet<E> extends TreeSet<E>
         {
             result = super.add(e);
         }
-        // Only store the 20 highest/lowest attendances.
+        // If the set exceeds the maximum size, remove the last element (as
+        // determined by the comparator).
         if (size() > maxSize)
         {
             remove(last());
@@ -74,6 +75,9 @@ public class FixedSizeSortedSet<E> extends TreeSet<E>
     }
 
 
+    /**
+     * @return The maximum capacity of this set.
+     */
     public int getMaxSize()
     {
         return maxSize;

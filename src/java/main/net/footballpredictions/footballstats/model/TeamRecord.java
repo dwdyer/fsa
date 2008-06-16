@@ -27,18 +27,55 @@ public interface TeamRecord
      */
     String getName();
 
+    /**
+     * @return The team that this record relates to.
+     */
+    Team getTeam();
+
+    /**
+     * Adds a result to the list of results that make up this record.
+     * @param result The result to add to the record.
+     */
     void addResult(Result result);
 
+    /**
+     * Returns the total number of matches stored in this record.
+     * @return The number of games played.
+     */
     int getPlayed();
 
+    /**
+     * Returns the number of matches in this record that were won by the
+     * team that this record relates to.
+     * @return The number of wins.
+     */
     int getWon();
 
+    /**
+     * Returns the number of matches in this record that were drawn.
+     * @return The number of draws.
+     */
     int getDrawn();
 
+    /**
+     * Returns the number of matches in this record that were lost by the
+     * team that this record relates to.
+     * @return The number of defeats.
+     */
     int getLost();
 
+    /**
+     * For all the results in this record, returns the total number of goals
+     * scored by the team that this record relates to.
+     * @return The number of goals scored.
+     */
     int getScored();
 
+    /**
+     * For all the results in this record, returns the total number of goals
+     * conceded by the team that this record relates to.
+     * @return The number of goals conceded.
+     */
     int getConceded();
 
     /**
@@ -48,12 +85,15 @@ public interface TeamRecord
      */
     int getGoalDifference();
 
+    /**
+     * @return The total number of points earned for these results.
+     */
     int getPoints();
 
     /**
      * @return The total number of points that have been dropped by the team
-     * (this is the total number of available points minus the number of points
-     * actually achieved).
+     * in these matches (this is the total number of available points minus the
+     * number of points actually achieved).
      */
     int getDroppedPoints();
 
@@ -63,12 +103,10 @@ public interface TeamRecord
     double getAveragePoints();
 
     /**
-     * @return A String representation of this teams current form.  Either home form,
-     * away form or combined form depending on the method argument.
+     * @return A String representation of this team's current form as determined
+     * by the results that make up this record.
      */
     String getForm();
-
-    Team getTeam();
 
     /**
      * Used to apply points adjustments (positive or negative) made by the league

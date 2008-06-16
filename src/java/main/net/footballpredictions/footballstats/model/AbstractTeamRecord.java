@@ -35,42 +35,63 @@ public abstract class AbstractTeamRecord implements TeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public Team getTeam()
     {
         return team;
     }
 
-    
+
+    /**
+     * {@inheritDoc}
+     */
     public String getName()
     {
         return team.getName();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getGoalDifference()
     {
         return getScored() - getConceded();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getPoints()
     {
         return (getWon() * pointsForWin) + (getDrawn() * pointsForDraw) + pointsAdjustment;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getDroppedPoints()
     {
         return getPlayed() * pointsForWin - getPoints();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public double getAveragePoints()
     {
         return getPlayed() == 0 ? 0 : getPoints() / getPlayed();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void adjustPoints(int amount)
     {
         pointsAdjustment += amount;
@@ -80,6 +101,7 @@ public abstract class AbstractTeamRecord implements TeamRecord
     /**
      * Over-ride equals.  Records are equal if the teams are the same.
      */
+    @Override
     public boolean equals(Object obj)
     {
         if (obj instanceof AbstractTeamRecord)

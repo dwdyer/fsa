@@ -199,7 +199,7 @@ public class Attendances implements StatsPanel
             {
                 textLabel.setFont(theme.getBoldFont());
             }
-            Label valueLabel = new Label(String.valueOf(team.getAttendance(type)), Label.CENTER);
+            Label valueLabel = new Label(String.valueOf(team.getAttendanceRecord(type)), Label.CENTER);
             teamsColumn.add(textLabel);
             valueLabel.setFont(theme.getBoldFont());
             attendanceColumn.add(valueLabel);

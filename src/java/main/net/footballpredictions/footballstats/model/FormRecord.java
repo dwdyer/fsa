@@ -43,12 +43,18 @@ public class FormRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void addResult(Result result)
     {
         formResults.add(result);
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getForm()
     {
         StringBuilder formString = new StringBuilder();
@@ -79,12 +85,18 @@ public class FormRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getPlayed()
     {
         return formResults.size();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getWon()
     {
         int won = 0;
@@ -99,6 +111,9 @@ public class FormRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getDrawn()
     {
         int drawn = 0;
@@ -113,6 +128,9 @@ public class FormRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getLost()
     {
         int lost = 0;
@@ -127,6 +145,9 @@ public class FormRecord extends AbstractTeamRecord
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
     public int getScored()
     {
         int scored = 0;
@@ -138,6 +159,9 @@ public class FormRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getConceded()
     {
         int conceded = 0;

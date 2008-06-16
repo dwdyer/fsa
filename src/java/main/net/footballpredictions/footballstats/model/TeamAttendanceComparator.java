@@ -35,7 +35,7 @@ final class TeamAttendanceComparator implements Comparator<Team>
         
     public int compare(Team team1, Team team2)
     {
-        int compare = team2.getAttendance(type) - team1.getAttendance(type); // Swap teams for descending sort.
+        int compare = team2.getAttendanceRecord(type) - team1.getAttendanceRecord(type); // Swap teams for descending sort.
         if (compare == 0)
         {
             // If records are the same, sort on alphabetical order.

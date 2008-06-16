@@ -73,6 +73,9 @@ public final class StandardRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public void addResult(Result result)
     {
         results.add(result);
@@ -81,54 +84,90 @@ public final class StandardRecord extends AbstractTeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getPlayed()
     {
         return results.size();
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getWon()
     {
         return won;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getDrawn()
     {
         return drawn;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getLost()
     {
         return lost;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getScored()
     {
         return scored;
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public int getConceded()
     {
         return conceded;
     }
 
 
+    /**
+     * This method answers questions such as "How many consecutive wins
+     * does this team currently have?"
+     * @param sequence The sequence to return the length of.
+     * @return The current length of the specified sequence.
+     * @see #getBestSequence(SequenceType)
+     */
     public int getCurrentSequence(SequenceType sequence)
     {
         return currentSequences.get(sequence);
     }
 
 
+    /**
+     * This method answers questions such as "What is the longest sequence
+     * of consecutive wins this has achieved this season"
+     * @param sequence The sequence to return the length of.
+     * @return The length of the longest sequence of the specified type achieved
+     * this season..
+     * @see #getCurrentSequence(SequenceType)
+     */
     public int getBestSequence(SequenceType sequence)
     {
         return bestSequences.get(sequence);
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     public String getForm()
     {
         return getFormRecord().getForm();
