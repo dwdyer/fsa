@@ -33,8 +33,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
 
@@ -59,8 +61,9 @@ public final class LeagueSeason
     private final Map<String, Team> teamMappings = new HashMap<String, Team>();
     private Set<Team> teams;
     private SortedSet<String> teamNames;
-    private final SortedSet<Date> dates = new TreeSet<Date>(Collections.reverseOrder()); // Most recent first.
-    private final Map<Date, List<Result>> resultsByDate = new HashMap<Date, List<Result>>();
+    // Store a list of results for each date on which matches were played.  The map is sorted
+    // with the earliest date first.
+    private final SortedMap<Date, List<Result>> resultsByDate = new TreeMap<Date, List<Result>>();
 
     private final Comparator<Result> resultAttendanceComparator = new ResultAttendanceComparator();
     private final SortedSet<Result> topAttendances = new FixedSizeSortedSet<Result>(20, resultAttendanceComparator);
@@ -145,12 +148,11 @@ public final class LeagueSeason
                             teamMappings.put(awayTeamName, awayTeam);
                         }
 
-                        if (!dates.isEmpty() && date.before(dates.last()))
+                        if (!resultsByDate.isEmpty() && date.before(resultsByDate.lastKey()))
                         {
                             System.out.println("ERROR: Results must be listed in chronological order.");
                             break;
                         }
-                        dates.add(date);
 
                         Result result = new Result(homeTeam, awayTeam, homeScore, awayScore, attendance, date);
                     
@@ -256,7 +258,7 @@ public final class LeagueSeason
     private void processTeamRecords()
     {
         // Add result to the record of each team.
-        for (Date date : dates)
+        for (Date date : resultsByDate.keySet())
         {
             List<Result> results = resultsByDate.get(date);
             // Add current date's results to individual team records.
@@ -376,13 +378,15 @@ public final class LeagueSeason
      */
     public SortedSet<Date> getDates()
     {
+        SortedSet<Date> dates = new TreeSet<Date>(Collections.reverseOrder());
+        dates.addAll(resultsByDate.keySet());
         return dates;
     }
     
     
     public Date getMostRecentDate()
     {
-        return dates.first();
+        return resultsByDate.lastKey();
     }
     
     

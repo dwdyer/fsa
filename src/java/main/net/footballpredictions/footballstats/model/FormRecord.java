@@ -81,7 +81,7 @@ public class FormRecord extends AbstractTeamRecord
                 formString.append('L');
             }
         }
-        return formString.toString();
+        return formString.reverse().toString();
     }
 
 
