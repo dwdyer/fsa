@@ -57,9 +57,9 @@ public final class FootballStatsApplet extends Applet
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
     
     // Mapping from display name to file name for results files.
-    private final Map<String, URL> dataFiles = new HashMap<String, URL>();
+    private final Map<String, URL> dataFiles = new HashMap<String, URL>(10);
     // Mapping from display name to highlighted team.
-    private final Map<String, String> highlightedTeams = new HashMap<String, String>();
+    private final Map<String, String> highlightedTeams = new HashMap<String, String>(10);
     
     private Theme theme = null;
         
