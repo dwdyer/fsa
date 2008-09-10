@@ -85,7 +85,7 @@ public abstract class AbstractTeamRecord implements TeamRecord
      */
     public double getAveragePoints()
     {
-        return getPlayed() == 0 ? 0 : getPoints() / getPlayed();
+        return getPlayed() == 0 ? 0 : (double) getPoints() / getPlayed();
     }
 
 

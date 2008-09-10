@@ -170,7 +170,7 @@ final class TeamRecordPanel extends Panel
         gdDetailsLabel.setText("(F" + record.getScored() + ", A" + record.getConceded() + ")");
         int points = record.getPoints();
         pointsLabel.setText(String.valueOf(points));
-        pointsAverageLabel.setText("(Av. " + DECIMAL_FORMAT.format(((double) points) / played) + ")");
+        pointsAverageLabel.setText("(Av. " + DECIMAL_FORMAT.format(record.getAveragePoints()) + ")");
         formLabel.setText(record.getFormRecord().getForm());
             
         Result bigWin = record.getBiggestWin();
