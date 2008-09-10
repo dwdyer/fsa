@@ -50,13 +50,13 @@ public final class LeagueSeason
     private int pointsForWin = 3;
     private int pointsForDraw = 1;
     
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("ddMMyyyy");
-
     private static final String POINTS_TAG = "POINTS";
     private static final String PRIZE_TAG = "PRIZE";
     private static final String RELEGATION_TAG = "RELEGATION";
     private static final String AWARDED_TAG = "AWARDED";
     private static final String DEDUCTED_TAG = "DEDUCTED";
+
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
     
     private final Map<String, Team> teamMappings = new HashMap<String, Team>();
     private Set<Team> teams;
@@ -123,7 +123,7 @@ public final class LeagueSeason
                     String dateString = nextResult.nextToken();
                     if (Character.isDigit(dateString.charAt(0))) // Process as a result if first char is a number.
                     {
-                        Date date = DATE_FORMAT.parse(dateString);
+                        Date date = dateFormat.parse(dateString);
                         String homeTeamName = nextResult.nextToken().trim();
                         int homeScore = Integer.parseInt(nextResult.nextToken().trim());
                         String awayTeamName = nextResult.nextToken().trim();

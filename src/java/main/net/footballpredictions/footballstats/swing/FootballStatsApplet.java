@@ -92,8 +92,11 @@ public final class FootballStatsApplet extends JApplet
         {
             public void itemStateChanged(ItemEvent itemEvent)
             {
-                final URL dataURL = dataFiles.get(itemEvent.getItem());
-                updateLeagueData(dataURL);
+                if (itemEvent.getStateChange() == ItemEvent.SELECTED)
+                {
+                    final URL dataURL = dataFiles.get(itemEvent.getItem());
+                    updateLeagueData(dataURL);
+                }
             }
         });
         panel.add(seasonCombo);
