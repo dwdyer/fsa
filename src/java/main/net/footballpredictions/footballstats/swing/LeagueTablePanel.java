@@ -20,27 +20,153 @@ package net.footballpredictions.footballstats.swing;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import javax.swing.JComponent;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableColumn;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.VenueType;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 /**
+ * By default displays a standard league table.  Can also display tables based on total points dropped
+ * or average points per game.  Can be filtered to include only home games or only away games (default is
+ * to include all matches).
  * @author Daniel Dyer
  */
 class LeagueTablePanel extends JPanel implements StatsPanel
 {
-    private final LeagueTableModel leagueTableModel = new LeagueTableModel();
+    private LeagueSeason data = null;
+
+    private final JTable leagueTable = new JTable();
+    private final JComboBox tableTypeCombo = new JComboBox();
+    {
+        tableTypeCombo.addItem(TableType.POINTS_WON);
+        tableTypeCombo.addItem(TableType.POINTS_PER_GAME);
+        tableTypeCombo.addItem(TableType.POINTS_DROPPED);
+    }
+    private final VenueComboBox venueCombo = new VenueComboBox();
 
     public LeagueTablePanel()
     {
         super(new BorderLayout());
-        JTable table = new JTable(leagueTableModel);
-        JScrollPane scroller = new JScrollPane(table);
-        add(scroller, BorderLayout.CENTER);
+        add(createTable(), BorderLayout.CENTER);
+        add(createControls(), BorderLayout.EAST);
     }
 
+    private JComponent createTable()
+    {
+        return new JScrollPane(leagueTable);
+    }
+
+
+    private JComponent createControls()
+    {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        ItemListener itemListener = new ItemListener()
+        {
+            public void itemStateChanged(ItemEvent itemEvent)
+            {
+                if (itemEvent.getStateChange() == ItemEvent.SELECTED)
+                {
+                    changeTable();
+                }
+            }
+        };
+        tableTypeCombo.addItemListener(itemListener);
+        venueCombo.addItemListener(itemListener);
+
+        JPanel innerPanel = new JPanel(new GridLayout(0, 1));
+        innerPanel.add(new JLabel("Table Type:"));
+        innerPanel.add(tableTypeCombo);
+        innerPanel.add(new JLabel("Matches:"));
+        innerPanel.add(venueCombo);
+        panel.add(innerPanel, BorderLayout.NORTH);
+
+        return panel;
+    }
+
+
+    /**
+     * Provides the league data used to construct the tables.
+     */
     public void setLeagueData(LeagueSeason data)
     {
-        leagueTableModel.setTeams(data.getStandardLeagueTable(VenueType.BOTH));
+        this.data = data;
+        changeTable();
+    }
+
+
+    private void changeTable()
+    {
+        TableType type = (TableType) tableTypeCombo.getSelectedItem();
+        leagueTable.setModel(getTableModel(type, (VenueType) venueCombo.getSelectedItem()));
+        TableColumnModel columnModel = leagueTable.getColumnModel();
+        for (int i = 0; i < columnModel.getColumnCount(); i++)
+        {
+            TableColumn column = columnModel.getColumn(i);
+            // Team name column should be much wider than others (others should all be equal).
+            column.setPreferredWidth(i == LeagueTableModel.TEAM_COLUMN ? 125 : 10);
+        }
+
+        TableColumn averageColumn = columnModel.getColumn(LeagueTableModel.AVERAGE_POINTS_COLUMN);
+        averageColumn.setPreferredWidth(30);
+        TableColumn droppedColumn = columnModel.getColumn(LeagueTableModel.POINTS_DROPPED_COLUMN);
+        droppedColumn.setPreferredWidth(30);
+
+        // Hide columns that aren't relevant for the selected table type.
+        if (type != TableType.POINTS_PER_GAME)
+        {
+            columnModel.removeColumn(averageColumn);
+        }
+        if (type != TableType.POINTS_DROPPED)
+        {
+            columnModel.removeColumn(droppedColumn);
+        }
+
+    }
+
+
+    /**
+     * Constructs a league table of the specified type.
+     * @param type The type of table to create (standard, average points, or inverted).
+     * @param where Whether to include just home matches, just away matches, or both.
+     * @return A {@link LeagueTableModel} containing an ordered set of team records.
+     */
+    private LeagueTableModel getTableModel(TableType type, VenueType where)
+    {
+        switch (type)
+        {
+            case POINTS_WON: return new LeagueTableModel(data.getStandardLeagueTable(where));
+            case POINTS_PER_GAME: return new LeagueTableModel(data.getAverageLeagueTable(where));
+            case POINTS_DROPPED: return new LeagueTableModel(data.getInvertedLeagueTable(where));
+            default: throw new IllegalStateException("Unexpected venue type: " + where);
+        }
+    }
+
+
+    private static enum TableType
+    {
+        POINTS_WON("Points Won"),
+        POINTS_PER_GAME("Average Points"),
+        POINTS_DROPPED("Points Dropped");
+
+        private final String description;
+
+        private TableType(String description)
+        {
+            this.description = description;
+        }
+
+        @Override
+        public String toString()
+        {
+            return description;
+        }
     }
 }

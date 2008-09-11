@@ -30,39 +30,30 @@ import java.util.Collection;
  */
 class LeagueTableModel extends AbstractTableModel
 {
-    private static final int POSITION_COLUMN = 0;
-    private static final int TEAM_COLUMN = 1;
-    private static final int PLAYED_COLUMN = 2;
-    private static final int WINS_COLUMN = 3;
-    private static final int DRAWS_COLUMN = 4;
-    private static final int DEFEATS_COLUMN = 5;
-    private static final int SCORED_COLUMN = 6;
-    private static final int CONCEDED_COLUMN = 7;
-    private static final int GOAL_DIFFERENCE_COLUMN = 8;
-    private static final int POINTS_COLUMN = 9;
+    static final int POSITION_COLUMN = 0;
+    static final int TEAM_COLUMN = 1;
+    static final int PLAYED_COLUMN = 2;
+    static final int WINS_COLUMN = 3;
+    static final int DRAWS_COLUMN = 4;
+    static final int DEFEATS_COLUMN = 5;
+    static final int SCORED_COLUMN = 6;
+    static final int CONCEDED_COLUMN = 7;
+    static final int GOAL_DIFFERENCE_COLUMN = 8;
+    static final int POINTS_COLUMN = 9;
+    static final int AVERAGE_POINTS_COLUMN = 10;
+    static final int POINTS_DROPPED_COLUMN = 11;
 
-    private static final String[] COLUMN_NAMES = new String[]{"Pos.", "Team", "P", "W", "D", "L", "F", "A", "GD", "Pts."};
-
-    private final List<TeamRecord> teams = new ArrayList<TeamRecord>(24);
-
-    /**
-     * Creates an empty model.
-     */
-    public LeagueTableModel()
+    private static final String[] COLUMN_NAMES = new String[]
     {
-    }
+        "Pos.", "Team", "P", "W", "D", "L", "F", "A", "GD", "Pts.", "Average", "Dropped"
+    };
+
+    private final List<TeamRecord> teams;
 
     public LeagueTableModel(Collection<? extends TeamRecord> teams)
     {
+        this.teams = new ArrayList<TeamRecord>(teams.size());
         this.teams.addAll(teams);
-    }
-
-
-    public void setTeams(Collection<? extends TeamRecord> teams)
-    {
-        this.teams.clear();
-        this.teams.addAll(teams);
-        fireTableDataChanged();
     }
 
 
@@ -81,7 +72,12 @@ class LeagueTableModel extends AbstractTableModel
     @Override
     public Class<?> getColumnClass(int i)
     {
-        return i == TEAM_COLUMN ? String.class : Integer.class;
+        switch (i)
+        {
+            case TEAM_COLUMN : return String.class;
+            case AVERAGE_POINTS_COLUMN : return Double.class;
+            default : return Integer.class;
+        }
     }
 
 
@@ -106,6 +102,8 @@ class LeagueTableModel extends AbstractTableModel
             case CONCEDED_COLUMN: return team.getConceded();
             case GOAL_DIFFERENCE_COLUMN: return team.getGoalDifference();
             case POINTS_COLUMN: return team.getPoints();
+            case AVERAGE_POINTS_COLUMN: return team.getAveragePoints();
+            case POINTS_DROPPED_COLUMN: return team.getDroppedPoints();
             default: throw new IllegalArgumentException("Invalid column index: " + column);
         }
     }

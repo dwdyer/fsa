@@ -5,7 +5,7 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
 /**
  * @author Daniel Dyer
  */
-public interface StatsPanel
+interface StatsPanel
 {
     /**
      * Sets the data to use for the stats.  Implementing classes should recalculate their
