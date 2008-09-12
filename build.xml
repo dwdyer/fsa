@@ -76,7 +76,7 @@
       <libraryjar path="${jdk.libs}" />
       <injar location="${deploy.dir}/${project.jar}" />
       <outjar name="${deploy.dir}/obfuscated.${project.jar}" />
-      <keep access="public" name="*" extends="java.applet.Applet" />
+      <keep access="public" name="*" extends="javax.swing.JApplet" />
     </proguard>
     <delete file="${deploy.dir}/${project.jar}" />
     <move file="${deploy.dir}/obfuscated.${project.jar}" tofile="${deploy.dir}/${project.jar}" />
@@ -101,7 +101,7 @@
              source="1.5"
              windowtitle="Football Statistics Applet"
              doctitle="Football Statistics Applet">
-      <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
     </javadoc>
   </target>
   
