@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EB" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
   <html>
     <head>
-      <title>Football Statistics Applet - Demo Page</title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <meta name="author" content="Daniel Dyer" />
+      <title>Štatistiky futbalových teamov v Dulovej Vsi.</title>
     </head>
     <body>
 
@@ -16,19 +16,22 @@
         <object classid="java:net.footballpredictions.footballstats.awt.FootballStatsApplet.class" 
                 type="application/x-java-applet"
                 archive="fsa.jar" 
-                height="420"
-                width="640"
+                height="480"
+                width="680"
                 standby="Loading the Football Statistics Applet...">
           <param name="config.url" value="fsa.properties" />
+          <param name="locale" value="sk" />
         <!--<![endif]-->
           <object classid="clsid:08B0E5C0-4FCB-11CF-AAA5-00401C608501"
                   type="application/x-java-applet"
                   archive="fsa.jar" 
-                  height="420"
-                  width="640"
+                  height="480"
+                  width="680"
                   standby="Loading the Football Statistics Applet...">
+
             <param name="code" value="net.footballpredictions.footballstats.awt.FootballStatsApplet.class" />
             <param name="config.url" value="fsa.properties" />
+            <param name="locale" value="sk" />
           </object>
         <!--[if !IE]>-->
         </object>

@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -25,10 +25,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.ResourceBundle;
+
 import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
@@ -44,7 +47,7 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
 public final class FootballStatsApplet extends JApplet
 {
     private static final String VERSION_STRING = "Version 3.0 Alpha";
-    private static final String COPYRIGHT_STRING = "© Copyright 2000-2008, Daniel W. Dyer";
+    private static final String COPYRIGHT_STRING = "ï¿½ Copyright 2000-2008, Daniel W. Dyer";
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
 
     // Mapping from display name to file name for results files.
@@ -53,6 +56,7 @@ public final class FootballStatsApplet extends JApplet
     private final Map<String, String> highlightedTeams = new HashMap<String, String>(10);
 
     private final List<StatsPanel> panels = new LinkedList<StatsPanel>();
+    private ResourceBundle res;
 
     public FootballStatsApplet()
     {
@@ -65,6 +69,16 @@ public final class FootballStatsApplet extends JApplet
     {
         System.out.println("Initialising applet...");
         loadConfiguration();
+        
+        String curLocaleString = getParameter("locale");
+        if (curLocaleString == null ){
+        	System.err.println("Param locale is null");
+        	curLocaleString = "en";
+        }
+        System.out.println("Param locale=" + curLocaleString);
+        
+        Locale locale = new Locale(curLocaleString);
+        res = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa", locale);
 
         JTabbedPane tabs = new JTabbedPane();
         LeagueTablePanel leagueTable = new LeagueTablePanel();
@@ -114,7 +128,7 @@ public final class FootballStatsApplet extends JApplet
         {
             protected LeagueSeason performTask() throws Exception
             {
-                return new LeagueSeason(dataURL);
+                return new LeagueSeason(dataURL, res);
             }
 
             @Override
