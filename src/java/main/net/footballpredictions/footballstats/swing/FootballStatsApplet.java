@@ -79,7 +79,7 @@ public final class FootballStatsApplet extends JApplet
         
         Locale locale = new Locale(curLocaleString);
         res = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa", locale);
-
+        
         JTabbedPane tabs = new JTabbedPane();
         LeagueTablePanel leagueTable = new LeagueTablePanel();
         panels.add(leagueTable);
@@ -128,7 +128,7 @@ public final class FootballStatsApplet extends JApplet
         {
             protected LeagueSeason performTask() throws Exception
             {
-                return new LeagueSeason(dataURL, res);
+                return new LeagueSeason(dataURL,res);
             }
 
             @Override
