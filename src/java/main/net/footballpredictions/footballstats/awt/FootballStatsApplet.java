@@ -72,7 +72,6 @@ public final class FootballStatsApplet extends Applet
     
     private final Map<String, StatsPanel> panels = new HashMap<String, StatsPanel>();
     private ResourceBundle res;
-
     
     public FootballStatsApplet()
     {
