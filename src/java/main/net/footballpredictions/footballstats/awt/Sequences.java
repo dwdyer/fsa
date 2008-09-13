@@ -30,6 +30,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ResourceBundle;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.SequenceType;
@@ -58,9 +59,15 @@ public class Sequences implements StatsPanel
     private Panel controls = null;
     private Panel view = null;
     private Label[][] labels = null;
-
+    private ResourceBundle res = null;
     
-    public void setLeagueData(LeagueSeason data, String highlightedTeam)
+    
+    public Sequences(ResourceBundle res) {
+		this.res = res;
+	}
+
+
+	public void setLeagueData(LeagueSeason data, String highlightedTeam)
     {
         this.data = data;
         this.highlightedTeam = highlightedTeam;
@@ -85,25 +92,25 @@ public class Sequences implements StatsPanel
         {
             Panel innerPanel = new Panel(new GridLayout(5, 1));
             
-            innerPanel.add(new Label("Sequence Type:"));
+            innerPanel.add(new Label(res.getString("sequences.type")));
             for (SequenceType sequence : SequenceType.values())
             {
-                sequenceChoice.add(sequence.toString());
+                sequenceChoice.add(res.getString(sequence.toString()));
             }
             innerPanel.add(sequenceChoice);
             
             Panel checkboxPanel = new Panel(new GridLayout(1, 2));
             CheckboxGroup optionGroup = new CheckboxGroup();
-            Checkbox currentCheckbox = new Checkbox("Current", optionGroup, true);
-            seasonCheckbox = new Checkbox("Season", optionGroup, false);
+            Checkbox currentCheckbox = new Checkbox(res.getString("sequences.current"), optionGroup, true);
+            seasonCheckbox = new Checkbox(res.getString("sequences.season"), optionGroup, false);
             checkboxPanel.add(currentCheckbox);
             checkboxPanel.add(seasonCheckbox);
             innerPanel.add(checkboxPanel);
             
-            innerPanel.add(new Label("Matches:"));
-            matchesChoice.add("Home & Away");
-            matchesChoice.add("Home Only");
-            matchesChoice.add("Away Only");
+            innerPanel.add(new Label(res.getString("sequences.matches")));
+            matchesChoice.add(res.getString("league.matches.home_away"));
+            matchesChoice.add(res.getString("league.matches.home"));
+            matchesChoice.add(res.getString("league.matches.away"));
             innerPanel.add(matchesChoice);            
 
             ItemListener controlListener = new ItemListener()
@@ -207,16 +214,16 @@ public class Sequences implements StatsPanel
      */
     private String getTitleText(boolean current, VenueType where, SequenceType sequence)
     {
-        StringBuffer buffer = new StringBuffer(where.getDescription());
-        buffer.append(sequence.toString());
+        StringBuffer buffer = new StringBuffer(res.getString(where.getDescription()));
+        buffer.append( res.getString(sequence.toString()).toLowerCase());
         
         if (current)
         {
-            buffer.insert(0, "Current Consecutive ");
+            buffer.insert(0, res.getString("sequences.curr_conseq"));
         }
         else
         {
-            buffer.insert(0, "Most Consecutive ");
+            buffer.insert(0, res.getString("sequences.most_conseq"));
         }
         return buffer.toString();
     }

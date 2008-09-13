@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -41,8 +41,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
+
 import net.footballpredictions.footballstats.model.LeagueSeason;
 
 /**
@@ -52,8 +55,8 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
  */
 public final class FootballStatsApplet extends Applet
 {
-    private static final String VERSION_STRING = "Version 3.0 Alpha";
-    private static final String COPYRIGHT_STRING = "© Copyright 2000-2008, Daniel W. Dyer";
+    private static final String VERSION_STRING 	= "Version 3.0 Alpha";
+    private static final String COPYRIGHT_STRING 	= "ï¿½Copyright 2000-2008, Daniel W. Dyer";
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
     
     // Mapping from display name to file name for results files.
@@ -68,11 +71,14 @@ public final class FootballStatsApplet extends Applet
     private final Choice fileSelectorDropDown = new Choice();
     
     private final Map<String, StatsPanel> panels = new HashMap<String, StatsPanel>();
+    private ResourceBundle res;
+
     
     public FootballStatsApplet()
     {
         System.out.println(getAppletInfo());
-        setLayout(new BorderLayout());        
+        setLayout(new BorderLayout());   
+        
     }
     
     
@@ -81,39 +87,49 @@ public final class FootballStatsApplet extends Applet
         System.out.println("Initialising applet...");
         removeAll();
         loadConfiguration();
+        
+        String curLocaleString = getParameter("locale");
+        if (curLocaleString == null ){
+        	System.err.println("Param locale is null");
+        	curLocaleString = "en";
+        }
+        System.out.println("Param locale=" + curLocaleString);
+        
+        Locale locale = new Locale(curLocaleString);
+        res = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa", locale);
 
         // Create the various stats screens.
-        LeagueTable leagueTable = new LeagueTable(false);
+        LeagueTable leagueTable = new LeagueTable(false,res);
         leagueTable.setTheme(theme);
-        panels.put("LeagueTable", leagueTable);
+        panels.put(res.getString("fsa.panel.league_table"), leagueTable);
         
-        Results results = new Results();
+        Results results = new Results(res);
         results.setTheme(theme);
-        panels.put("Results", results);
+        panels.put(res.getString("fsa.panel.results"), results);
         
-        LeagueTable formTable = new LeagueTable(true);
+        LeagueTable formTable = new LeagueTable(true, res);
         formTable.setTheme(theme);
-        panels.put("Form", formTable);
+        panels.put(res.getString("fsa.panel.form"), formTable);
         
-        Sequences sequences = new Sequences();
+        Sequences sequences = new Sequences(res);
         sequences.setTheme(theme);
-        panels.put("Sequences", sequences);
+        panels.put(res.getString("fsa.panel.sequences"), sequences);
         
-        Overview overview = new Overview();
+        Overview overview = new Overview(res);
         overview.setTheme(theme);
-        panels.put("Overview", overview);
+        panels.put(res.getString("fsa.panel.overview"), overview);
         
-        HeadToHead headToHead = new HeadToHead();
+        HeadToHead headToHead = new HeadToHead(res);
         headToHead.setTheme(theme);
-        panels.put("Head-to-Head", headToHead);
+        panels.put(res.getString("fsa.panel.head_to_head"), headToHead);
         
-        Attendances attendances = new Attendances();
+        Attendances attendances = new Attendances(res);
         attendances.setTheme(theme);
-        panels.put("Attendances", attendances);
+        panels.put(res.getString("fsa.panel.attendances"), attendances);
         
-        Graphs graphs = new Graphs();
+        Graphs graphs = new Graphs(res);
         graphs.setTheme(theme);
-        panels.put("Graphs", graphs);
+        panels.put(res.getString("fsa.panel.graphs"), graphs);
         
         addToContainer(this, createMainControls(), BorderLayout.NORTH);
         addToContainer(this, createControlPanel(), BorderLayout.EAST);
@@ -151,22 +167,22 @@ public final class FootballStatsApplet extends Applet
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         
-        final Button leagueTablesButton = new Button("League Tables");
-        leagueTablesButton.setActionCommand("LeagueTable");
-        final Button resultsButton = new Button("Results");
-        resultsButton.setActionCommand("Results");
-        final Button formTablesButton = new Button("Form");
-        formTablesButton.setActionCommand("Form");
-        final Button sequencesButton = new Button("Sequences");
-        sequencesButton.setActionCommand("Sequences");
-        final Button seasonButton = new Button("Overview");
-        seasonButton.setActionCommand("Overview");
-        final Button compareButton = new Button("Head-to-Head");
-        compareButton.setActionCommand("Head-to-Head");
-        final Button attendancesButton = new Button("Attendances");
-        attendancesButton.setActionCommand("Attendances");
-        final Button graphsButton = new Button("Graphs");
-        graphsButton.setActionCommand("Graphs");
+        final Button leagueTablesButton = new Button(res.getString("fsa.panel.league_table"));
+        leagueTablesButton.setActionCommand(res.getString("fsa.panel.league_table"));
+        final Button resultsButton = new Button(res.getString("fsa.panel.results"));
+        resultsButton.setActionCommand(res.getString("fsa.panel.results"));
+        final Button formTablesButton = new Button(res.getString("fsa.panel.form"));
+        formTablesButton.setActionCommand(res.getString("fsa.panel.form"));
+        final Button sequencesButton = new Button(res.getString("fsa.panel.sequences"));
+        sequencesButton.setActionCommand(res.getString("fsa.panel.sequences"));
+        final Button seasonButton = new Button(res.getString("fsa.panel.overview"));
+        seasonButton.setActionCommand(res.getString("fsa.panel.overview"));
+        final Button compareButton = new Button(res.getString("fsa.panel.head_to_head"));
+        compareButton.setActionCommand(res.getString("fsa.panel.head_to_head"));
+        final Button attendancesButton = new Button(res.getString("fsa.panel.attendances"));
+        attendancesButton.setActionCommand(res.getString("fsa.panel.attendances"));
+        final Button graphsButton = new Button(res.getString("fsa.panel.graphs"));
+        graphsButton.setActionCommand(res.getString("fsa.panel.graphs"));
 
         final Button[] buttons = new Button[]{leagueTablesButton, resultsButton, formTablesButton, sequencesButton, seasonButton, compareButton, attendancesButton, graphsButton};
 
@@ -261,7 +277,7 @@ public final class FootballStatsApplet extends Applet
     private Component createFileSelector()
     {
         Panel fileSelector = new Panel(new FlowLayout(FlowLayout.LEFT, 5, 0));
-        addToContainer(fileSelector, new Label("League Data:"));
+        addToContainer(fileSelector, new Label(res.getString("fsa.league.data")));
         fileSelectorDropDown.addItemListener(new ItemListener()
         {
             public void itemStateChanged(ItemEvent ev)
@@ -323,7 +339,7 @@ public final class FootballStatsApplet extends Applet
         {
             URL dataFileURL = dataFiles.get(selection);
             System.out.println("Loading results data...");
-            LeagueSeason data = new LeagueSeason(dataFileURL);
+            LeagueSeason data = new LeagueSeason(dataFileURL, res);
             System.out.println("Done.");
         
             for (StatsPanel panel : panels.values())

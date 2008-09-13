@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 package net.footballpredictions.footballstats.model;
 
 import java.util.Date;
+import java.util.ResourceBundle;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.List;
@@ -51,12 +52,12 @@ public final class Team
      * Constructor, sets name.  All other data is added via the addResult method later.
      * @param name The name of the team.
      */
-    public Team(String name)
+    public Team(String name, ResourceBundle res)
     {
         this.name = name;
-        this.homeRecord = new StandardRecord(this, VenueType.HOME);
-        this.awayRecord = new StandardRecord(this, VenueType.AWAY);
-        this.overallRecord = new StandardRecord(this, VenueType.BOTH);
+        this.homeRecord = new StandardRecord(this, VenueType.HOME, res);
+        this.awayRecord = new StandardRecord(this, VenueType.AWAY, res);
+        this.overallRecord = new StandardRecord(this, VenueType.BOTH, res);
     }
 
 

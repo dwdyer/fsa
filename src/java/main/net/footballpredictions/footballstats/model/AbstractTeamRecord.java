@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -85,9 +85,9 @@ public abstract class AbstractTeamRecord implements TeamRecord
      */
     public double getAveragePoints()
     {
-        return getPlayed() == 0 ? 0 : (double) getPoints() / getPlayed();
+        return getPlayed() == 0 ? 0 : (double) getPoints() / (double) getPlayed();
     }
-
+    
 
     /**
      * {@inheritDoc}

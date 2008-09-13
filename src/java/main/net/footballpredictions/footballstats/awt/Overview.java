@@ -24,6 +24,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.Panel;
+import java.util.ResourceBundle;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
@@ -45,7 +46,15 @@ public class Overview implements StatsPanel
                   aggregateLabel, averageLabel;
     private Panel homeWinsPanel, awayWinsPanel, aggregatesPanel;
     
-    public void setLeagueData(LeagueSeason data, String highlightedTeam)
+    private ResourceBundle res = null;
+    
+    
+    public Overview(ResourceBundle res) {
+		this.res = res;
+	}
+
+
+	public void setLeagueData(LeagueSeason data, String highlightedTeam)
     {
         this.data = data;
         this.highlightedTeam = highlightedTeam;
@@ -76,15 +85,15 @@ public class Overview implements StatsPanel
             view.add(createTotalsPanel(), BorderLayout.WEST);
             Panel innerPanel = new Panel(new GridLayout(3, 1));
             homeWinsPanel = new Panel(new BorderLayout());
-            Label homeWinsLabel = new Label("Biggest Home Wins");
+            Label homeWinsLabel = new Label(res.getString("overview.biggest_home_win"));
             homeWinsLabel.setFont(theme.getBoldFont());
             homeWinsPanel.add(homeWinsLabel, BorderLayout.NORTH);
             awayWinsPanel = new Panel(new BorderLayout());
-            Label awayWinsLabel = new Label("Biggest Away Wins");
+            Label awayWinsLabel = new Label(res.getString("overview.biggest_away_win"));
             awayWinsLabel.setFont(theme.getBoldFont());
             awayWinsPanel.add(awayWinsLabel, BorderLayout.NORTH);
             aggregatesPanel = new Panel(new BorderLayout());
-            Label aggregatesLabel = new Label("Highest Match Aggregates");
+            Label aggregatesLabel = new Label(res.getString("overview.highest_match_agregates"));
             aggregatesLabel.setFont(theme.getBoldFont());
             aggregatesPanel.add(aggregatesLabel, BorderLayout.NORTH);
             innerPanel.add(homeWinsPanel);
@@ -111,26 +120,26 @@ public class Overview implements StatsPanel
         extraConstraints.gridwidth = GridBagConstraints.REMAINDER;        
         extraConstraints.weightx = 0.1;
         
-        Label totalsLabel = new Label("Totals");
+        Label totalsLabel = new Label(res.getString("overview.totals.label"));
         totalsLabel.setFont(theme.getBoldFont());
         innerPanel.add(totalsLabel, extraConstraints);
-        innerPanel.add(new Label("Matches Played:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.matches_played")), labelConstraints);
         matchesLabel = new Label();
         matchesLabel.setFont(theme.getBoldFont());
         innerPanel.add(matchesLabel, extraConstraints);
-        innerPanel.add(new Label("Home Wins:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.home_wins")), labelConstraints);
         homeWinsLabel = new Label();
         homeWinsLabel.setFont(theme.getBoldFont());
         innerPanel.add(homeWinsLabel, valueConstraints);
         homeWinsPercentLabel = new Label();
         innerPanel.add(homeWinsPercentLabel, extraConstraints);
-        innerPanel.add(new Label("Away Wins:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.away_wins")), labelConstraints);
         awayWinsLabel = new Label();
         awayWinsLabel.setFont(theme.getBoldFont());
         innerPanel.add(awayWinsLabel, valueConstraints);
         awayWinsPercentLabel = new Label();
         innerPanel.add(awayWinsPercentLabel, extraConstraints);
-        innerPanel.add(new Label("Draws:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.draws")), labelConstraints);
         drawsLabel = new Label();
         drawsLabel.setFont(theme.getBoldFont());
         innerPanel.add(drawsLabel, valueConstraints);
@@ -139,7 +148,7 @@ public class Overview implements StatsPanel
         drawsBreakdownLabel = new Label();
         drawsBreakdownLabel.setFont(theme.getSmallFont());
         innerPanel.add(drawsBreakdownLabel, extraConstraints);
-        innerPanel.add(new Label("Goals Scored:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.goal_scored")), labelConstraints);
         goalsLabel = new Label();
         goalsLabel.setFont(theme.getBoldFont());
         innerPanel.add(goalsLabel, valueConstraints);
@@ -148,19 +157,19 @@ public class Overview implements StatsPanel
         goalsBreakdownLabel = new Label();
         goalsBreakdownLabel.setFont(theme.getSmallFont());
         innerPanel.add(goalsBreakdownLabel, extraConstraints);
-        innerPanel.add(new Label("Cleansheets:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.clean_sheets")), labelConstraints);
         cleansheetsLabel = new Label();
         cleansheetsLabel.setFont(theme.getBoldFont());
         innerPanel.add(cleansheetsLabel, extraConstraints);
         innerPanel.add(new Label(), extraConstraints); // Blank Row
-        Label attendancesLabel = new Label("Attendances");
+        Label attendancesLabel = new Label(res.getString("fsa.panel.attendances"));
         attendancesLabel.setFont(theme.getBoldFont());
         innerPanel.add(attendancesLabel, extraConstraints);
-        innerPanel.add(new Label("Aggregate:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.att.aggregate")), labelConstraints);
         aggregateLabel = new Label();
         aggregateLabel.setFont(theme.getBoldFont());
         innerPanel.add(aggregateLabel, extraConstraints);
-        innerPanel.add(new Label("Average:"), labelConstraints);
+        innerPanel.add(new Label(res.getString("overview.att.average")), labelConstraints);
         averageLabel = new Label();
         averageLabel.setFont(theme.getBoldFont());
         innerPanel.add(averageLabel, extraConstraints);        
@@ -182,7 +191,9 @@ public class Overview implements StatsPanel
             drawsBreakdownLabel.setText("(Scoring Draws: " + data.getScoreDraws() + ", Goalless Draws: " + data.getNoScoreDraws() + ")");
             goalsLabel.setText(String.valueOf(data.getHomeGoals() + data.getAwayGoals()));
             goalsAverageLabel.setText("(" + theme.getDecimalFormat().format(((double) data.getHomeGoals() + data.getAwayGoals()) / data.getMatchCount()) + " per game)");
-            goalsBreakdownLabel.setText("(Home Goals: " + data.getHomeGoals() + ", Away Goals: " + data.getAwayGoals() + ")");
+            goalsBreakdownLabel.setText("("+
+            		res.getString("overview.home_goals") + data.getHomeGoals() +", "+ 
+            		res.getString("overview.away_goals") + data.getAwayGoals() + ")");
             cleansheetsLabel.setText(String.valueOf(data.getCleansheets()));
             aggregateLabel.setText(String.valueOf(data.getAggregateAttendance()));
             averageLabel.setText(String.valueOf(data.getAverageAttendance()));

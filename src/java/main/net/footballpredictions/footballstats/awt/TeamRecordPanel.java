@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.text.DecimalFormat;
 import java.util.Iterator;
+import java.util.ResourceBundle;
+
 import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.StandardRecord;
 import net.footballpredictions.footballstats.model.Team;
@@ -51,6 +53,8 @@ final class TeamRecordPanel extends Panel
     private final Label lostPercentageLabel = new Label();
     private final Label gdLabel = new Label();
     private final Label gdDetailsLabel = new Label();
+    private final Label scoredAvgLabel = new Label();
+    private final Label concededAvgLabel = new Label();
     private final Label pointsLabel = new Label();
     private final Label pointsAverageLabel = new Label();
     private final Label formLabel = new Label();
@@ -62,11 +66,14 @@ final class TeamRecordPanel extends Panel
     private final Label mostRecentLabel = new Label();
 
     private final Label[] notesLabels = new Label[3];
+    
+    private ResourceBundle res = null;
         
-    public TeamRecordPanel()
+    public TeamRecordPanel(ResourceBundle res)
     {
         super(new BorderLayout());
 
+        this.res = res;
         // Header.
         Panel header = new Panel(new BorderLayout());
         header.add(nameLabel, BorderLayout.NORTH);
@@ -85,19 +92,30 @@ final class TeamRecordPanel extends Panel
             
         // Main stats.
         Panel mainPanel = new Panel(new GridLayout(0, 2));
-        mainPanel.add(new Label("Played:"));
+        
+        mainPanel.add(new Label(res.getString("team.playing_record.played")));
         mainPanel.add(playedLabel);
-        mainPanel.add(new Label("Won:"));
+
+        mainPanel.add(new Label(res.getString("team.playing_record.won")));
         mainPanel.add(Util.wrapLabelPair(wonLabel, wonPercentageLabel));
-        mainPanel.add(new Label("Drawn:"));
+        
+        mainPanel.add(new Label(res.getString("team.playing_record.drawn")));
         mainPanel.add(Util.wrapLabelPair(drawnLabel, drawnPercentageLabel));
-        mainPanel.add(new Label("Lost:"));
+
+        mainPanel.add(new Label(res.getString("team.playing_record.lost")));
         mainPanel.add(Util.wrapLabelPair(lostLabel, lostPercentageLabel));
-        mainPanel.add(new Label("Goal Difference:"));
-        mainPanel.add(Util.wrapLabelPair(gdLabel, gdLabel));
-        mainPanel.add(new Label("Points:"));
+
+        mainPanel.add(new Label(res.getString("team.playing_record.goal_difference")));
+        mainPanel.add(Util.wrapLabelPair(gdLabel, gdDetailsLabel));
+        
+        mainPanel.add(new Label(res.getString("team.playing_record.goals_average_game")));
+        mainPanel.add(Util.wrapLabelPair(scoredAvgLabel, concededAvgLabel));
+
+
+        mainPanel.add(new Label(res.getString("team.playing_record.points")));
         mainPanel.add(Util.wrapLabelPair(pointsLabel, pointsAverageLabel));
-        mainPanel.add(new Label("Form:"));
+
+        mainPanel.add(new Label(res.getString("team.playing_record.form")));
         mainPanel.add(formLabel);
 
         // Key results.
@@ -140,46 +158,86 @@ final class TeamRecordPanel extends Panel
         
         nameLabel.setText(team.getName());
         int pos = team.getLastLeaguePosition();
-        positionLabel.setText("Current league position: " + pos + getSuffix(pos));
+        positionLabel.setText( res.getString("team.currentPosition") + pos + getSuffix(pos));
         String venueText = getVenueText(where);
-        playingRecordTitleLabel.setText(venueText + " Playing Record");
+        playingRecordTitleLabel.setText(venueText + res.getString("team.playing_record"));
         if (where == VenueType.BOTH)
         {
-            bigWinTitleLabel.setText("Biggest Win");
-            bigDefeatTitleLabel.setText("Biggest Defeat");
-            mostRecentTitleLabel.setText("Most Recent Result");
+            bigWinTitleLabel.setText( res.getString("team.playing_record.biggestWin"));
+            bigDefeatTitleLabel.setText(res.getString("team.playing_record.biggestDefeat"));
+            mostRecentTitleLabel.setText(res.getString("team.playing_record.mostRecentResult"));
         }
         else
         {
-            bigWinTitleLabel.setText("Biggest " + venueText + " Win");
-            bigDefeatTitleLabel.setText("Biggest " + venueText + " Defeat");
-            mostRecentTitleLabel.setText("Most Recent " + venueText + " Result");
+        	if (res.getLocale() != null && res.getLocale().getCountry().toLowerCase().equals("sk") == true){
+        		bigWinTitleLabel.setText(res.getString("team.playing_record.biggest") 
+    					+ res.getString("team.playing_record.label.win").toLowerCase() + " "
+    					+ venueText.toLowerCase());
+			    bigDefeatTitleLabel.setText(res.getString("team.playing_record.biggest") 
+			    					+  res.getString("team.playing_record.label.defeat").toLowerCase() + " "
+			    					+ venueText.toLowerCase());
+			    mostRecentTitleLabel.setText(res.getString("team.playing_record.mostRecent") + " "
+			    					+ venueText.toLowerCase());
+        	}
+        	else{
+        		bigWinTitleLabel.setText(res.getString("team.playing_record.biggest") 
+    					+ venueText.toLowerCase() 
+    					+ res.getString("team.playing_record.label.win").toLowerCase());
+			    bigDefeatTitleLabel.setText(res.getString("team.playing_record.biggest") 
+			    					+ venueText.toLowerCase()
+			    					+  res.getString("team.playing_record.label.defeat").toLowerCase());
+			    mostRecentTitleLabel.setText(res.getString("team.playing_record.mostRecent")
+			    					+ venueText.toLowerCase() 
+			    					+  res.getString("team.playing_record.label.result").toLowerCase());
+		}
+            
         }
 
         int played = record.getPlayed();
         playedLabel.setText(String.valueOf(played));
+        
         wonLabel.setText(String.valueOf(record.getWon()));
         wonPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(record.getWon(), played)) + "%)");
+        
         drawnLabel.setText(String.valueOf(record.getDrawn()));
         drawnPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(record.getDrawn(), played)) + "%)");
+        
         lostLabel.setText(String.valueOf(record.getLost()));
         lostPercentageLabel.setText("(" + DECIMAL_FORMAT.format(getPercentage(record.getLost(), played)) + "%)");
+        
         int gd = record.getGoalDifference();
         gdLabel.setText(gd > 0 ? "+" + gd : String.valueOf(gd));
         gdLabel.setForeground(theme.getGoalDifferenceColour(gd));
-        gdDetailsLabel.setText("(F" + record.getScored() + ", A" + record.getConceded() + ")");
+        gdDetailsLabel.setText("("+ res.getString("team.playing_record.scored.short")
+        		+":" + record.getScored() 
+        		+ ", "+ res.getString("team.playing_record.conceded.short")
+        		+":" + record.getConceded() + ")");
+
+        scoredAvgLabel.setText(
+        		res.getString("team.playing_record.scored.short") + ":" 
+        		+ DECIMAL_FORMAT.format((float)record.getScored()/record.getPlayed()));
+        
+        concededAvgLabel.setText(
+        		res.getString("team.playing_record.conceded.short") + ":" 
+        		+ DECIMAL_FORMAT.format((float)record.getConceded()/record.getPlayed()));
+        
         int points = record.getPoints();
         pointsLabel.setText(String.valueOf(points));
-        pointsAverageLabel.setText("(Av. " + DECIMAL_FORMAT.format(record.getAveragePoints()) + ")");
+        pointsAverageLabel.setText("("+ res.getString("team.playing_record.average.short") 
+        						+ DECIMAL_FORMAT.format(((double) points) / played) + ")");
+        
         formLabel.setText(record.getFormRecord().getForm());
-            
+
         Result bigWin = record.getBiggestWin();
         Result bigDefeat = record.getBiggestDefeat();
         Result mostRecent = record.getLatestResult();
+        
         bigWinLabel.setText(resultAsString(team, bigWin));
         bigWinLabel.setForeground(getResultColour(team, bigWin));
+        
         bigDefeatLabel.setText(resultAsString(team, bigDefeat));
         bigDefeatLabel.setForeground(getResultColour(team, bigDefeat));
+        
         mostRecentLabel.setText(resultAsString(team, mostRecent));
         mostRecentLabel.setForeground(getResultColour(team, mostRecent));
             
@@ -195,13 +253,13 @@ final class TeamRecordPanel extends Panel
     {
         if (venue == VenueType.HOME)
         {
-            return "Home";
+            return res.getString("team.venue.home");
         }
         else if (venue == VenueType.AWAY)
         {
-            return "Away";
+            return res.getString("team.venue.away");
         }
-        return "Overall";
+        return res.getString("team.venue.overall");
     }
             
             
@@ -209,7 +267,7 @@ final class TeamRecordPanel extends Panel
     {
         if (result == null)
         {
-            return "N/A";
+            return res.getString("results.not_available");
         }
         StringBuffer buffer = new StringBuffer();
         buffer.append(result.getGoalsFor(team));
@@ -217,12 +275,12 @@ final class TeamRecordPanel extends Panel
         buffer.append(result.getGoalsAgainst(team));
         if (result.getHomeTeam().equals(team))
         {
-            buffer.append(" v ");
+            buffer.append(res.getString("results.versus"));
             buffer.append(result.getAwayTeam().getName());
         }
         else
         {
-            buffer.append(" at ");
+            buffer.append(res.getString("results.at"));
             buffer.append(result.getHomeTeam().getName());
         }
         return buffer.toString();

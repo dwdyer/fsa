@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
@@ -40,12 +42,7 @@ import net.footballpredictions.footballstats.model.Team;
  */
 public class Attendances implements StatsPanel
 {
-    private static final String[] TITLES = new String[]{"Average Attendance By Team",
-                                                        "Highest Attendance By Team",
-                                                        "Lowest Attendance By Team",
-                                                        "Aggregate Attendance By Team",
-                                                        "Top 20 Highest Attendances",
-                                                        "Top 20 Lowest Attendances"};
+    private final String[] TITLES;
         
     private LeagueSeason data = null;
     private Theme theme = null;
@@ -60,6 +57,8 @@ public class Attendances implements StatsPanel
     private Panel controls = null;
     private Panel view = null;
     
+    private ResourceBundle res = null;
+    
     public void setLeagueData(LeagueSeason data, String highlightedTeam)
     {
         this.data = data;
@@ -68,10 +67,24 @@ public class Attendances implements StatsPanel
         {
             updateView();
         }
+        
     }
     
     
-    public void setTheme(Theme theme)
+	public Attendances(ResourceBundle res) {
+		this.res = res;
+		
+		TITLES = new String[]{res.getString("att.titles.average_by_team"),
+				res.getString("att.titles.highest_by_team"),
+				res.getString("att.titles.lowest_by_team"),
+				res.getString("att.titles.agregate_by_team"),
+				res.getString("att.titles.top20_highest"),
+				res.getString("att.titles.top20_lowest")};
+	}
+
+
+
+	public void setTheme(Theme theme)
     {
         this.theme = theme;
     }
@@ -83,13 +96,13 @@ public class Attendances implements StatsPanel
         {
             Panel innerPanel = new Panel(new GridLayout(2, 1));
             
-            innerPanel.add(new Label("Table Type:"));
-            typeChoice.add("Team Average");
-            typeChoice.add("Team Highest");
-            typeChoice.add("Team Lowest");
-            typeChoice.add("Team Aggregate");
-            typeChoice.add("Highest Attendances");
-            typeChoice.add("Lowest Attendances");
+            innerPanel.add(new Label(res.getString("att.table_type")));
+            typeChoice.add(res.getString("att.team.average"));
+            typeChoice.add(res.getString("att.team.highest"));
+            typeChoice.add(res.getString("att.team.lowest"));
+            typeChoice.add(res.getString("att.team.agregate"));
+            typeChoice.add(res.getString("att.highest"));
+            typeChoice.add(res.getString("att.lowest"));
             innerPanel.add(typeChoice);
             
             typeChoice.addItemListener(new ItemListener()

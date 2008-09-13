@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ResourceBundle;
+
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.VenueType;
 
@@ -38,16 +40,27 @@ public class HeadToHead implements StatsPanel
 {
     private LeagueSeason data = null;
 
-    private final TeamRecordPanel homeTeamPanel = new TeamRecordPanel();
-    private final TeamRecordPanel awayTeamPanel = new TeamRecordPanel();
+    private final TeamRecordPanel homeTeamPanel;
+    private final TeamRecordPanel awayTeamPanel;
     private final Choice homeTeamChoice = new Choice();
     private final Choice awayTeamChoice = new Choice();
     private final Choice typeChoice = new Choice();
     
     private Panel controls = null;
     private Panel view = null;
+    private ResourceBundle res = null;
     
-    public void setLeagueData(LeagueSeason data, String highlightedTeam)
+    
+    
+    public HeadToHead(ResourceBundle res) {
+		this.res = res;
+		homeTeamPanel = new TeamRecordPanel(res);
+		awayTeamPanel = new TeamRecordPanel(res);
+		
+	}
+
+
+	public void setLeagueData(LeagueSeason data, String highlightedTeam)
     {
         this.data = data;
         
@@ -91,13 +104,13 @@ public class HeadToHead implements StatsPanel
             controls = new Panel(new BorderLayout());
             Panel innerPanel = new Panel(new GridLayout(6, 1));
             
-            innerPanel.add(new Label("Home Team:"));
+            innerPanel.add(new Label(res.getString("head2head.homeTeam")));
             innerPanel.add(homeTeamChoice);
-            innerPanel.add(new Label("Away Team:"));
+            innerPanel.add(new Label(res.getString("head2head.awayTeam")));
             innerPanel.add(awayTeamChoice);
-            innerPanel.add(new Label("Comparison Type:"));
-            typeChoice.add("Overall");
-            typeChoice.add("Home/Away");
+            innerPanel.add(new Label(res.getString("head2head.comparisonType")));
+            typeChoice.add(res.getString("head2head.comparisonType.overall"));
+            typeChoice.add(res.getString("head2head.comparisonType.home_away"));
             innerPanel.add(typeChoice);
             
             ItemListener itemListener = new ItemListener()

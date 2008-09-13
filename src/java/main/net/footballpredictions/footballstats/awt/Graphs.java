@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.SortedMap;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 
@@ -56,8 +57,17 @@ public class Graphs implements StatsPanel
     
     private Panel controls = null;
     private Panel view = null;
+    
+    private ResourceBundle res = null;
+    
+    
 
-    public void setLeagueData(LeagueSeason data, String highlightedTeam)
+    public Graphs(ResourceBundle res) {
+		this.res = res;
+	}
+
+
+	public void setLeagueData(LeagueSeason data, String highlightedTeam)
     {
         this.data = data;
 
@@ -125,9 +135,9 @@ public class Graphs implements StatsPanel
             };
 
             Panel innerPanel = new Panel(new GridLayout(9, 1));
-            innerPanel.add(new Label("Graph Type"));
-            typeChoice.add("League Position");
-            typeChoice.add("Total Points");
+            innerPanel.add(new Label(res.getString("graphs.graph_type")));
+            typeChoice.add(res.getString("graphs.league_position"));
+            typeChoice.add(res.getString("graphs.total_points"));
             innerPanel.add(typeChoice);
             innerPanel.add(new Label()); // Blank Row
             for (int i = 0; i < teamChoices.length; i++)
@@ -212,13 +222,13 @@ public class Graphs implements StatsPanel
             {
                 graph = new Graph(maxX, maxY, true);
                 graph.setYLabels("1", String.valueOf(maxY));
-                titleLabel.setText("League Positions By Date");
+                titleLabel.setText( res.getString("graphs.position_by_date"));
             }
             else if (typeChoice.getSelectedIndex() == 1)
             {
                 graph = new Graph(maxX, maxY, false);
                 graph.setYLabels("0", String.valueOf(maxY));
-                titleLabel.setText("Total Points After Each Match");
+                titleLabel.setText( res.getString("graphs.points_by_match"));
             }
             for (int i = 0; i < plots.size(); i++)
             {

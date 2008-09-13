@@ -35,6 +35,8 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
+
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.Team;
@@ -63,11 +65,18 @@ public class Results implements StatsPanel
     private Panel view = null;
     private Panel resultsPanel = null;
     
-    public Results()
+    private ResourceBundle res = null;
+    
+    public Results(ResourceBundle res)
     {
-        matchesChoice.add("Home & Away");
-        matchesChoice.add("Home Only");
-        matchesChoice.add("Away Only");
+    	this.res = res;
+    	
+    	byDateCheckbox.setLabel(res.getString("results.by_date"));
+    	byTeamCheckbox.setLabel(res.getString("results.by_team"));
+    	
+        matchesChoice.add(res.getString("league.matches.home_away"));
+        matchesChoice.add(res.getString("league.matches.home"));
+        matchesChoice.add(res.getString("league.matches.away"));
     }
 
     
@@ -208,7 +217,7 @@ public class Results implements StatsPanel
      */
     private void showResults(Team team)
     {
-        StringBuffer titleText = new StringBuffer("Results for ");
+        StringBuffer titleText = new StringBuffer(res.getString("results"));
         titleText.append(team.getName());
 
         List<Result> results;
@@ -220,12 +229,12 @@ public class Results implements StatsPanel
         else if (index == 1)
         {
             results = team.getRecord(VenueType.HOME).getResults();
-            titleText.append(" (Home Matches Only)");
+            titleText.append(res.getString("results.home.long"));
         }
         else
         {
             results = team.getRecord(VenueType.AWAY).getResults();
-            titleText.append(" (Away Matches Only)");
+            titleText.append(res.getString("results.away.long"));
         }
 
         titleLabel.setText(titleText.toString());
@@ -241,11 +250,15 @@ public class Results implements StatsPanel
             resultsPanel.add(new Label(theme.getLongDateFormat().format(result.getDate())), constraints);
             if (result.getHomeTeam().equals(team)) // Home
             {
-                resultsPanel.add(new Label(result.getAwayTeam().getName() + " (H)"), constraints);
+                resultsPanel.add(new Label(result.getAwayTeam().getName() + 
+                				" (" + res.getString("results.home.short") +")"),
+                				constraints);
             }
             else // Away
             {
-                resultsPanel.add(new Label(result.getHomeTeam().getName() + " (A)"), constraints);
+                resultsPanel.add(new Label(result.getHomeTeam().getName() +
+                		" (" + res.getString("results.away.short") +")"),
+        				constraints);
             }
             constraints.gridwidth = GridBagConstraints.RELATIVE;
             constraints.weightx = 0.0;
@@ -277,7 +290,7 @@ public class Results implements StatsPanel
     {
         List<Result> results = data.getResults(date);
         
-        titleLabel.setText("Results for " + theme.getLongDateFormat().format(date));
+        titleLabel.setText(res.getString("results") + theme.getLongDateFormat().format(date));
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.anchor = GridBagConstraints.NORTH;

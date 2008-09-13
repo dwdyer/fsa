@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   ï¿½ Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -90,7 +91,7 @@ public final class LeagueSeason
     private int highestPointsTotal = 0;
  
 
-    public LeagueSeason(URL resultsURL)
+    public LeagueSeason(URL resultsURL, ResourceBundle res)
     {
         try
         {
@@ -111,7 +112,7 @@ public final class LeagueSeason
             List<LeagueZone> prizeZones = new LinkedList<LeagueZone>();
             List<LeagueZone> relegationZones = new LinkedList<LeagueZone>();
             
-            BufferedReader resultsFile = new BufferedReader(new InputStreamReader(resultsURL.openStream()));
+            BufferedReader resultsFile = new BufferedReader(new InputStreamReader(resultsURL.openStream(), "UTF-8")); 
             String nextLine = resultsFile.readLine();
             while (nextLine != null)
             {
@@ -138,13 +139,13 @@ public final class LeagueSeason
                         Team homeTeam = teamMappings.get(homeTeamName);
                         if (homeTeam == null)
                         {
-                            homeTeam = new Team(homeTeamName);
+                            homeTeam = new Team(homeTeamName, res);
                             teamMappings.put(homeTeamName, homeTeam);
                         }
                         Team awayTeam = teamMappings.get(awayTeamName);
                         if (awayTeam == null)
                         {
-                            awayTeam = new Team(awayTeamName);
+                            awayTeam = new Team(awayTeamName, res);
                             teamMappings.put(awayTeamName, awayTeam);
                         }
 
@@ -275,12 +276,15 @@ public final class LeagueSeason
                 team.getTeam().addLeaguePosition(date, index);
                 ++index;
             }
-            if (highestPointsTotal == 0) // Only set this for the most recent (first) date.
-            {
-                highestPointsTotal = table.first().getPoints();
-            }
+        
             System.out.println("Processed results for " + date.toString());
         }
+        
+        if (highestPointsTotal == 0) // Only set this for the most recent (first) date.
+        {
+            highestPointsTotal = getRoundsCount(VenueType.BOTH)*getPointsForWin();
+        }
+        
     }
     
     
@@ -606,4 +610,16 @@ public final class LeagueSeason
         return pointsForDraw;
     }
 
+    public int getRoundsCount(VenueType where)
+    {
+    	int rounds = 0;
+    	// find maximumof matches played
+    	for (Team team : teams)
+        {
+    		int teamPlayed = team.getRecord(where).getPlayed();
+            rounds =  teamPlayed > rounds ? teamPlayed : rounds; 
+        }
+    	 
+    	return rounds; 
+    }
 }

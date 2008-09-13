@@ -13,6 +13,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ResourceBundle;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.FormRecord;
 import net.footballpredictions.footballstats.model.LeagueSeason;
@@ -32,7 +33,7 @@ public class LeagueTable implements StatsPanel
     
     private final Choice tableTypeChoice = new Choice();
     private final Choice matchesChoice = new Choice();
-    private final Checkbox zonesCheckbox = new Checkbox("Show Zones");
+    private final Checkbox zonesCheckbox;
     private final Label titleLabel = new Label();
     private Label[] zoneTitleLabels;
     
@@ -49,14 +50,16 @@ public class LeagueTable implements StatsPanel
     private Panel teamsColumn = new Panel(new GridLayout(0, 1));
     private Panel statsColumns = new Panel(new GridLayout(0, 8));
     private Panel optionalColumn = new Panel(new GridLayout(0, 1));
+    private ResourceBundle res = null;
     
     
-    public LeagueTable(boolean isFormTable)
-    {
-        this.isFormTable = isFormTable;
-        zonesCheckbox.setState(!isFormTable);        
-    }
-    
+    public LeagueTable(boolean isFormTable, ResourceBundle res) {
+    	this.res = res;
+    	this.isFormTable = isFormTable;
+    	zonesCheckbox = new Checkbox(this.res.getString("league.show_zones"));
+        zonesCheckbox.setState(!isFormTable);
+	}
+
     
     public void setLeagueData(LeagueSeason data, String highlightedTeam)
     {
@@ -103,13 +106,13 @@ public class LeagueTable implements StatsPanel
             matchesChoice.addItemListener(controlListener);
             zonesCheckbox.addItemListener(controlListener);
 
-            tableTypeChoice.add("Points Won");
-            tableTypeChoice.add("Average Points");
-            tableTypeChoice.add("Points Dropped");            
+            tableTypeChoice.add(res.getString("league.table_type.points_won"));
+            tableTypeChoice.add(res.getString("league.table_type.points_avg"));
+            tableTypeChoice.add(res.getString("league.table_type.points_lost"));            
             tableTypeChoice.setForeground(Color.black);
-            matchesChoice.add("Home & Away");
-            matchesChoice.add("Home Only");
-            matchesChoice.add("Away Only");
+            matchesChoice.add(res.getString("league.matches.home_away"));
+            matchesChoice.add(res.getString("league.matches.home"));
+            matchesChoice.add(res.getString("league.matches.away"));
             matchesChoice.setForeground(Color.black);
 
             controls = Util.borderLayoutWrapper(innerControlPanel, BorderLayout.NORTH);
@@ -132,11 +135,11 @@ public class LeagueTable implements StatsPanel
         else
         {
             innerControlPanel.setLayout(new GridLayout(7 + prizeZoneNames.length + relegationZoneNames.length, 1));
-            innerControlPanel.add(new Label("Table Type:"));
+            innerControlPanel.add(new Label(res.getString("league.table.table_type")));
             innerControlPanel.add(tableTypeChoice);            
         }
             
-        innerControlPanel.add(new Label("Matches:"));
+        innerControlPanel.add(new Label(res.getString("league.matches.label")));
         innerControlPanel.add(matchesChoice);
             
         innerControlPanel.add(new Label()); // Blank line.
@@ -202,18 +205,18 @@ public class LeagueTable implements StatsPanel
         boolean showOptionalColumn = true;
         if (isFormTable)
         {
-            titleText.append("Form Table");
+            titleText.append(res.getString("form.table"));
             if (where == VenueType.HOME)
             {
-                titleText.append(" (Last 4 Home Matches)");
+                titleText.append(res.getString("form.last4matches"));
             }
             else if (where == VenueType.AWAY)
             {
-                titleText.append(" (Last 4 Away Matches)");
+                titleText.append(res.getString("form.last4awaymatches"));
             }   
             else
             {
-                titleText.append(" (Last 6 Matches)");
+                titleText.append(res.getString("form.last6matches"));
             }
             
             table = data.getFormTable(where);
@@ -223,28 +226,28 @@ public class LeagueTable implements StatsPanel
             index = tableTypeChoice.getSelectedIndex();
             if (index <= 0)
             {
-                titleText.append("League Table");
+                titleText.append(res.getString("league.table"));
                 table = data.getStandardLeagueTable(where);
                 showOptionalColumn = false;
             }
             else if (index == 1)
             {
-                titleText.append("Average Points Per Game");
+                titleText.append(res.getString("league.table.average_points_per_game"));
                 table = data.getAverageLeagueTable(where);
             }
             else
             {
-                titleText.append("Total Points Dropped");
+                titleText.append(res.getString("league.table.total_points_dropped"));
                 table = data.getInvertedLeagueTable(where);
             }
             
             if (where == VenueType.HOME)
             {
-                titleText.append(" (Home Matches Only)");
+                titleText.append(res.getString("results.home.long"));
             }
             else if (where == VenueType.AWAY)
             {
-                titleText.append(" (Away Matches Only)");
+                titleText.append(res.getString("results.away.long"));
             }            
         }
         titleText.append(" - ");
@@ -332,14 +335,14 @@ public class LeagueTable implements StatsPanel
                                       boolean highlightPoints)
     {
         statsColumns.removeAll();
-        statsColumns.add(new Label("P", Label.CENTER));
-        statsColumns.add(new Label("W", Label.CENTER));
-        statsColumns.add(new Label("D", Label.CENTER));
-        statsColumns.add(new Label("L", Label.CENTER));
-        statsColumns.add(new Label("F", Label.CENTER));
-        statsColumns.add(new Label("A", Label.CENTER));
-        statsColumns.add(new Label("GD", Label.CENTER));
-        statsColumns.add(new Label("Pts", Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.GAMES_PLAYED"), Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.WINS"), Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.DRAWS"), Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.LOSSES"), Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.GOALS_SCORED"), Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.GOALS_ADMITTED"), Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.GOALS_DIFFERENCE"), Label.CENTER));
+        statsColumns.add(new Label(res.getString("league.table.col.POINTS"), Label.CENTER));
         int index = 1;
         for (TeamRecord team : teams)
         {
@@ -387,7 +390,7 @@ public class LeagueTable implements StatsPanel
     private Component getAverageColumn(SortedSet<StandardRecord> teams)
     {
         optionalColumn.removeAll();
-        optionalColumn.add(new Label("Pts/P", Label.CENTER));
+        optionalColumn.add(new Label(res.getString("league.table.col.AVG_POINTS_GAME"), Label.CENTER));
         int index = 1;
         for (StandardRecord team : teams)
         {
@@ -407,7 +410,7 @@ public class LeagueTable implements StatsPanel
     private Component getDroppedColumn(SortedSet<StandardRecord> teams)
     {
         optionalColumn.removeAll();
-        optionalColumn.add(new Label("Dropped", Label.CENTER));
+        optionalColumn.add(new Label(res.getString("league.table.col.POINTS_DROPPED"), Label.CENTER));
         int index = 1;
         for (StandardRecord team : teams)
         {
@@ -427,7 +430,7 @@ public class LeagueTable implements StatsPanel
     private Component getFormColumn(SortedSet<FormRecord> teams)
     {
         optionalColumn.removeAll();
-        optionalColumn.add(new Label("Form", Label.CENTER));
+        optionalColumn.add(new Label(res.getString("league.table.col.FORM"), Label.CENTER));
         int index = 1;
         for (FormRecord team : teams)
         {
