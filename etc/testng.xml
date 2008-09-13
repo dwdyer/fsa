@@ -1,0 +1,24 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Unit Tests" verbose="1" >
+
+  <test name="Applet" >
+    <packages>
+      <package name="net.footballpredictions.footballstats.awt" />
+      <package name="net.footballpredictions.footballstats.swing" />
+    </packages>
+  </test>
+
+  <test name="Model" >
+    <packages>
+      <package name="net.footballpredictions.footballstats.model" />
+    </packages>
+  </test>
+
+  <test name="Utils" >
+    <packages>
+      <package name="net.footballpredictions.footballstats.util" />
+    </packages>
+  </test>
+
+</suite>

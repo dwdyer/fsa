@@ -11,12 +11,16 @@
   <property name="src.dir" value="./src"/>
   <property name="build.dir" value="./build"/>
   <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="temp.dir" value="./temp"/>
   <property name="lib.dir" value="./lib"/>
   <property name="tools.dir" value="${lib.dir}/tools"/>
-  <property name="deploy.dir" value="./deploy"/>
+  <property name="dist.dir" value="./dist"/>
+  <property name="release.dir" value="./release"/>
   <property name="docs.dir" value="./docs"/>
-  <property name="project.jar" value="fsa.jar"/>
-  <property name="release.zip" value="fsa2.zip"/>
+  <property name="coverage.dir" location="${docs.dir}/coverage" />
+  <property name="test-results.dir" location="${docs.dir}/test-results" />  
+  <property name="project.jar" value="${ant.project.name}.jar"/>
+  <property name="release.zip" value="${ant.project.name}.zip"/>
 
   <!-- Standard classes are in a non-standard location on Macs. -->
   <condition property="jdk.libs"
@@ -25,15 +29,18 @@
     <os name="Mac OS X"/>
   </condition>
 
-  <!-- Rebuilds the project from scratch. -->
-  <target name="all" depends="clean,zip" description="Re-builds the applet from scratch."/>
+  <path id="base.path">
+    <pathelement path="${classes.dir}/main" />
+    <fileset dir="${tools.dir}" includes="*.jar" />
+  </path>
 
   <!-- Removes all files created by this build process. -->
   <target name="clean" description="Deletes all files created by the build process.">
     <delete dir="${build.dir}"/>
-    <delete dir="${deploy.dir}"/>
+    <delete dir="${temp.dir}"/>
+    <delete dir="${dist.dir}"/>
+    <delete dir="${release.dir}"/>
     <delete dir="${docs.dir}"/>
-    <delete file="${release.zip}"/>
   </target>
 
   <!-- Compiles all Java source files and copies all non-source resources into the build
@@ -49,13 +56,24 @@
            deprecation="on">
       <compilerarg line="-Xlint:unchecked" />
     </javac>
+    <mkdir dir="${classes.dir}/test"/>
+    <javac srcdir="${src.dir}/java/test"
+           destdir="${classes.dir}/test"
+           source="1.5"
+           target="1.5"
+           debug="on"
+           optimize="on"
+           deprecation="on"
+           classpathref="base.path">
+      <compilerarg line="-Xlint:unchecked" />
+    </javac>
   </target>
 
   <!-- Packages and deploys all distributable files. -->
   <target name="dist" depends="compile" description="Builds JAR file and deploys all files.">
-    <mkdir dir="${deploy.dir}"/>
-    <jar jarfile="${deploy.dir}/${project.jar}" basedir="${classes.dir}/main"/>
-    <copy todir="${deploy.dir}">
+    <mkdir dir="${dist.dir}"/>
+    <jar jarfile="${dist.dir}/${project.jar}" basedir="${classes.dir}/main"/>
+    <copy todir="${dist.dir}">
       <fileset dir="${src.dir}/conf" includes="*"/>
       <fileset dir="${src.dir}/data" includes="*"/>
       <fileset dir="${src.dir}/html" includes="*"/>
@@ -74,18 +92,77 @@
               overloadaggressively="true"
               defaultpackage="">
       <libraryjar path="${jdk.libs}" />
-      <injar location="${deploy.dir}/${project.jar}" />
-      <outjar name="${deploy.dir}/obfuscated.${project.jar}" />
+      <injar location="${dist.dir}/${project.jar}" />
+      <outjar name="${dist.dir}/obfuscated.${project.jar}" />
       <keep access="public" name="*" extends="javax.swing.JApplet" />
     </proguard>
-    <delete file="${deploy.dir}/${project.jar}" />
-    <move file="${deploy.dir}/obfuscated.${project.jar}" tofile="${deploy.dir}/${project.jar}" />
+    <delete file="${dist.dir}/${project.jar}" />
+    <move file="${dist.dir}/obfuscated.${project.jar}" tofile="${dist.dir}/${project.jar}" />
   </target>
   
-  <target name="zip" depends="obfuscate" description="Zips files ready for release.">
-    <zip destfile="${release.zip}">
-      <fileset dir="${deploy.dir}" includes="*"/>
+  <target name="release" depends="test, obfuscate" description="Zips files ready for release.">
+    <mkdir dir="${release.dir}" />
+    <zip destfile="${release.dir}/${release.zip}">
+      <fileset dir="${dist.dir}" includes="*"/>
     </zip>
+  </target>
+
+
+  <!-- Runs unit tests for all modules. -->
+  <target name="test"
+          depends="dist"
+          description="Run the unit test suite.">
+    <mkdir dir="${temp.dir}" />
+
+    <path id="test.path">
+      <pathelement location="${classes.dir}/test" />
+      <fileset dir="${temp.dir}" includes="*.jar"/>
+      <path refid="base.path" />
+    </path>
+
+    <!-- Bytecode instrumentation to enable collection of test coverage data. -->
+    <taskdef resource="tasks.properties" classpathref="test.path" />
+    <cobertura-instrument todir="${temp.dir}"
+                          datafile="${temp.dir}/cobertura.ser">
+      <fileset dir="${dist.dir}" includes="${project.jar}"/>
+    </cobertura-instrument>
+
+    <!-- Run the unit tests on the instrumented classes. -->
+    <taskdef resource="testngtasks" classpathref="test.path"/>
+    <mkdir dir="${test-results.dir}" />
+
+    <testng classpathref="test.path"
+            outputdir="${test-results.dir}"
+            haltonfailure="false"
+            useDefaultListeners="false"
+            listeners="org.uncommons.reportng.HTMLReporter,org.uncommons.reportng.JUnitXMLReporter">
+      <xmlfileset dir="./etc" includes="testng.xml"/>
+      <sysproperty key="net.sourceforge.cobertura.datafile"
+                   file="${temp.dir}/cobertura.ser" />
+      <sysproperty key="org.uncommons.reportng.title"
+                   value="Football Statistics Applet Unit Test Report" />
+      <sysproperty key="org.uncommons.reportng.coverage-report"
+                   value="../../coverage/index.html" />
+    </testng>
+
+    <!-- Generate the HTML coverage report. -->
+    <mkdir dir="${coverage.dir}" />
+    <cobertura-report format="html"
+                      destdir="${coverage.dir}"
+                      datafile="${temp.dir}/cobertura.ser">
+      <fileset dir="${src.dir}/java/main">
+        <include name="**/*.java" />
+      </fileset>
+    </cobertura-report>
+    <!-- Generate an XML coverage report so that Hudson can graph trends. -->
+    <cobertura-report format="xml"
+                      destdir="${coverage.dir}"
+                      datafile="${temp.dir}/cobertura.ser">
+      <fileset dir="${src.dir}/java/main">
+        <include name="**/*.java" />
+      </fileset>
+    </cobertura-report>
+
   </target>
 
   <!-- Build Javadoc API documentation for the project.  Links to the J2SE API documenation on

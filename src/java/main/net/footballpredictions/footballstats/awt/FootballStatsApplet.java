@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   � Copyright 2000-2008 Daniel W. Dyer
+//   © Copyright 2000-2008 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
 public final class FootballStatsApplet extends Applet
 {
     private static final String VERSION_STRING 	= "Version 3.0 Alpha";
-    private static final String COPYRIGHT_STRING 	= "�Copyright 2000-2008, Daniel W. Dyer";
+    private static final String COPYRIGHT_STRING 	= "©Copyright 2000-2008, Daniel W. Dyer";
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
     
     // Mapping from display name to file name for results files.
