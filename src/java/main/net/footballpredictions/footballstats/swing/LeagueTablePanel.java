@@ -29,6 +29,7 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.VenueType;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Dimension;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
@@ -60,6 +61,7 @@ class LeagueTablePanel extends JPanel implements StatsPanel
 
     private JComponent createTable()
     {
+        leagueTable.setIntercellSpacing(new Dimension(0, 1));
         return new JScrollPane(leagueTable);
     }
 
@@ -129,6 +131,14 @@ class LeagueTablePanel extends JPanel implements StatsPanel
             columnModel.removeColumn(droppedColumn);
         }
 
+        LeagueTableRenderer renderer = new LeagueTableRenderer(data);
+        leagueTable.setDefaultRenderer(Object.class, renderer);
+        leagueTable.setDefaultRenderer(Number.class, renderer);
+        leagueTable.setDefaultRenderer(Double.class, renderer);
+        TableColumn positionColumn = columnModel.getColumn(LeagueTableModel.POSITION_COLUMN);
+        positionColumn.setCellRenderer(new PositionRenderer(data));
+        TableColumn goalDifferenceColumn = columnModel.getColumn(LeagueTableModel.GOAL_DIFFERENCE_COLUMN);
+        goalDifferenceColumn.setCellRenderer(new GoalDifferenceRenderer(data));
     }
 
 

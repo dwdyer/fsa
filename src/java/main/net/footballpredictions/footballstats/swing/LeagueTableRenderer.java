@@ -19,15 +19,29 @@ package net.footballpredictions.footballstats.swing;
 
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JTable;
+import javax.swing.JLabel;
 import java.awt.Component;
 import java.awt.Color;
+import java.text.DecimalFormat;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 
 /**
+ * Default renderer for cells in a league table.
  * @author Daniel Dyer
  */
 class LeagueTableRenderer extends DefaultTableCellRenderer
 {
+    private static final Color[] PRIZE_COLOURS = new Color[]{hexStringToColor("FFCC00"),
+                                                             hexStringToColor("FFFF66"),
+                                                             hexStringToColor("FFFFCC"),
+                                                             hexStringToColor("EEEEEE")};
+
+    private static final Color[] RELEGATION_COLOURS = new Color[]{hexStringToColor("FF9999"),
+                                                                  hexStringToColor("FFCCCC")};
+
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.00");
+
+
     private final LeagueSeason data;
 
     /**
@@ -47,20 +61,41 @@ class LeagueTableRenderer extends DefaultTableCellRenderer
                                                    int row,
                                                    int column)
     {
-        Component component = super.getTableCellRendererComponent(table,
-                                                                  value,
-                                                                  false, // Never render selection.
-                                                                  false, // Never render focus.
-                                                                  row,
-                                                                  column);
+        Object formattedValue = value instanceof Double ? DECIMAL_FORMAT.format(value) : value;
+        JLabel component = (JLabel) super.getTableCellRendererComponent(table,
+                                                                        formattedValue,
+                                                                        false, // Never render selection.
+                                                                        false, // Never render focus.
+                                                                        row,
+                                                                        column);
         component.setBackground(getRowColour(row));
+        component.setHorizontalAlignment(value instanceof Number ? JLabel.RIGHT : JLabel.LEFT);
+
         return component;
     }
 
 
     private Color getRowColour(int row)
     {
-        // TO DO:
-        return null;
+        int zone = data.getZoneForPosition(row + 1); // Convert zero-based row index into one-based position.
+        if (zone == 0)
+        {
+            return null;
+        }
+        else if (zone > 0)
+        {
+            return PRIZE_COLOURS[Math.min(zone, PRIZE_COLOURS.length) - 1];
+        }
+        else
+        {
+            return RELEGATION_COLOURS[Math.min(-zone, RELEGATION_COLOURS.length) - 1];
+        }
+    }
+
+
+    protected static Color hexStringToColor(String hex)
+    {
+        int value = Integer.parseInt(hex, 16);
+        return new Color(value);
     }
 }
