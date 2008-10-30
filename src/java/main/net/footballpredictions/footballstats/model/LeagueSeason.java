@@ -17,28 +17,18 @@
 // ============================================================================
 package net.footballpredictions.footballstats.model;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import net.footballpredictions.footballstats.data.LeagueDataProvider;
 import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
 
 /**
@@ -48,19 +38,10 @@ import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
  */
 public final class LeagueSeason
 {
-    private int pointsForWin = 3;
-    private int pointsForDraw = 1;
-    
-    private static final String POINTS_TAG = "POINTS";
-    private static final String PRIZE_TAG = "PRIZE";
-    private static final String RELEGATION_TAG = "RELEGATION";
-    private static final String AWARDED_TAG = "AWARDED";
-    private static final String DEDUCTED_TAG = "DEDUCTED";
+    private final int pointsForWin;
+    private final int pointsForDraw;
 
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
-    
-    private final Map<String, Team> teamMappings = new HashMap<String, Team>();
-    private Set<Team> teams;
+    private final Map<String, Team> teamMappings = new TreeMap<String, Team>();
     private SortedSet<String> teamNames;
     // Store a list of results for each date on which matches were played.  The map is sorted
     // with the earliest date first.
@@ -91,167 +72,68 @@ public final class LeagueSeason
     private int highestPointsTotal = 0;
  
 
-    public LeagueSeason(URL resultsURL, ResourceBundle res)
+    public LeagueSeason(LeagueDataProvider dataProvider, ResourceBundle res)
     {
-        try
-        {
-            // Local class for temporarily storing league position data.
-            final class LeagueZone
-            {
-                public final int startPos;
-                public final int endPos;
-                public final String name;
-        
-                public LeagueZone(int startPos, int endPos, String name)
-                {
-                    this.startPos = startPos;
-                    this.endPos = endPos;
-                    this.name = name;
-                }
-            }
-            List<LeagueZone> prizeZones = new LinkedList<LeagueZone>();
-            List<LeagueZone> relegationZones = new LinkedList<LeagueZone>();
-            
-            BufferedReader resultsFile = new BufferedReader(new InputStreamReader(resultsURL.openStream(), "UTF-8")); 
-            String nextLine = resultsFile.readLine();
-            while (nextLine != null)
-            {
-                nextLine = nextLine.trim();
-                if (nextLine.length() > 0)
-                {
-                    StringTokenizer nextResult = new StringTokenizer(nextLine, "|");
+        pointsForWin = dataProvider.getPointsForWin();
+        pointsForDraw = dataProvider.getPointsForDraw();
 
-                    String dateString = nextResult.nextToken();
-                    if (Character.isDigit(dateString.charAt(0))) // Process as a result if first char is a number.
-                    {
-                        Date date = dateFormat.parse(dateString);
-                        String homeTeamName = nextResult.nextToken().trim();
-                        int homeScore = Integer.parseInt(nextResult.nextToken().trim());
-                        String awayTeamName = nextResult.nextToken().trim();
-                        int awayScore = Integer.parseInt(nextResult.nextToken().trim());
-                
-                        int attendance = -1;
-                        if (nextResult.hasMoreTokens())
-                        {
-                            attendance = Integer.parseInt(nextResult.nextToken().trim());
-                        }
-                       
-                        Team homeTeam = teamMappings.get(homeTeamName);
-                        if (homeTeam == null)
-                        {
-                            homeTeam = new Team(homeTeamName, res);
-                            teamMappings.put(homeTeamName, homeTeam);
-                        }
-                        Team awayTeam = teamMappings.get(awayTeamName);
-                        if (awayTeam == null)
-                        {
-                            awayTeam = new Team(awayTeamName, res);
-                            teamMappings.put(awayTeamName, awayTeam);
-                        }
+        for (String teamName : dataProvider.getTeams())
+        {
+            teamMappings.put(teamName, new Team(teamName, res));
+        }
 
-                        if (!resultsByDate.isEmpty() && date.before(resultsByDate.lastKey()))
-                        {
-                            System.out.println("ERROR: Results must be listed in chronological order.");
-                            break;
-                        }
+        List<Result> results = dataProvider.getResults();
+        Collections.sort(results, new ResultDateComparator());
 
-                        Result result = new Result(homeTeam, awayTeam, homeScore, awayScore, attendance, date);
-                    
-                        // Update global records.
-                        updateGlobalTotals(result);                    
-                
-                        // Add result to list for that day.
-                        List<Result> results = resultsByDate.get(date);
-                        if (results == null)
-                        {
-                            results = new LinkedList<Result>();
-                            resultsByDate.put(date, results);
-                        }
-                        results.add(result);
-                
-                        matchCount++;
-                    }
-                    else if (dateString.charAt(0) == '#') 
-                    {
-                        // Lines beginning with a hash are comments and are ignored.
-                    }
-                    else if (dateString.equals(POINTS_TAG))
-                    {
-                        pointsForWin = Integer.parseInt(nextResult.nextToken());
-                        pointsForDraw = Integer.parseInt(nextResult.nextToken());
-                    }
-                    else if (dateString.equals(PRIZE_TAG))
-                    {
-                        prizeZones.add(new LeagueZone(Integer.parseInt(nextResult.nextToken()),
-                                                      Integer.parseInt(nextResult.nextToken()),
-                                                      nextResult.nextToken()));
-                    }
-                    else if (dateString.equals(RELEGATION_TAG))
-                    {
-                        relegationZones.add(new LeagueZone(Integer.parseInt(nextResult.nextToken()),
-                                                           Integer.parseInt(nextResult.nextToken()),
-                                                           nextResult.nextToken()));
-                    }
-                    else // Points adjustment.
-                    {
-                        String teamName = nextResult.nextToken();
-                        int amount = Integer.parseInt(nextResult.nextToken());
-                        if (dateString.equals(DEDUCTED_TAG))
-                        {
-                            amount = -amount;
-                        }
-                        teamMappings.get(teamName).adjustPoints(amount);
-                    }
-                }
-                nextLine = resultsFile.readLine();
-            }
-            System.out.println("Read " + matchCount + " results from " + resultsURL.toString());
-            teams = new HashSet<Team>(teamMappings.values());
-            processTeamRecords();
-            
-            // Workout positions info.
-            zones = new int[teams.size()];
-            prizeZoneNames = new String[prizeZones.size()];
-            int index = 0;
-            for (LeagueZone zone : prizeZones)
+        for (Result result : results)
+        {
+            // Update global records.
+            updateGlobalTotals(result);
+
+            // Add result to list for that day.
+            List<Result> resultsForDate = resultsByDate.get(result.getDate());
+            if (resultsForDate == null)
             {
-                prizeZoneNames[index] = zone.name;
-                for (int j = zone.startPos; j <= zone.endPos; j++)
-                {
-                    zones[j - 1] = index + 1; // Decrement to convert to zero-based index.
-                }
-                ++index;
+                resultsForDate = new LinkedList<Result>();
+                resultsByDate.put(result.getDate(), resultsForDate);
             }
-            relegationZoneNames = new String[relegationZones.size()];
-            index = 0;
-            for (LeagueZone zone : relegationZones)
+            resultsForDate.add(result);
+
+            matchCount++;
+        }
+
+        for (Map.Entry<String, Integer> adjustment : dataProvider.getPointsAdjustments().entrySet())
+        {
+            teamMappings.get(adjustment.getKey()).adjustPoints(adjustment.getValue());
+        }
+
+        processTeamRecords();
+
+        // Workout positions info.
+        zones = new int[teamMappings.size()];
+        List<LeagueZone> prizeZones = dataProvider.getPrizeZones();
+        prizeZoneNames = new String[prizeZones.size()];
+        int index = 0;
+        for (LeagueZone zone : prizeZones)
+        {
+            prizeZoneNames[index] = zone.name;
+            for (int j = zone.startPos; j <= zone.endPos; j++)
             {
-                relegationZoneNames[index] = zone.name;
-                for (int j = zone.startPos; j <= zone.endPos; j++)
-                {
-                    zones[j - 1] = -(index + 1); // Decrement to convert to zero-based index.
-                }
-                ++index;
+                zones[j - 1] = index + 1; // Decrement to convert to zero-based index.
             }
+            ++index;
         }
-        catch(ParseException ex)
+        List<LeagueZone> relegationZones = dataProvider.getRelegationZones();
+        relegationZoneNames = new String[relegationZones.size()];
+        index = 0;
+        for (LeagueZone zone : relegationZones)
         {
-            System.out.println("ERROR: Invalid date format in results file.");
-        }
-        catch(NoSuchElementException ex)
-        {
-            System.out.println("ERROR: Results file badly formatted.");
-        }
-        catch(IOException ex)
-        {
-            System.out.println("ERROR: Results file not found.");
-        }
-        finally
-        {
-            if (teams == null)
+            relegationZoneNames[index] = zone.name;
+            for (int j = zone.startPos; j <= zone.endPos; j++)
             {
-                teams = Collections.emptySet();
+                zones[j - 1] = -(index + 1); // Decrement to convert to zero-based index.
             }
+            ++index;
         }
     }
 
@@ -265,8 +147,8 @@ public final class LeagueSeason
             // Add current date's results to individual team records.
             for (Result result : results)
             {
-                result.getHomeTeam().addResult(result);
-                result.getAwayTeam().addResult(result);
+                teamMappings.get(result.getHomeTeam()).addResult(result);
+                teamMappings.get(result.getAwayTeam()).addResult(result);
             }
             // Calculate table for current date.
             SortedSet<StandardRecord> table = getStandardLeagueTable(VenueType.BOTH);
@@ -282,7 +164,7 @@ public final class LeagueSeason
         
         if (highestPointsTotal == 0) // Only set this for the most recent (first) date.
         {
-            highestPointsTotal = getRoundsCount(VenueType.BOTH)*getPointsForWin();
+            highestPointsTotal = getRoundsCount(VenueType.BOTH) * getPointsForWin();
         }
         
     }
@@ -358,11 +240,7 @@ public final class LeagueSeason
     {
         if (teamNames == null)
         {
-            teamNames = new TreeSet<String>();
-            for (Team team : teams)
-            {
-                teamNames.add(team.getName());
-            }
+            teamNames = new TreeSet<String>(teamMappings.keySet());
         }
         return teamNames;
     }
@@ -421,7 +299,7 @@ public final class LeagueSeason
     public SortedSet<StandardRecord> getStandardLeagueTable(VenueType where)
     {
         SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new LeagueTableComparator());
-        for (Team team : teams)
+        for (Team team : teamMappings.values())
         {
             leagueTable.add(team.getRecord(where));
         }
@@ -435,7 +313,7 @@ public final class LeagueSeason
     public SortedSet<StandardRecord> getAverageLeagueTable(VenueType where)
     {
         SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new PointsPerGameComparator());
-        for (Team team : teams)
+        for (Team team : teamMappings.values())
         {
             leagueTable.add(team.getRecord(where));
         }
@@ -449,7 +327,7 @@ public final class LeagueSeason
     public SortedSet<StandardRecord> getInvertedLeagueTable(VenueType where)
     {
         SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new DroppedPointsComparator());
-        for (Team team : teams)
+        for (Team team : teamMappings.values())
         {
             leagueTable.add(team.getRecord(where));
         }
@@ -460,7 +338,7 @@ public final class LeagueSeason
     public SortedSet<FormRecord> getFormTable(VenueType where)
     {
         SortedSet<FormRecord> formTeams = new TreeSet<FormRecord>(new LeagueTableComparator());
-        for (Team team : teams)
+        for (Team team : teamMappings.values())
         {
             formTeams.add(team.getRecord(where).getFormRecord());
         }
@@ -477,7 +355,7 @@ public final class LeagueSeason
     public SortedSet<StandardRecord> getSequenceTable(SequenceType sequence, VenueType where, boolean current)
     {
         SortedSet<StandardRecord> sequenceTable = new TreeSet<StandardRecord>(new SequenceComparator(sequence, current));
-        for (Team team : teams)
+        for (Team team : teamMappings.values())
         {
             sequenceTable.add(team.getRecord(where));
         }
@@ -488,7 +366,7 @@ public final class LeagueSeason
     public SortedSet<Team> getAttendanceTable(int type)
     {
         SortedSet<Team> sortedTeams = new TreeSet<Team>(new TeamAttendanceComparator(type));
-        sortedTeams.addAll(teams);
+        sortedTeams.addAll(teamMappings.values());
         return sortedTeams;
     }
     
@@ -610,16 +488,33 @@ public final class LeagueSeason
         return pointsForDraw;
     }
 
+
     public int getRoundsCount(VenueType where)
     {
     	int rounds = 0;
-    	// find maximumof matches played
-    	for (Team team : teams)
+    	// Find maximum number of matches played
+    	for (Team team : teamMappings.values())
         {
     		int teamPlayed = team.getRecord(where).getPlayed();
             rounds =  teamPlayed > rounds ? teamPlayed : rounds; 
         }
     	 
     	return rounds; 
+    }
+
+
+    // Class for temporarily storing league position data.
+    public static final class LeagueZone
+    {
+        public final int startPos;
+        public final int endPos;
+        public final String name;
+
+        public LeagueZone(int startPos, int endPos, String name)
+        {
+            this.startPos = startPos;
+            this.endPos = endPos;
+            this.name = name;
+        }
     }
 }

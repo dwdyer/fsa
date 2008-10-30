@@ -273,12 +273,12 @@ public final class StandardRecord extends AbstractTeamRecord
 
     private void updateAggregatesAndSequences(Result result)
     {
-        int goalsFor = result.getGoalsFor(getTeam());
-        int goalsAgainst = result.getGoalsAgainst(getTeam());
+        int goalsFor = result.getGoalsFor(getTeam().getName());
+        int goalsAgainst = result.getGoalsAgainst(getTeam().getName());
         int marginOfVictory = result.getMarginOfVictory();
 
         // Update result aggregates/sequences.
-        if (result.isDefeat(getTeam()))
+        if (result.isDefeat(getTeam().getName()))
         {
             lost++;
 

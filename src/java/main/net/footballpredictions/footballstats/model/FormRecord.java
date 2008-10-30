@@ -72,7 +72,7 @@ public class FormRecord extends AbstractTeamRecord
             {
                 formString.append('D');
             }
-            else if (result.isWin(getTeam()))
+            else if (result.isWin(getTeam().getName()))
             {
                 formString.append('W');
             }
@@ -102,7 +102,7 @@ public class FormRecord extends AbstractTeamRecord
         int won = 0;
         for (Result result : formResults)
         {
-            if (result.isWin(getTeam()))
+            if (result.isWin(getTeam().getName()))
             {
                 won++;
             }
@@ -136,7 +136,7 @@ public class FormRecord extends AbstractTeamRecord
         int lost = 0;
         for (Result result : formResults)
         {
-            if (result.isDefeat(getTeam()))
+            if (result.isDefeat(getTeam().getName()))
             {
                 lost++;
             }
@@ -153,7 +153,7 @@ public class FormRecord extends AbstractTeamRecord
         int scored = 0;
         for (Result result : formResults)
         {
-            scored += result.getGoalsFor(getTeam());
+            scored += result.getGoalsFor(getTeam().getName());
         }
         return scored;
     }
@@ -167,7 +167,7 @@ public class FormRecord extends AbstractTeamRecord
         int conceded = 0;
         for (Result result : formResults)
         {
-            conceded += result.getGoalsAgainst(getTeam());
+            conceded += result.getGoalsAgainst(getTeam().getName());
         }
         return conceded;
     }

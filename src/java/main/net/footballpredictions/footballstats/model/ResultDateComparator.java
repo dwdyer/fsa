@@ -30,7 +30,7 @@ class ResultDateComparator implements Comparator<Result>
         int compare = result1.getDate().compareTo(result2.getDate());
         if (compare == 0) // If the date is the same, order alphabetically by home team.
         {
-            compare = result1.getHomeTeam().getName().toLowerCase().compareTo(result2.getHomeTeam().getName().toLowerCase());
+            compare = result1.getHomeTeam().toLowerCase().compareTo(result2.getHomeTeam().toLowerCase());
         }
         return compare;
     }

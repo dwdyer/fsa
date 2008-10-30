@@ -219,16 +219,16 @@ public class Overview implements StatsPanel
         {
             constraints.gridwidth = 1;
             innerPanel.add(new Label(theme.getShortDateFormat().format(result.getDate())), constraints);
-            Label homeTeamLabel = new Label(result.getHomeTeam().getName());
-            homeTeamLabel.setFont(result.getHomeTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            Label homeTeamLabel = new Label(result.getHomeTeam());
+            homeTeamLabel.setFont(result.getHomeTeam().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             innerPanel.add(homeTeamLabel, constraints);
             constraints.gridwidth = GridBagConstraints.RELATIVE;
             Label scoreLabel = new Label(result.getHomeGoals() + "-" + result.getAwayGoals(), Label.CENTER);
             scoreLabel.setFont(theme.getBoldFont());
             innerPanel.add(scoreLabel, constraints);
             constraints.gridwidth = GridBagConstraints.REMAINDER;
-            Label awayTeamLabel = new Label(result.getAwayTeam().getName());
-            awayTeamLabel.setFont(result.getAwayTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            Label awayTeamLabel = new Label(result.getAwayTeam());
+            awayTeamLabel.setFont(result.getAwayTeam().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             innerPanel.add(awayTeamLabel, constraints);
         }
         panel.add(Util.borderLayoutWrapper(innerPanel, BorderLayout.NORTH), BorderLayout.CENTER);

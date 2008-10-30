@@ -169,7 +169,7 @@ final class TeamRecordPanel extends Panel
         }
         else
         {
-        	if (res.getLocale() != null && res.getLocale().getCountry().toLowerCase().equals("sk") == true){
+        	if (res.getLocale() != null && res.getLocale().getCountry().toLowerCase().equals("sk")){
         		bigWinTitleLabel.setText(res.getString("team.playing_record.biggest") 
     					+ res.getString("team.playing_record.label.win").toLowerCase() + " "
     					+ venueText.toLowerCase());
@@ -270,18 +270,18 @@ final class TeamRecordPanel extends Panel
             return res.getString("results.not_available");
         }
         StringBuffer buffer = new StringBuffer();
-        buffer.append(result.getGoalsFor(team));
+        buffer.append(result.getGoalsFor(team.getName()));
         buffer.append('-');
-        buffer.append(result.getGoalsAgainst(team));
+        buffer.append(result.getGoalsAgainst(team.getName()));
         if (result.getHomeTeam().equals(team))
         {
             buffer.append(res.getString("results.versus"));
-            buffer.append(result.getAwayTeam().getName());
+            buffer.append(result.getAwayTeam());
         }
         else
         {
             buffer.append(res.getString("results.at"));
-            buffer.append(result.getHomeTeam().getName());
+            buffer.append(result.getHomeTeam());
         }
         return buffer.toString();
     }
@@ -293,11 +293,11 @@ final class TeamRecordPanel extends Panel
         {
             return theme.getMainViewTextColour();
         }
-        else if (result.isWin(team))
+        else if (result.isWin(team.getName()))
         {
             return theme.getWinColour();
         }
-        else if (result.isDefeat(team))
+        else if (result.isDefeat(team.getName()))
         {
             return theme.getDefeatColour();
         }

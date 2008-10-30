@@ -28,7 +28,6 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
 import net.footballpredictions.footballstats.model.LeagueSeason;
@@ -186,9 +185,9 @@ public class Attendances implements StatsPanel
         for (Result result : attendanceTable)
         {
             positionsColumn.add(new Label(String.valueOf(index), Label.CENTER));
-            Label textLabel = new Label(result.getHomeTeam().getName() + " vs. " + result.getAwayTeam().getName() + " (" + theme.getShortDateFormat().format(
+            Label textLabel = new Label(result.getHomeTeam() + " vs. " + result.getAwayTeam() + " (" + theme.getShortDateFormat().format(
                     result.getDate()) + ")");
-            if (result.getHomeTeam().getName().equals(highlightedTeam))
+            if (result.getHomeTeam().equals(highlightedTeam))
             {
                 textLabel.setFont(theme.getBoldFont());
             }

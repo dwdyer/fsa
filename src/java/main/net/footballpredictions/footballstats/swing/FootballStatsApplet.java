@@ -37,6 +37,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.data.RLTDataProvider;
 
 /**
  * This class provides football stats for a web page as a Swing applet.
@@ -128,7 +129,7 @@ public final class FootballStatsApplet extends JApplet
         {
             protected LeagueSeason performTask() throws Exception
             {
-                return new LeagueSeason(dataURL,res);
+                return new LeagueSeason(new RLTDataProvider(dataURL.openStream()), res);
             }
 
             @Override

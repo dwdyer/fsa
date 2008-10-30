@@ -38,6 +38,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -47,6 +48,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.data.RLTDataProvider;
 
 /**
  * This class provides football stats for a web page as an AWT applet.
@@ -338,14 +340,22 @@ public final class FootballStatsApplet extends Applet
         {
             URL dataFileURL = dataFiles.get(selection);
             System.out.println("Loading results data...");
-            LeagueSeason data = new LeagueSeason(dataFileURL, res);
-            System.out.println("Done.");
-        
-            for (StatsPanel panel : panels.values())
+            try
             {
-                invalidate();
-                panel.setLeagueData(data, highlightedTeams.get(selection));
-                validate();
+                InputStream dataStream = dataFileURL.openStream();
+                LeagueSeason data = new LeagueSeason(new RLTDataProvider(dataStream), res);
+                System.out.println("Done.");
+
+                for (StatsPanel panel : panels.values())
+                {
+                    invalidate();
+                    panel.setLeagueData(data, highlightedTeams.get(selection));
+                    validate();
+                }
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
             }
         }
         else

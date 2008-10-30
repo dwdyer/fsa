@@ -106,7 +106,7 @@ public final class Team
             {
                 total += pointsForDraw;
             }
-            else if (result.isWin(this))
+            else if (result.isWin(name))
             {
                 total += pointsForWin;
             }
@@ -122,13 +122,13 @@ public final class Team
     public void addResult(Result result)
     {
         overallRecord.addResult(result);
-        if (result.getHomeTeam().getName().equals(getName()))
+        if (result.getHomeTeam().equals(getName()))
         {
             homeRecord.addResult(result);
             // Attendances away from home do not concern us.
             updateAttendanceFigures(result);
         }
-        else if (result.getAwayTeam().getName().equals(getName()))
+        else if (result.getAwayTeam().equals(getName()))
         {
             awayRecord.addResult(result);
         }

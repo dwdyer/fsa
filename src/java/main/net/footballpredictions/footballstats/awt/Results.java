@@ -250,19 +250,19 @@ public class Results implements StatsPanel
             resultsPanel.add(new Label(theme.getLongDateFormat().format(result.getDate())), constraints);
             if (result.getHomeTeam().equals(team)) // Home
             {
-                resultsPanel.add(new Label(result.getAwayTeam().getName() + 
+                resultsPanel.add(new Label(result.getAwayTeam() +
                 				" (" + res.getString("results.home.short") +")"),
                 				constraints);
             }
             else // Away
             {
-                resultsPanel.add(new Label(result.getHomeTeam().getName() +
+                resultsPanel.add(new Label(result.getHomeTeam() +
                 		" (" + res.getString("results.away.short") +")"),
         				constraints);
             }
             constraints.gridwidth = GridBagConstraints.RELATIVE;
             constraints.weightx = 0.0;
-            Label scoreLabel = new Label(result.getGoalsFor(team) + "-" + result.getGoalsAgainst(team), Label.CENTER);
+            Label scoreLabel = new Label(result.getGoalsFor(team.getName()) + "-" + result.getGoalsAgainst(team.getName()), Label.CENTER);
             scoreLabel.setFont(theme.getBoldFont());
             if (result.isDraw())
             {
@@ -270,7 +270,7 @@ public class Results implements StatsPanel
             }
             else
             {
-                scoreLabel.setBackground(result.isWin(team) ? theme.getWinColour() : theme.getDefeatColour());
+                scoreLabel.setBackground(result.isWin(team.getName()) ? theme.getWinColour() : theme.getDefeatColour());
             }
             resultsPanel.add(scoreLabel, constraints);
             constraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -300,8 +300,8 @@ public class Results implements StatsPanel
         {
             constraints.gridwidth = 1;
             constraints.weightx = 1.0;
-            Label homeTeamLabel = new Label(result.getHomeTeam().getName(), Label.RIGHT);
-            homeTeamLabel.setFont(result.getHomeTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            Label homeTeamLabel = new Label(result.getHomeTeam(), Label.RIGHT);
+            homeTeamLabel.setFont(result.getHomeTeam().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             resultsPanel.add(homeTeamLabel, constraints);
             Label scoreLabel = new Label(result.getHomeGoals() + "-" + result.getAwayGoals(), Label.CENTER);
             scoreLabel.setFont(theme.getBoldFont());
@@ -309,8 +309,8 @@ public class Results implements StatsPanel
             resultsPanel.add(scoreLabel, constraints);
             constraints.gridwidth = GridBagConstraints.RELATIVE;
             // constraints.weightx = 1.0;
-            Label awayTeamLabel = new Label(result.getAwayTeam().getName(), Label.LEFT);
-            awayTeamLabel.setFont(result.getAwayTeam().getName().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
+            Label awayTeamLabel = new Label(result.getAwayTeam(), Label.LEFT);
+            awayTeamLabel.setFont(result.getAwayTeam().equals(highlightedTeam) ? theme.getBoldFont() : theme.getPlainFont());
             resultsPanel.add(awayTeamLabel, constraints);
             constraints.gridwidth = GridBagConstraints.REMAINDER;
             constraints.weightx = 0.0;

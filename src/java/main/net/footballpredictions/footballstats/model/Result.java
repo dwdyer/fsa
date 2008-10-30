@@ -26,8 +26,8 @@ import java.util.Date;
  */
 public final class Result
 {
-    private final Team homeTeam;
-    private final Team awayTeam;
+    private final String homeTeam;
+    private final String awayTeam;
     private final int homeGoals;
     private final int awayGoals;
     private final int attendance;
@@ -38,8 +38,8 @@ public final class Result
      * Constructor, sets all of the immutable fields.  Attendance should be set to -1 if the
      * data is not available.
      */
-    public Result(Team homeTeam,
-                  Team awayTeam,
+    public Result(String homeTeam,
+                  String awayTeam,
                   int homeGoals,
                   int awayGoals,
                   int attendance,
@@ -59,9 +59,9 @@ public final class Result
      * team is one of the two teams that contested the match.
      * @return true if this is a win for the specified team, false otherwise.
      */
-    public boolean isWin(Team team)
+    public boolean isWin(String team)
     {
-        return team.getName().equals(homeTeam.getName())
+        return team.equals(homeTeam)
                ? (homeGoals > awayGoals)
                : (awayGoals > homeGoals);
     }
@@ -72,9 +72,9 @@ public final class Result
      * team is one of the two teams that contested the match.
      * @return true if this is a defeat for the specified team, false otherwise.
      */
-    public boolean isDefeat(Team team)
+    public boolean isDefeat(String team)
     {
-        return team.getName().equals(homeTeam.getName())
+        return team.equals(homeTeam)
                ? (homeGoals < awayGoals)
                : (awayGoals < homeGoals);
     }
@@ -90,13 +90,13 @@ public final class Result
     }
     
     
-    public int getGoalsFor(Team team)
+    public int getGoalsFor(String team)
     {
         return team.equals(homeTeam) ? homeGoals : awayGoals;
     }
     
     
-    public int getGoalsAgainst(Team team)
+    public int getGoalsAgainst(String team)
     {
         return team.equals(homeTeam) ? awayGoals : homeGoals;
     }
@@ -120,13 +120,13 @@ public final class Result
     }
 
 
-    public Team getHomeTeam()
+    public String getHomeTeam()
     {
         return homeTeam;
     }
 
 
-    public Team getAwayTeam()
+    public String getAwayTeam()
     {
         return awayTeam;
     }
