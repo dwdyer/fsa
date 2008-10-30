@@ -17,11 +17,11 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import net.footballpredictions.footballstats.model.LeagueSeason;
 import java.awt.Component;
 import java.awt.Font;
-import javax.swing.JTable;
 import javax.swing.JLabel;
+import javax.swing.JTable;
+import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
  * Customised {@link LeagueTableRenderer} that formats form strings.
@@ -32,13 +32,13 @@ class FormRenderer extends LeagueTableRenderer
     private static final Font FIXED_WIDTH_FONT = new Font("Monospaced", Font.BOLD, 12);
 
     /**
-     * @param data League data is used to determine row colours.
+     * @param metadata League metadata is used to determine row colours.
      * @param highlightZones Whether or not to render promotion and relegation zones
      * in different colours to other positions.
      */
-    public FormRenderer(LeagueSeason data, boolean highlightZones)
+    public FormRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
-        super(data, highlightZones);
+        super(metadata, highlightZones);
     }
 
 

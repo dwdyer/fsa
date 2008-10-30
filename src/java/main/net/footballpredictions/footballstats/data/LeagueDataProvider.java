@@ -18,10 +18,11 @@
 package net.footballpredictions.footballstats.data;
 
 import net.footballpredictions.footballstats.model.Result;
-import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.model.LeagueMetaData;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Interface implemented by objects that provide access to league data.
@@ -32,7 +33,7 @@ public interface LeagueDataProvider
     /**
      * @return A set of the names of all of the teams in the league.
      */
-    Set<String> getTeams();
+    SortedSet<String> getTeams();
 
     /**
      * @return A list of the league results for the season.
@@ -45,22 +46,8 @@ public interface LeagueDataProvider
     Map<String, Integer> getPointsAdjustments();
 
     /**
-     * @return Details of the prizes awarded to the top teams.
+     * @return League metadata (how points for a win, how many teams in the league,
+     * promotion/relegation details, etc.)
      */
-    List<LeagueSeason.LeagueZone> getPrizeZones();
-
-    /**
-     * @return Details of which teams will be relegated at the end of the season. 
-     */
-    List<LeagueSeason.LeagueZone> getRelegationZones();
-
-    /**
-     * @return The number of points earned for winning a match (usually 3, but can be 2).
-     */
-    int getPointsForWin();
-
-    /**
-     * @return The number of points earned for drawing a match (almost always 1).
-     */
-    int getPointsForDraw();
+    LeagueMetaData getLeagueMetaData();
 }

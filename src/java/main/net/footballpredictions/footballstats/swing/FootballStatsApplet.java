@@ -36,8 +36,8 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.data.RLTDataProvider;
+import net.footballpredictions.footballstats.model.LeagueSeason;
 
 /**
  * This class provides football stats for a web page as a Swing applet.

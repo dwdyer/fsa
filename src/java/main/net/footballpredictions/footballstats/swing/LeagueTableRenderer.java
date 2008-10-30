@@ -17,13 +17,13 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import java.awt.Component;
 import java.awt.Color;
+import java.awt.Component;
 import java.text.DecimalFormat;
-import net.footballpredictions.footballstats.model.LeagueSeason;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
  * Default renderer for cells in a league table.
@@ -42,17 +42,17 @@ class LeagueTableRenderer extends DefaultTableCellRenderer
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.00");
 
 
-    private final LeagueSeason data;
+    private final LeagueMetaData metadata;
     private final boolean highlightZones;
 
     /**
-     * @param data League data is used to determine row colours.
+     * @param metadata League metadata is used to determine row colours.
      * @param highlightZones Whether or not to render promotion and relegation zones
      * in different colours to other positions.
      */
-    public LeagueTableRenderer(LeagueSeason data, boolean highlightZones)
+    public LeagueTableRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
-        this.data = data;
+        this.metadata = metadata;
         this.highlightZones = highlightZones;
     }
 
@@ -84,7 +84,7 @@ class LeagueTableRenderer extends DefaultTableCellRenderer
 
     private Color getRowColour(int row)
     {
-        int zone = data.getZoneForPosition(row + 1); // Convert zero-based row index into one-based position.
+        int zone = metadata.getZoneForPosition(row + 1); // Convert zero-based row index into one-based position.
         if (zone == 0)
         {
             return null;

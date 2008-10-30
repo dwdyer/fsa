@@ -143,15 +143,15 @@ class LeagueTablePanel extends JPanel implements StatsPanel
             columnModel.removeColumn(droppedColumn);
         }
 
-        LeagueTableRenderer renderer = new LeagueTableRenderer(data, !form);
+        LeagueTableRenderer renderer = new LeagueTableRenderer(data.getMetaData(), !form);
         leagueTable.setDefaultRenderer(Object.class, renderer);
         leagueTable.setDefaultRenderer(Number.class, renderer);
         leagueTable.setDefaultRenderer(Double.class, renderer);
         TableColumn positionColumn = columnModel.getColumn(LeagueTableModel.POSITION_COLUMN);
-        positionColumn.setCellRenderer(new PositionRenderer(data, !form));
+        positionColumn.setCellRenderer(new PositionRenderer(data.getMetaData(), !form));
         TableColumn goalDifferenceColumn = columnModel.getColumn(LeagueTableModel.GOAL_DIFFERENCE_COLUMN);
-        goalDifferenceColumn.setCellRenderer(new GoalDifferenceRenderer(data, !form));
-        formColumn.setCellRenderer(new FormRenderer(data, !form));
+        goalDifferenceColumn.setCellRenderer(new GoalDifferenceRenderer(data.getMetaData(), !form));
+        formColumn.setCellRenderer(new FormRenderer(data.getMetaData(), !form));
     }
 
 

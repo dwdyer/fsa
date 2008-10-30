@@ -17,11 +17,11 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import javax.swing.table.AbstractTableModel;
-import net.footballpredictions.footballstats.model.TeamRecord;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import javax.swing.table.AbstractTableModel;
+import net.footballpredictions.footballstats.model.TeamRecord;
 
 /**
  * {@link javax.swing.table.TableModel} implementation for displaying a league table

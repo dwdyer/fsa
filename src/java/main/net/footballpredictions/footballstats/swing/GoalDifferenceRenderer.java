@@ -17,11 +17,11 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import net.footballpredictions.footballstats.model.LeagueSeason;
-import java.awt.Component;
 import java.awt.Color;
-import javax.swing.JTable;
+import java.awt.Component;
 import javax.swing.JLabel;
+import javax.swing.JTable;
+import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
  * Customised {@link LeagueTableRenderer} that correctly formats goal difference values.
@@ -34,13 +34,13 @@ class GoalDifferenceRenderer extends LeagueTableRenderer
     private static final Color NEGATIVE_COLOUR = hexStringToColor("990000");
 
     /**
-     * @param data League data is used to determine row colours.
+     * @param metadata League metadata is used to determine row colours.
      * @param highlightZones Whether or not to render promotion and relegation zones
      * in different colours to other positions.
      */
-    public GoalDifferenceRenderer(LeagueSeason data, boolean highlightZones)
+    public GoalDifferenceRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
-        super(data, highlightZones);
+        super(metadata, highlightZones);
     }
 
 

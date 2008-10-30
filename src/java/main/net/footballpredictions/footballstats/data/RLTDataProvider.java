@@ -28,11 +28,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.model.LeagueMetaData;
 import net.footballpredictions.footballstats.model.Result;
 
 /**
@@ -50,14 +49,13 @@ public class RLTDataProvider implements LeagueDataProvider
 
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("ddMMyyyy");
 
-    private int pointsForWin = 3;
-    private int pointsForDraw = 1;
+    private final LeagueMetaData metaData;
 
-    private final Set<String> teams = new TreeSet<String>();
+    private final SortedSet<String> teams = new TreeSet<String>();
     private final List<Result> results = new LinkedList<Result>();
     private final Map<String, Integer> pointsAdjustments = new HashMap<String, Integer>();
-    private final List<LeagueSeason.LeagueZone> prizeZones = new LinkedList<LeagueSeason.LeagueZone>();
-    private final List<LeagueSeason.LeagueZone> relegationZones = new LinkedList<LeagueSeason.LeagueZone>();
+    private final List<LeagueMetaData.LeagueZone> prizeZones = new LinkedList<LeagueMetaData.LeagueZone>();
+    private final List<LeagueMetaData.LeagueZone> relegationZones = new LinkedList<LeagueMetaData.LeagueZone>();
 
 
     public RLTDataProvider(InputStream data) throws IOException
@@ -65,6 +63,9 @@ public class RLTDataProvider implements LeagueDataProvider
         BufferedReader resultsReader = new BufferedReader(new InputStreamReader(data, "UTF-8"));
         try
         {
+            int pointsForWin = 3;
+            int pointsForDraw = 1;
+
             String nextLine = resultsReader.readLine();
             while (nextLine != null)
             {
@@ -106,13 +107,13 @@ public class RLTDataProvider implements LeagueDataProvider
                     }
                     else if (dateString.equals(PRIZE_TAG))
                     {
-                        prizeZones.add(new LeagueSeason.LeagueZone(Integer.parseInt(nextResult.nextToken()),
+                        prizeZones.add(new LeagueMetaData.LeagueZone(Integer.parseInt(nextResult.nextToken()),
                                                                    Integer.parseInt(nextResult.nextToken()),
                                                                    nextResult.nextToken()));
                     }
                     else if (dateString.equals(RELEGATION_TAG))
                     {
-                        relegationZones.add(new LeagueSeason.LeagueZone(Integer.parseInt(nextResult.nextToken()),
+                        relegationZones.add(new LeagueMetaData.LeagueZone(Integer.parseInt(nextResult.nextToken()),
                                                                         Integer.parseInt(nextResult.nextToken()),
                                                                         nextResult.nextToken()));
                     }
@@ -137,14 +138,12 @@ public class RLTDataProvider implements LeagueDataProvider
                 nextLine = resultsReader.readLine();
             }
             System.out.println("Read " + results.size() + " results.");
+
+            this.metaData = new LeagueMetaData(pointsForWin, pointsForDraw, teams.size(), prizeZones, relegationZones);
         }
         catch(ParseException ex)
         {
-            System.out.println("ERROR: Invalid date format in results file.");
-        }
-        catch(NoSuchElementException ex)
-        {
-            System.out.println("ERROR: Results file badly formatted.");
+            throw new IOException("Invalid date format in results file.");
         }
         finally
         {
@@ -156,7 +155,7 @@ public class RLTDataProvider implements LeagueDataProvider
     /**
      * {@inheritDoc}
      */
-    public Set<String> getTeams()
+    public SortedSet<String> getTeams()
     {
         return teams;
     }
@@ -179,39 +178,12 @@ public class RLTDataProvider implements LeagueDataProvider
         return pointsAdjustments;
     }
 
-
+    
     /**
      * {@inheritDoc}
      */
-    public List<LeagueSeason.LeagueZone> getPrizeZones()
+    public LeagueMetaData getLeagueMetaData()
     {
-        return prizeZones;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<LeagueSeason.LeagueZone> getRelegationZones()
-    {
-        return relegationZones;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getPointsForWin()
-    {
-        return pointsForWin;
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public int getPointsForDraw()
-    {
-        return pointsForDraw;
+        return metaData;
     }
 }

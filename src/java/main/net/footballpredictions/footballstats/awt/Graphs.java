@@ -60,9 +60,9 @@ public class Graphs implements StatsPanel
     
     private ResourceBundle res = null;
     
-    
 
-    public Graphs(ResourceBundle res) {
+    public Graphs(ResourceBundle res)
+    {
 		this.res = res;
 	}
 
@@ -204,8 +204,8 @@ public class Graphs implements StatsPanel
                     }
                     else if (typeChoice.getSelectedIndex() == 1)
                     {
-                        int[][] points = data.getTeam(teamName).getPointsData(data.getPointsForWin(),
-                                                                              data.getPointsForDraw());
+                        int[][] points = data.getTeam(teamName).getPointsData(data.getMetaData().getPointsForWin(),
+                                                                              data.getMetaData().getPointsForDraw());
                         maxX = Math.max(maxX, points.length - 1);
                         maxY = Math.max(maxY, data.getHighestPointsTotal());
                         plots.add(points);

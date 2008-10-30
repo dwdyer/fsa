@@ -126,8 +126,8 @@ public class LeagueTable implements StatsPanel
     {
         innerControlPanel.removeAll();
         
-        String[] prizeZoneNames = data.getPrizeZoneNames();
-        String[] relegationZoneNames = data.getRelegationZoneNames();
+        String[] prizeZoneNames = data.getMetaData().getPrizeZoneNames();
+        String[] relegationZoneNames = data.getMetaData().getRelegationZoneNames();
         if (isFormTable)
         {
             innerControlPanel.setLayout(new GridLayout(5 + prizeZoneNames.length + relegationZoneNames.length, 1));
@@ -298,7 +298,7 @@ public class LeagueTable implements StatsPanel
                 Label label = new Label(String.valueOf(i));
                 if (zonesCheckbox.getState())
                 {
-                    label.setBackground(theme.getZoneColour(data.getZoneForPosition(i)));
+                    label.setBackground(theme.getZoneColour(data.getMetaData().getZoneForPosition(i)));
                 }
                 positionsColumn.add(label);
             }
@@ -321,7 +321,7 @@ public class LeagueTable implements StatsPanel
             }
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
+                label.setBackground(theme.getZoneColour(data.getMetaData().getZoneForPosition(index)));
             }
             teamsColumn.add(label);
             ++index;
@@ -346,7 +346,7 @@ public class LeagueTable implements StatsPanel
         int index = 1;
         for (TeamRecord team : teams)
         {
-            Color backgroundColour = theme.getZoneColour(data.getZoneForPosition(index));
+            Color backgroundColour = theme.getZoneColour(data.getMetaData().getZoneForPosition(index));
             Label playedLabel = new Label(String.valueOf(team.getPlayed()), Label.CENTER);
             statsColumns.add(playedLabel);
             Label wonLabel = new Label(String.valueOf(team.getWon()), Label.CENTER);
@@ -398,7 +398,7 @@ public class LeagueTable implements StatsPanel
             label.setFont(theme.getBoldFont());
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
+                label.setBackground(theme.getZoneColour(data.getMetaData().getZoneForPosition(index)));
             }
             optionalColumn.add(label);
             ++index;
@@ -418,7 +418,7 @@ public class LeagueTable implements StatsPanel
             label.setFont(theme.getBoldFont());
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
+                label.setBackground(theme.getZoneColour(data.getMetaData().getZoneForPosition(index)));
             }
             optionalColumn.add(label);
             ++index;
@@ -438,7 +438,7 @@ public class LeagueTable implements StatsPanel
             label.setFont(theme.getFixedWidthFont());
             if (zonesCheckbox.getState())
             {
-                label.setBackground(theme.getZoneColour(data.getZoneForPosition(index)));
+                label.setBackground(theme.getZoneColour(data.getMetaData().getZoneForPosition(index)));
             }
             optionalColumn.add(label);
             ++index;

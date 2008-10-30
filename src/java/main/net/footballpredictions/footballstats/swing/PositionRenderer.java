@@ -17,10 +17,10 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import net.footballpredictions.footballstats.model.LeagueSeason;
 import java.awt.Component;
-import javax.swing.JTable;
 import javax.swing.JLabel;
+import javax.swing.JTable;
+import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
  * Customised {@link LeagueTableRenderer} that formats position labels. 
@@ -29,13 +29,13 @@ import javax.swing.JLabel;
 public class PositionRenderer extends LeagueTableRenderer
 {
     /**
-     * @param data League data is used to determine row colours.
+     * @param metadata League metadata is used to determine row colours.
      * @param highlightZones Whether or not to render promotion and relegation zones
      * in different colours to other positions.
      */
-    public PositionRenderer(LeagueSeason data, boolean highlightZones)
+    public PositionRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
-        super(data, highlightZones);
+        super(metadata, highlightZones);
     }
 
 

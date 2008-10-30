@@ -38,11 +38,10 @@ import net.footballpredictions.footballstats.util.FixedSizeSortedSet;
  */
 public final class LeagueSeason
 {
-    private final int pointsForWin;
-    private final int pointsForDraw;
-
+    private final LeagueMetaData metaData;
     private final Map<String, Team> teamMappings = new TreeMap<String, Team>();
-    private SortedSet<String> teamNames;
+    private final SortedSet<String> teamNames;
+    
     // Store a list of results for each date on which matches were played.  The map is sorted
     // with the earliest date first.
     private final SortedMap<Date, List<Result>> resultsByDate = new TreeMap<Date, List<Result>>();
@@ -65,18 +64,11 @@ public final class LeagueSeason
     private int aggregateCleansheets = 0;
     private int aggregateAttendance = 0;
     
-    private int[] zones;
-    private String[] prizeZoneNames;
-    private String[] relegationZoneNames;
-    
-    private int highestPointsTotal = 0;
- 
 
     public LeagueSeason(LeagueDataProvider dataProvider, ResourceBundle res)
     {
-        pointsForWin = dataProvider.getPointsForWin();
-        pointsForDraw = dataProvider.getPointsForDraw();
-
+        this.metaData = dataProvider.getLeagueMetaData();
+        this.teamNames = dataProvider.getTeams();
         for (String teamName : dataProvider.getTeams())
         {
             teamMappings.put(teamName, new Team(teamName, res));
@@ -108,33 +100,6 @@ public final class LeagueSeason
         }
 
         processTeamRecords();
-
-        // Workout positions info.
-        zones = new int[teamMappings.size()];
-        List<LeagueZone> prizeZones = dataProvider.getPrizeZones();
-        prizeZoneNames = new String[prizeZones.size()];
-        int index = 0;
-        for (LeagueZone zone : prizeZones)
-        {
-            prizeZoneNames[index] = zone.name;
-            for (int j = zone.startPos; j <= zone.endPos; j++)
-            {
-                zones[j - 1] = index + 1; // Decrement to convert to zero-based index.
-            }
-            ++index;
-        }
-        List<LeagueZone> relegationZones = dataProvider.getRelegationZones();
-        relegationZoneNames = new String[relegationZones.size()];
-        index = 0;
-        for (LeagueZone zone : relegationZones)
-        {
-            relegationZoneNames[index] = zone.name;
-            for (int j = zone.startPos; j <= zone.endPos; j++)
-            {
-                zones[j - 1] = -(index + 1); // Decrement to convert to zero-based index.
-            }
-            ++index;
-        }
     }
 
 
@@ -161,12 +126,6 @@ public final class LeagueSeason
         
             System.out.println("Processed results for " + date.toString());
         }
-        
-        if (highestPointsTotal == 0) // Only set this for the most recent (first) date.
-        {
-            highestPointsTotal = getRoundsCount(VenueType.BOTH) * getPointsForWin();
-        }
-        
     }
     
     
@@ -238,10 +197,6 @@ public final class LeagueSeason
      */
     public SortedSet<String> getTeamNames()
     {
-        if (teamNames == null)
-        {
-            teamNames = new TreeSet<String>(teamMappings.keySet());
-        }
         return teamNames;
     }
     
@@ -269,18 +224,6 @@ public final class LeagueSeason
     public Date getMostRecentDate()
     {
         return resultsByDate.lastKey();
-    }
-    
-    
-    public String[] getPrizeZoneNames()
-    {
-        return prizeZoneNames;
-    }
-    
-    
-    public String[] getRelegationZoneNames()
-    {
-        return relegationZoneNames;
     }
     
     
@@ -459,37 +402,21 @@ public final class LeagueSeason
     {
         return (int) ((float) aggregateAttendance / matchCount + 0.5);
     }
-    
-    
-    /**
-     * @return A zone ID for a particular league position.  Positive zone IDs represent
-     * prize zones (promotion, play-offs etc.) and negative IDs represent relegation zones.
-     */
-    public int getZoneForPosition(int position)
+
+
+    public LeagueMetaData getMetaData()
     {
-        return zones[--position]; // Decrement to convert to zero-based index.
+        return metaData;
     }
-    
+
     
     public int getHighestPointsTotal()
     {
-        return highestPointsTotal;
+        return getRoundsCount(VenueType.BOTH) * metaData.getPointsForWin();
     }
 
 
-    public int getPointsForWin()
-    {
-        return pointsForWin;
-    }
-
-
-    public int getPointsForDraw()
-    {
-        return pointsForDraw;
-    }
-
-
-    public int getRoundsCount(VenueType where)
+    private int getRoundsCount(VenueType where)
     {
     	int rounds = 0;
     	// Find maximum number of matches played
@@ -500,21 +427,5 @@ public final class LeagueSeason
         }
     	 
     	return rounds; 
-    }
-
-
-    // Class for temporarily storing league position data.
-    public static final class LeagueZone
-    {
-        public final int startPos;
-        public final int endPos;
-        public final String name;
-
-        public LeagueZone(int startPos, int endPos, String name)
-        {
-            this.startPos = startPos;
-            this.endPos = endPos;
-            this.name = name;
-        }
     }
 }
