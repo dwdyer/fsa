@@ -19,25 +19,23 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
-
 import javax.swing.JApplet;
-import javax.swing.JComponent;
-import javax.swing.JTabbedPane;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 
 /**
@@ -99,7 +97,6 @@ public final class FootballStatsApplet extends JApplet
     private JComponent createSeasonSelector()
     {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.add(new JLabel("League Data: "));
         JComboBox seasonCombo = new JComboBox();
         for (String name : dataFiles.keySet())
         {

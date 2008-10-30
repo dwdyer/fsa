@@ -17,21 +17,21 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JComponent;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.table.TableColumnModel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.VenueType;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.Dimension;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 
 /**
  * By default displays a standard league table.  Can also display tables based on total points dropped
@@ -58,8 +58,8 @@ class LeagueTablePanel extends JPanel implements StatsPanel
     {
         super(new BorderLayout());
         this.form = form;
+        add(createControls(), BorderLayout.NORTH);
         add(createTable(), BorderLayout.CENTER);
-        add(createControls(), BorderLayout.EAST);
     }
 
     private JComponent createTable()
@@ -71,7 +71,7 @@ class LeagueTablePanel extends JPanel implements StatsPanel
 
     private JComponent createControls()
     {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         ItemListener itemListener = new ItemListener()
         {
@@ -84,19 +84,16 @@ class LeagueTablePanel extends JPanel implements StatsPanel
             }
         };
 
-        JPanel innerPanel = new JPanel(new GridLayout(0, 1));
-
         if (!form) // Only show table type drop-down if it's not a form table.
         {
             tableTypeCombo.addItemListener(itemListener);
-            innerPanel.add(new JLabel("Table Type:"));
-            innerPanel.add(tableTypeCombo);
+            panel.add(new JLabel("Table Type:"));
+            panel.add(tableTypeCombo);
         }
 
         venueCombo.addItemListener(itemListener);
-        innerPanel.add(new JLabel("Matches:"));
-        innerPanel.add(venueCombo);
-        panel.add(innerPanel, BorderLayout.NORTH);
+        panel.add(new JLabel("Matches:"));
+        panel.add(venueCombo);
 
         return panel;
     }
