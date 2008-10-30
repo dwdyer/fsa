@@ -81,9 +81,12 @@ public final class FootballStatsApplet extends JApplet
         res = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa", locale);
         
         JTabbedPane tabs = new JTabbedPane();
-        LeagueTablePanel leagueTable = new LeagueTablePanel();
+        LeagueTablePanel leagueTable = new LeagueTablePanel(false);
         panels.add(leagueTable);
         tabs.add("League Table", leagueTable);
+        LeagueTablePanel formTable = new LeagueTablePanel(true);
+        panels.add(formTable);
+        tabs.add("Form", formTable);
 
         add(createSeasonSelector(), BorderLayout.NORTH);
         add(tabs, BorderLayout.CENTER);

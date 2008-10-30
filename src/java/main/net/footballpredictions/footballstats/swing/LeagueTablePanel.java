@@ -41,6 +41,8 @@ import java.awt.event.ItemEvent;
  */
 class LeagueTablePanel extends JPanel implements StatsPanel
 {
+    private final boolean form;
+
     private LeagueSeason data = null;
 
     private final JTable leagueTable = new JTable();
@@ -52,9 +54,10 @@ class LeagueTablePanel extends JPanel implements StatsPanel
     }
     private final VenueComboBox venueCombo = new VenueComboBox();
 
-    public LeagueTablePanel()
+    public LeagueTablePanel(boolean form)
     {
         super(new BorderLayout());
+        this.form = form;
         add(createTable(), BorderLayout.CENTER);
         add(createControls(), BorderLayout.EAST);
     }
@@ -80,12 +83,17 @@ class LeagueTablePanel extends JPanel implements StatsPanel
                 }
             }
         };
-        tableTypeCombo.addItemListener(itemListener);
-        venueCombo.addItemListener(itemListener);
 
         JPanel innerPanel = new JPanel(new GridLayout(0, 1));
-        innerPanel.add(new JLabel("Table Type:"));
-        innerPanel.add(tableTypeCombo);
+
+        if (!form) // Only show table type drop-down if it's not a form table.
+        {
+            tableTypeCombo.addItemListener(itemListener);
+            innerPanel.add(new JLabel("Table Type:"));
+            innerPanel.add(tableTypeCombo);
+        }
+
+        venueCombo.addItemListener(itemListener);
         innerPanel.add(new JLabel("Matches:"));
         innerPanel.add(venueCombo);
         panel.add(innerPanel, BorderLayout.NORTH);
@@ -106,7 +114,8 @@ class LeagueTablePanel extends JPanel implements StatsPanel
 
     private void changeTable()
     {
-        TableType type = (TableType) tableTypeCombo.getSelectedItem();
+        TableType type = (TableType) tableTypeCombo.getSelectedItem(); // Will be null for form tables.
+        
         leagueTable.setModel(getTableModel(type, (VenueType) venueCombo.getSelectedItem()));
         TableColumnModel columnModel = leagueTable.getColumnModel();
         for (int i = 0; i < columnModel.getColumnCount(); i++)
@@ -120,8 +129,14 @@ class LeagueTablePanel extends JPanel implements StatsPanel
         averageColumn.setPreferredWidth(30);
         TableColumn droppedColumn = columnModel.getColumn(LeagueTableModel.POINTS_DROPPED_COLUMN);
         droppedColumn.setPreferredWidth(30);
+        TableColumn formColumn = columnModel.getColumn(LeagueTableModel.FORM_COLUMN);
+        formColumn.setPreferredWidth(40);
 
         // Hide columns that aren't relevant for the selected table type.
+        if (!form)
+        {
+            columnModel.removeColumn(formColumn);
+        }
         if (type != TableType.POINTS_PER_GAME)
         {
             columnModel.removeColumn(averageColumn);
@@ -131,14 +146,15 @@ class LeagueTablePanel extends JPanel implements StatsPanel
             columnModel.removeColumn(droppedColumn);
         }
 
-        LeagueTableRenderer renderer = new LeagueTableRenderer(data);
+        LeagueTableRenderer renderer = new LeagueTableRenderer(data, !form);
         leagueTable.setDefaultRenderer(Object.class, renderer);
         leagueTable.setDefaultRenderer(Number.class, renderer);
         leagueTable.setDefaultRenderer(Double.class, renderer);
         TableColumn positionColumn = columnModel.getColumn(LeagueTableModel.POSITION_COLUMN);
-        positionColumn.setCellRenderer(new PositionRenderer(data));
+        positionColumn.setCellRenderer(new PositionRenderer(data, !form));
         TableColumn goalDifferenceColumn = columnModel.getColumn(LeagueTableModel.GOAL_DIFFERENCE_COLUMN);
-        goalDifferenceColumn.setCellRenderer(new GoalDifferenceRenderer(data));
+        goalDifferenceColumn.setCellRenderer(new GoalDifferenceRenderer(data, !form));
+        formColumn.setCellRenderer(new FormRenderer(data, !form));
     }
 
 
@@ -150,12 +166,19 @@ class LeagueTablePanel extends JPanel implements StatsPanel
      */
     private LeagueTableModel getTableModel(TableType type, VenueType where)
     {
-        switch (type)
+        if (form)
         {
-            case POINTS_WON: return new LeagueTableModel(data.getStandardLeagueTable(where));
-            case POINTS_PER_GAME: return new LeagueTableModel(data.getAverageLeagueTable(where));
-            case POINTS_DROPPED: return new LeagueTableModel(data.getInvertedLeagueTable(where));
-            default: throw new IllegalStateException("Unexpected venue type: " + where);
+            return new LeagueTableModel(data.getFormTable(where));
+        }
+        else
+        {
+            switch (type)
+            {
+                case POINTS_WON: return new LeagueTableModel(data.getStandardLeagueTable(where));
+                case POINTS_PER_GAME: return new LeagueTableModel(data.getAverageLeagueTable(where));
+                case POINTS_DROPPED: return new LeagueTableModel(data.getInvertedLeagueTable(where));
+                default: throw new IllegalStateException("Unexpected venue type: " + where);
+            }
         }
     }
 

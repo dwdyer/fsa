@@ -42,10 +42,11 @@ class LeagueTableModel extends AbstractTableModel
     static final int POINTS_COLUMN = 9;
     static final int AVERAGE_POINTS_COLUMN = 10;
     static final int POINTS_DROPPED_COLUMN = 11;
+    static final int FORM_COLUMN = 12;
 
     private static final String[] COLUMN_NAMES = new String[]
     {
-        "Pos.", "Team", "P", "W", "D", "L", "F", "A", "GD", "Pts.", "Average", "Dropped"
+        "Pos.", "Team", "P", "W", "D", "L", "F", "A", "GD", "Pts.", "Average", "Dropped", "Form"
     };
 
     private final List<TeamRecord> teams;
@@ -74,8 +75,9 @@ class LeagueTableModel extends AbstractTableModel
     {
         switch (i)
         {
-            case TEAM_COLUMN : return String.class;
-            case AVERAGE_POINTS_COLUMN : return Double.class;
+            case TEAM_COLUMN: return String.class;
+            case AVERAGE_POINTS_COLUMN: return Double.class;
+            case FORM_COLUMN: return String.class;
             default : return Integer.class;
         }
     }
@@ -104,6 +106,7 @@ class LeagueTableModel extends AbstractTableModel
             case POINTS_COLUMN: return team.getPoints();
             case AVERAGE_POINTS_COLUMN: return team.getAveragePoints();
             case POINTS_DROPPED_COLUMN: return team.getDroppedPoints();
+            case FORM_COLUMN: return team.getForm(); 
             default: throw new IllegalArgumentException("Invalid column index: " + column);
         }
     }

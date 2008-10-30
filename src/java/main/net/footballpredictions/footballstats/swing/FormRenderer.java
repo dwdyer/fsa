@@ -19,26 +19,24 @@ package net.footballpredictions.footballstats.swing;
 
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import java.awt.Component;
-import java.awt.Color;
+import java.awt.Font;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 
 /**
- * Customised {@link LeagueTableRenderer} that correctly formats goal difference values.
+ * Customised {@link LeagueTableRenderer} that formats form strings.
  * @author Daniel Dyer
  */
-class GoalDifferenceRenderer extends LeagueTableRenderer
+class FormRenderer extends LeagueTableRenderer
 {
-    private static final Color POSITIVE_COLOUR = hexStringToColor("006600");
-    private static final Color ZERO_COLOUR = Color.BLACK;
-    private static final Color NEGATIVE_COLOUR = hexStringToColor("990000");
+    private static final Font FIXED_WIDTH_FONT = new Font("Monospaced", Font.BOLD, 12);
 
     /**
      * @param data League data is used to determine row colours.
      * @param highlightZones Whether or not to render promotion and relegation zones
      * in different colours to other positions.
      */
-    public GoalDifferenceRenderer(LeagueSeason data, boolean highlightZones)
+    public FormRenderer(LeagueSeason data, boolean highlightZones)
     {
         super(data, highlightZones);
     }
@@ -58,22 +56,8 @@ class GoalDifferenceRenderer extends LeagueTableRenderer
                                                                         hasFocus,
                                                                         row,
                                                                         column);
-        Integer goalDifference = (Integer) value;
-        if (goalDifference == 0)
-        {
-            component.setForeground(ZERO_COLOUR);
-        }
-        else if (goalDifference > 0)
-        {
-            component.setForeground(POSITIVE_COLOUR);
-            // Add explicit plus sign for positive goal differences.
-            component.setText('+' + component.getText());
-        }
-        else
-        {
-            component.setForeground(NEGATIVE_COLOUR);
-        }
-        
+        component.setFont(FIXED_WIDTH_FONT);
+        component.setHorizontalAlignment(JLabel.CENTER);
         return component;
     }
 }

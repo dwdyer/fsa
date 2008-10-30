@@ -43,13 +43,17 @@ class LeagueTableRenderer extends DefaultTableCellRenderer
 
 
     private final LeagueSeason data;
+    private final boolean highlightZones;
 
     /**
      * @param data League data is used to determine row colours.
+     * @param highlightZones Whether or not to render promotion and relegation zones
+     * in different colours to other positions.
      */
-    public LeagueTableRenderer(LeagueSeason data)
+    public LeagueTableRenderer(LeagueSeason data, boolean highlightZones)
     {
         this.data = data;
+        this.highlightZones = highlightZones;
     }
 
 
@@ -68,7 +72,10 @@ class LeagueTableRenderer extends DefaultTableCellRenderer
                                                                         false, // Never render focus.
                                                                         row,
                                                                         column);
-        component.setBackground(getRowColour(row));
+        if (highlightZones)
+        {
+            component.setBackground(getRowColour(row));
+        }
         component.setHorizontalAlignment(value instanceof Number ? JLabel.RIGHT : JLabel.LEFT);
 
         return component;

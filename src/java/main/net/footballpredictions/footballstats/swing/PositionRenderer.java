@@ -30,10 +30,12 @@ public class PositionRenderer extends LeagueTableRenderer
 {
     /**
      * @param data League data is used to determine row colours.
+     * @param highlightZones Whether or not to render promotion and relegation zones
+     * in different colours to other positions.
      */
-    public PositionRenderer(LeagueSeason data)
+    public PositionRenderer(LeagueSeason data, boolean highlightZones)
     {
-        super(data);
+        super(data, highlightZones);
     }
 
 
