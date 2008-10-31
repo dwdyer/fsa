@@ -20,6 +20,7 @@ package net.footballpredictions.footballstats.swing;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.table.AbstractTableModel;
 import net.footballpredictions.footballstats.model.TeamRecord;
 
@@ -46,15 +47,30 @@ class LeagueTableModel extends AbstractTableModel
 
     private static final String[] COLUMN_NAMES = new String[]
     {
-        "Pos.", "Team", "P", "W", "D", "L", "F", "A", "GD", "Pts.", "Average", "Dropped", "Form"
+        "table.position",
+        "table.team",
+        "table.played",
+        "table.won",
+        "table.drawn",
+        "table.lost",
+        "table.scored",
+        "table.conceded",
+        "table.goalDifference",
+        "table.points",
+        "table.average",
+        "table.dropped",
+        "table.form"
     };
 
     private final List<TeamRecord> teams;
+    private final ResourceBundle messageResources;
 
-    public LeagueTableModel(Collection<? extends TeamRecord> teams)
+    public LeagueTableModel(Collection<? extends TeamRecord> teams,
+                            ResourceBundle messageResources)
     {
         this.teams = new ArrayList<TeamRecord>(teams.size());
         this.teams.addAll(teams);
+        this.messageResources = messageResources;
     }
 
 
@@ -86,7 +102,7 @@ class LeagueTableModel extends AbstractTableModel
     @Override
     public String getColumnName(int i)
     {
-        return COLUMN_NAMES[i];
+        return messageResources.getString(COLUMN_NAMES[i]);
     }
 
     public Object getValueAt(int row, int column)

@@ -170,15 +170,15 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
     {
         if (form)
         {
-            return new LeagueTableModel(data.getFormTable(where));
+            return new LeagueTableModel(data.getFormTable(where), messageResources);
         }
         else
         {
             switch (type)
             {
-                case POINTS_WON: return new LeagueTableModel(data.getStandardLeagueTable(where));
-                case POINTS_PER_GAME: return new LeagueTableModel(data.getAverageLeagueTable(where));
-                case POINTS_DROPPED: return new LeagueTableModel(data.getInvertedLeagueTable(where));
+                case POINTS_WON: return new LeagueTableModel(data.getStandardLeagueTable(where), messageResources);
+                case POINTS_PER_GAME: return new LeagueTableModel(data.getAverageLeagueTable(where), messageResources);
+                case POINTS_DROPPED: return new LeagueTableModel(data.getInvertedLeagueTable(where), messageResources);
                 default: throw new IllegalStateException("Unexpected venue type: " + where);
             }
         }
