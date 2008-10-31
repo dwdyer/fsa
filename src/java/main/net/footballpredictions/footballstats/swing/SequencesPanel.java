@@ -37,9 +37,10 @@ import net.footballpredictions.footballstats.model.VenueType;
 import net.footballpredictions.footballstats.model.StandardRecord;
 
 /**
+ * Displays tables of sequences (consecutive wins, games without defeat, etc.)
  * @author Daniel Dyer
  */
-class SequencesPanel extends JPanel implements StatsPanel
+public class SequencesPanel extends JPanel implements StatsPanel
 {
     private final ResourceBundle messageResources;
 
@@ -76,7 +77,6 @@ class SequencesPanel extends JPanel implements StatsPanel
                 }
             }
         };
-
         sequenceTypeCombo = new EnumComboBox<SequenceType>(SequenceType.class, messageResources);
         sequenceTypeCombo.addItemListener(itemListener);
         panel.add(new JLabel(messageResources.getString("combo.SequenceType.label")));
@@ -84,7 +84,6 @@ class SequencesPanel extends JPanel implements StatsPanel
 
         venueCombo = new EnumComboBox<VenueType>(VenueType.class, messageResources);
         venueCombo.addItemListener(itemListener);
-        panel.add(new JLabel(messageResources.getString("combo.VenueType.label")));
         panel.add(venueCombo);
 
         return panel;
@@ -105,6 +104,10 @@ class SequencesPanel extends JPanel implements StatsPanel
         JPanel tablePanel = new JPanel(new BorderLayout());
         tablePanel.add(new JLabel(title, JLabel.CENTER), BorderLayout.NORTH);
         tablePanel.add(new JScrollPane(table));
+        TableRenderer renderer = new TableRenderer();
+        table.setDefaultRenderer(Object.class, renderer);
+        table.setDefaultRenderer(String.class, renderer);
+        table.setDefaultRenderer(Integer.class, renderer);
         return tablePanel;
     }
 

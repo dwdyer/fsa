@@ -78,6 +78,10 @@ public final class FootballStatsApplet extends JApplet
         panels.add(leagueTable);
         tabs.add(messageResources.getString("leagueTable.tab"), leagueTable);
 
+        ResultsPanel results = new ResultsPanel(messageResources);
+        panels.add(results);
+        tabs.add(messageResources.getString("results.tab"), results);
+
         LeagueTablePanel formTable = new LeagueTablePanel(true, messageResources);
         panels.add(formTable);
         tabs.add(messageResources.getString("formTable.tab"), formTable);

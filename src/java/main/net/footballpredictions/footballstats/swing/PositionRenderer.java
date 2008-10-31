@@ -23,10 +23,10 @@ import javax.swing.JTable;
 import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
- * Customised {@link LeagueTableRenderer} that formats position labels. 
+ * Customised {@link TableRenderer} that formats position labels.
  * @author Daniel Dyer
  */
-class PositionRenderer extends LeagueTableRenderer
+class PositionRenderer extends TableRenderer
 {
     /**
      * @param metadata League metadata is used to determine row colours.

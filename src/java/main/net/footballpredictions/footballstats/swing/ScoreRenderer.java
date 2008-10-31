@@ -17,33 +17,20 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import net.footballpredictions.footballstats.model.LeagueMetaData;
+import net.footballpredictions.footballstats.model.Result;
 
 /**
- * Customised {@link TableRenderer} that correctly formats goal difference values.
+ * Customised {@link TableRenderer} that formats match scores.
  * @author Daniel Dyer
  */
-class GoalDifferenceRenderer extends TableRenderer
+class ScoreRenderer extends TableRenderer
 {
-    private static final Color POSITIVE_COLOUR = hexStringToColor("006600");
-    private static final Color ZERO_COLOUR = Color.BLACK;
-    private static final Color NEGATIVE_COLOUR = hexStringToColor("990000");
-
-    /**
-     * @param metadata League metadata is used to determine row colours.
-     * @param highlightZones Whether or not to render promotion and relegation zones
-     * in different colours to other positions.
-     */
-    public GoalDifferenceRenderer(LeagueMetaData metadata, boolean highlightZones)
-    {
-        super(metadata, highlightZones);
-    }
-
-
+    private static final Font FIXED_WIDTH_FONT = new Font("Monospaced", Font.BOLD, 13);
+    
     @Override
     public Component getTableCellRendererComponent(JTable table,
                                                    Object value,
@@ -53,27 +40,34 @@ class GoalDifferenceRenderer extends TableRenderer
                                                    int column)
     {
         JLabel component = (JLabel) super.getTableCellRendererComponent(table,
-                                                                        value,
+                                                                        resultToString((Result) value),
                                                                         isSelected,
                                                                         hasFocus,
                                                                         row,
                                                                         column);
-        Integer goalDifference = (Integer) value;
-        if (goalDifference == 0)
-        {
-            component.setForeground(ZERO_COLOUR);
-        }
-        else if (goalDifference > 0)
-        {
-            component.setForeground(POSITIVE_COLOUR);
-            // Add explicit plus sign for positive goal differences.
-            component.setText('+' + component.getText());
-        }
-        else
-        {
-            component.setForeground(NEGATIVE_COLOUR);
-        }
-        
+        component.setFont(FIXED_WIDTH_FONT);
+        component.setHorizontalAlignment(JLabel.CENTER);
         return component;
+    }
+
+
+    private String resultToString(Result result)
+    {
+        StringBuilder buffer = new StringBuilder();
+        if (result.getHomeGoals() < 10)
+        {
+            buffer.append(' ');
+        }
+        buffer.append(result.getHomeGoals());
+
+        buffer.append(" - ");
+
+        buffer.append(result.getAwayGoals());
+        if (result.getAwayGoals() < 10)
+        {
+            buffer.append(' ');
+        }
+
+        return buffer.toString();
     }
 }

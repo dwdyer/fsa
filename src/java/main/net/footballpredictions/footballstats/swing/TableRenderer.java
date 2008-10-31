@@ -26,10 +26,11 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
- * Default renderer for cells in a league table.
+ * Default renderer for cells in a statistics table.  Never renders selection or
+ * focus and deals with optional row highlighting for configured 'zones'.
  * @author Daniel Dyer
  */
-class LeagueTableRenderer extends DefaultTableCellRenderer
+class TableRenderer extends DefaultTableCellRenderer
 {
     private static final Color[] PRIZE_COLOURS = new Color[]{hexStringToColor("FFCC00"),
                                                              hexStringToColor("FFFF66"),
@@ -41,16 +42,22 @@ class LeagueTableRenderer extends DefaultTableCellRenderer
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.00");
 
-
     private final LeagueMetaData metadata;
     private final boolean highlightZones;
 
+
+    public TableRenderer()
+    {
+        this(null, false);
+    }
+
+    
     /**
      * @param metadata League metadata is used to determine row colours.
      * @param highlightZones Whether or not to render promotion and relegation zones
      * in different colours to other positions.
      */
-    public LeagueTableRenderer(LeagueMetaData metadata, boolean highlightZones)
+    public TableRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
         this.metadata = metadata;
         this.highlightZones = highlightZones;
@@ -72,34 +79,42 @@ class LeagueTableRenderer extends DefaultTableCellRenderer
                                                                         false, // Never render focus.
                                                                         row,
                                                                         column);
-        if (highlightZones)
-        {
-            component.setBackground(getRowColour(row));
-        }
+        component.setBackground(getRowColour(row));
         component.setHorizontalAlignment(value instanceof Number ? JLabel.RIGHT : JLabel.LEFT);
 
         return component;
     }
 
 
+    /**
+     * Determine the row background colour according to which 'zone' that row is in.
+     * If zone highlighting is disabled, this method returns null for all positions.
+     * @param row The row to colour.
+     * @return A (possibly null) background colour.
+     */
     private Color getRowColour(int row)
     {
-        int zone = metadata.getZoneForPosition(row + 1); // Convert zero-based row index into one-based position.
-        if (zone == 0)
+        if (highlightZones && metadata != null)
         {
-            return null;
+            int zone = metadata.getZoneForPosition(row + 1); // Convert zero-based row index into one-based position.
+            if (zone > 0)
+            {
+                return PRIZE_COLOURS[Math.min(zone, PRIZE_COLOURS.length) - 1];
+            }
+            else if (zone < 0)
+            {
+                return RELEGATION_COLOURS[Math.min(-zone, RELEGATION_COLOURS.length) - 1];
+            }
         }
-        else if (zone > 0)
-        {
-            return PRIZE_COLOURS[Math.min(zone, PRIZE_COLOURS.length) - 1];
-        }
-        else
-        {
-            return RELEGATION_COLOURS[Math.min(-zone, RELEGATION_COLOURS.length) - 1];
-        }
+        return null;
     }
 
 
+    /**
+     * Converts an RGB hex string (as using in HTML/CSS) into a Color object.
+     * @param hex The hex string to convert.
+     * @return The colour represented by the hex value.
+     */
     protected static Color hexStringToColor(String hex)
     {
         int value = Integer.parseInt(hex, 16);

@@ -95,9 +95,12 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
             panel.add(new JLabel(messageResources.getString("combo.TableType.label")));
             panel.add(tableTypeCombo);
         }
+        else
+        {
+            panel.add(new JLabel(messageResources.getString("combo.VenueType.label")));            
+        }
         venueCombo = new EnumComboBox<VenueType>(VenueType.class, messageResources);
         venueCombo.addItemListener(itemListener);
-        panel.add(new JLabel(messageResources.getString("combo.VenueType.label")));
         panel.add(venueCombo);
 
         return panel;
@@ -148,7 +151,7 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
             columnModel.removeColumn(droppedColumn);
         }
 
-        LeagueTableRenderer renderer = new LeagueTableRenderer(data.getMetaData(), !form);
+        TableRenderer renderer = new TableRenderer(data.getMetaData(), !form);
         leagueTable.setDefaultRenderer(Object.class, renderer);
         leagueTable.setDefaultRenderer(Number.class, renderer);
         leagueTable.setDefaultRenderer(Double.class, renderer);

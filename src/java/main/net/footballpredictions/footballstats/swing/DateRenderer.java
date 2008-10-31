@@ -18,27 +18,20 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.Component;
-import java.awt.Font;
-import javax.swing.JLabel;
+import java.text.DateFormat;
 import javax.swing.JTable;
-import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
- * Customised {@link TableRenderer} that formats form strings.
+ * Customised {@link TableRenderer} that formats dates.
  * @author Daniel Dyer
  */
-class FormRenderer extends TableRenderer
+class DateRenderer extends TableRenderer
 {
-    private static final Font FIXED_WIDTH_FONT = new Font("Monospaced", Font.BOLD, 13);
+    private final DateFormat dateFormat;
 
-    /**
-     * @param metadata League metadata is used to determine row colours.
-     * @param highlightZones Whether or not to render promotion and relegation zones
-     * in different colours to other positions.
-     */
-    public FormRenderer(LeagueMetaData metadata, boolean highlightZones)
+    public DateRenderer(DateFormat dateFormat)
     {
-        super(metadata, highlightZones);
+        this.dateFormat = dateFormat;
     }
 
 
@@ -50,14 +43,11 @@ class FormRenderer extends TableRenderer
                                                    int row,
                                                    int column)
     {
-        JLabel component = (JLabel) super.getTableCellRendererComponent(table,
-                                                                        value,
-                                                                        isSelected,
-                                                                        hasFocus,
-                                                                        row,
-                                                                        column);
-        component.setFont(FIXED_WIDTH_FONT);
-        component.setHorizontalAlignment(JLabel.CENTER);
-        return component;
+        return super.getTableCellRendererComponent(table,
+                                                   dateFormat.format(value),
+                                                   isSelected,
+                                                   hasFocus,
+                                                   row,
+                                                   column);
     }
 }
