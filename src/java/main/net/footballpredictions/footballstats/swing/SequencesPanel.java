@@ -79,12 +79,12 @@ class SequencesPanel extends JPanel implements StatsPanel
 
         sequenceTypeCombo = new EnumComboBox<SequenceType>(SequenceType.class, messageResources);
         sequenceTypeCombo.addItemListener(itemListener);
-        panel.add(new JLabel(messageResources.getString("sequences.type")));
+        panel.add(new JLabel(messageResources.getString("combo.SequenceType.label")));
         panel.add(sequenceTypeCombo);
 
         venueCombo = new EnumComboBox<VenueType>(VenueType.class, messageResources);
         venueCombo.addItemListener(itemListener);
-        panel.add(new JLabel(messageResources.getString("sequences.matches")));
+        panel.add(new JLabel(messageResources.getString("combo.VenueType.label")));
         panel.add(venueCombo);
 
         return panel;

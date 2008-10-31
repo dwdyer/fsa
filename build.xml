@@ -1,8 +1,7 @@
 <!--
-  Ant build script for The Football Statistics Applet (you can download Jakarta Ant from http://jakarta.apache.org/ant).
+  Ant build script for The Football Statistics Applet
+  (you can download Apache Ant from http://ant.apache.org/).
   Author: Daniel Dyer
-  Version: $Revision: $
-  Date: $Date: $
 -->
 
 <project name="fsa" default="dist" basedir=".">

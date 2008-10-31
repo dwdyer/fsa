@@ -23,27 +23,12 @@ package net.footballpredictions.footballstats.model;
  */
 public enum SequenceType
 {
-    WINS("seq_type.wins"),
-    DRAWS("seq_type.draws"),
-    DEFEATS("seq_type.defeats"),
-    UNBEATEN("seq_type.gamesWithoutDefeat"),
-    NO_WIN("seq_type.gamesWithoutWin"),
-    CLEANSHEETS("seq_type.clean_sheet"),
-    GAMES_SCORED_IN("seq_type.gamesScoredIn"),
-    GAMES_NOT_SCORED_IN("seq_type.gamesWithoutScoring");
-    
-    private final String description;
-
-    SequenceType(String description)
-    {
-        this.description = description;
-    }
-
-
-    @Override
-    public String toString()
-    {
-        return description;
-    }
-    
+    WINS,
+    DRAWS,
+    DEFEATS,
+    UNBEATEN,
+    NO_WIN,
+    CLEANSHEETS,
+    GAMES_SCORED_IN,
+    GAMES_NOT_SCORED_IN
 }

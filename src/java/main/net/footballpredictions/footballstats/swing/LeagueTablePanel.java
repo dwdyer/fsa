@@ -92,12 +92,12 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
         {
             tableTypeCombo = new EnumComboBox<TableType>(TableType.class, messageResources);
             tableTypeCombo.addItemListener(itemListener);
-            panel.add(new JLabel(messageResources.getString("league.table.table_type")));
+            panel.add(new JLabel(messageResources.getString("combo.TableType.label")));
             panel.add(tableTypeCombo);
         }
         venueCombo = new EnumComboBox<VenueType>(VenueType.class, messageResources);
         venueCombo.addItemListener(itemListener);
-        panel.add(new JLabel(messageResources.getString("league.matches.label")));
+        panel.add(new JLabel(messageResources.getString("combo.VenueType.label")));
         panel.add(venueCombo);
 
         return panel;
