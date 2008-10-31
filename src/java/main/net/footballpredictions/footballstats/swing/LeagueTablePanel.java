@@ -35,9 +35,9 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.model.VenueType;
 
 /**
- * By default displays a standard league table.  Can also display tables based on total points dropped
- * or average points per game.  Can be filtered to include only home games or only away games (default is
- * to include all matches).
+ * By default displays a standard league table.  Can also display tables based on
+ * total points dropped, or average points per game.  Can be filtered to include only
+ * home games or only away games (default is to include all matches).
  * @author Daniel Dyer
  */
 public class LeagueTablePanel extends JPanel implements StatsPanel
@@ -54,7 +54,7 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
         tableTypeCombo.addItem(TableType.POINTS_PER_GAME);
         tableTypeCombo.addItem(TableType.POINTS_DROPPED);
     }
-    private final VenueComboBox venueCombo = new VenueComboBox();
+    private VenueComboBox venueCombo;
 
     
     /**
@@ -100,7 +100,7 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
             panel.add(new JLabel(messageResources.getString("league.table.table_type")));
             panel.add(tableTypeCombo);
         }
-
+        venueCombo = new VenueComboBox(messageResources);
         venueCombo.addItemListener(itemListener);
         panel.add(new JLabel(messageResources.getString("league.matches.label")));
         panel.add(venueCombo);

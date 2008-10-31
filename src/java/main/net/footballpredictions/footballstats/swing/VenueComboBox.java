@@ -18,6 +18,7 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.Component;
+import java.util.ResourceBundle;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -31,50 +32,13 @@ import net.footballpredictions.footballstats.model.VenueType;
  */
 class VenueComboBox extends JComboBox
 {
-    public VenueComboBox()
+    public VenueComboBox(ResourceBundle messageResources)
     {
-        super(new VenueComboBoxModel());
-        setRenderer(new VenueComboBoxRenderer());
+        addItem(VenueType.BOTH);
+        addItem(VenueType.HOME);
+        addItem(VenueType.AWAY);
+        setRenderer(new VenueComboBoxRenderer(messageResources));
         setSelectedItem(VenueType.BOTH);
-    }
-
-
-    /**
-     * {@link javax.swing.ComboBoxModel} to display a choice of matches (home and away,
-     * home only, or away only).
-     */
-    private static final class VenueComboBoxModel extends AbstractListModel implements ComboBoxModel
-    {
-        private VenueType selected = null;
-
-        public int getSize()
-        {
-            return VenueType.values().length;
-        }
-
-
-        public VenueType getElementAt(int i)
-        {
-            switch (i)
-            {
-                case 0 : return VenueType.BOTH;
-                case 1 : return VenueType.HOME;
-                case 2 : return VenueType.AWAY;
-                default : throw new IndexOutOfBoundsException("Invalid index: " + i);
-            }
-        }
-
-
-        public void setSelectedItem(Object object)
-        {
-            this.selected = (VenueType) object;
-        }
-
-
-        public VenueType getSelectedItem()
-        {
-            return selected;
-        }
     }
 
 
@@ -83,6 +47,14 @@ class VenueComboBox extends JComboBox
      */
     private static final class VenueComboBoxRenderer extends DefaultListCellRenderer
     {
+        private final ResourceBundle messageResources;
+
+        public VenueComboBoxRenderer(ResourceBundle messageResources)
+        {
+            this.messageResources = messageResources;
+        }
+
+        
         @Override
         public Component getListCellRendererComponent(JList list,
                                                       Object object,
@@ -102,9 +74,9 @@ class VenueComboBox extends JComboBox
         {
             switch (venue)
             {
-                case BOTH: return "Home & Away";
-                case HOME: return "Home Only";
-                case AWAY: return "Away Only";
+                case BOTH: return messageResources.getString("league.matches.home_away");
+                case HOME: return messageResources.getString("league.matches.home");
+                case AWAY: return messageResources.getString("league.matches.away");
                 default: throw new IllegalStateException("Unexpected venue type: " + venue);
             }
         }
