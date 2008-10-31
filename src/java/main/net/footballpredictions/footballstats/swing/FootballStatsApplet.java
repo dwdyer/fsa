@@ -23,7 +23,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,11 +50,8 @@ public final class FootballStatsApplet extends JApplet
 
     // Mapping from display name to file name for results files.
     private final Map<String, URL> dataFiles = new LinkedHashMap<String, URL>(10);
-    // Mapping from display name to highlighted team.
-    private final Map<String, String> highlightedTeams = new HashMap<String, String>(10);
 
     private final List<StatsPanel> panels = new LinkedList<StatsPanel>();
-    private ResourceBundle res;
 
     public FootballStatsApplet()
     {
@@ -68,22 +64,19 @@ public final class FootballStatsApplet extends JApplet
     {
         System.out.println("Initialising applet...");
         loadConfiguration();
-        
-        String curLocaleString = getParameter("locale");
-        if (curLocaleString == null ){
-        	System.err.println("Param locale is null");
-        	curLocaleString = "en";
-        }
-        System.out.println("Param locale=" + curLocaleString);
-        
-        Locale locale = new Locale(curLocaleString);
-        res = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa", locale);
-        
+
+        // Use the default JVM locale unless it has been over-ridden in the properties file.
+        String localeString = getParameter("locale");
+        Locale locale = localeString != null ? new Locale(localeString) : Locale.getDefault();
+
+        ResourceBundle messageResources = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa",
+                                                                   locale);
+
         JTabbedPane tabs = new JTabbedPane();
-        LeagueTablePanel leagueTable = new LeagueTablePanel(false);
+        LeagueTablePanel leagueTable = new LeagueTablePanel(false, messageResources);
         panels.add(leagueTable);
         tabs.add("League Table", leagueTable);
-        LeagueTablePanel formTable = new LeagueTablePanel(true);
+        LeagueTablePanel formTable = new LeagueTablePanel(true, messageResources);
         panels.add(formTable);
         tabs.add("Form", formTable);
 
@@ -129,7 +122,7 @@ public final class FootballStatsApplet extends JApplet
         {
             protected LeagueSeason performTask() throws Exception
             {
-                return new LeagueSeason(new RLTDataProvider(dataURL.openStream()), res);
+                return new LeagueSeason(new RLTDataProvider(dataURL.openStream()));
             }
 
             @Override
@@ -167,7 +160,6 @@ public final class FootballStatsApplet extends JApplet
             count++;
             displayName = properties.getProperty("datafile" + count + ".displayname");
             String fileURL = properties.getProperty("datafile" + count + ".url");
-            String highlightedTeam = properties.getProperty("datafile" + count + ".highlightteam");
             if (displayName != null && fileURL != null)
             {
                 try
@@ -176,10 +168,6 @@ public final class FootballStatsApplet extends JApplet
                     if (old != null)
                     {
                         System.out.println("WARNING: Duplicate data file entry for " + displayName);
-                    }
-                    if (highlightedTeam != null)
-                    {
-                        highlightedTeams.put(displayName, highlightedTeam);
                     }
                 }
                 catch (IOException ex)

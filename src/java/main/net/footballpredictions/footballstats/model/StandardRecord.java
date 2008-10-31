@@ -18,11 +18,9 @@
 package net.footballpredictions.footballstats.model;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.EnumMap;
-import java.util.ResourceBundle;
 
 /**
  * Models a single team's record for the season.  This may be their overall record,
@@ -33,8 +31,6 @@ import java.util.ResourceBundle;
  */
 public final class StandardRecord extends AbstractTeamRecord
 {
-    private final VenueType where;
-
     private final List<Result> results = new ArrayList<Result>(46); // Most leagues have no more than 46 games per team.
 
     private final FormRecord form;
@@ -50,18 +46,14 @@ public final class StandardRecord extends AbstractTeamRecord
 
     private Result biggestWin = null;
     private Result biggestDefeat = null;
-    private ResourceBundle res = null;
 
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
      */
-    public StandardRecord(Team team, VenueType where, ResourceBundle res)
+    public StandardRecord(Team team, VenueType where)
     {
         super(team);
         
-        this.res = res;
-        
-        this.where = where;
         this.form = new FormRecord(team, where == VenueType.BOTH ? 6 : 4);
         // Intialise sequences to zero.
         for (SequenceType sequence : SequenceType.values())
@@ -213,61 +205,6 @@ public final class StandardRecord extends AbstractTeamRecord
     public Result getBiggestDefeat()
     {
         return biggestDefeat;
-    }
-
-
-    /**
-     * Returns interesting facts about the team's form.
-     */
-    public List<String> getNotes()
-    {
-        List<String> notes = new LinkedList<String>();
-        String end = " " + res.getString(where.getDescription()).toLowerCase() 
-        				 + res.getString("team.playing_record.matches")  ;
-
-        // Check unbeatean/without win sequences.
-        if (getCurrentSequence(SequenceType.UNBEATEN) >= 3)
-        {
-            notes.add( res.getString("team.playing_record.unbeaten")
-            			+  getCurrentSequence(SequenceType.UNBEATEN) 
-            			+ end);
-        }
-        if (getCurrentSequence(SequenceType.NO_WIN) >= 3)
-        {
-            notes.add(res.getString("team.playing_record.haventWon")
-            			+ getCurrentSequence(SequenceType.NO_WIN) 
-            			+ end);
-        }
-
-        // Check win/loss sequences.
-        if (getCurrentSequence(SequenceType.WINS) >= 3)
-        {
-            notes.add( res.getString("team.playing_record.won_last") + getCurrentSequence(SequenceType.WINS) + end);
-        }
-        else if (getCurrentSequence(SequenceType.DRAWS) >= 3)
-        {
-            notes.add( res.getString("team.playing_record.drawn_last") + getCurrentSequence(SequenceType.DRAWS) + end);
-        }
-        else if (getCurrentSequence(SequenceType.DEFEATS) >= 3)
-        {
-            notes.add( res.getString("team.playing_record.lost_last") + getCurrentSequence(SequenceType.DEFEATS) + end);
-        }
-
-        // Check cleansheet/scoring sequences.
-        if (getCurrentSequence(SequenceType.GAMES_NOT_SCORED_IN) >= 3)
-        {
-            notes.add( res.getString("team.playing_record.havent_scored_last") + getCurrentSequence(SequenceType.GAMES_NOT_SCORED_IN) + end);
-        }
-        if (getCurrentSequence(SequenceType.CLEANSHEETS) >= 3)
-        {
-            notes.add( res.getString("team.playing_record.havent_conceded_last") + getCurrentSequence(SequenceType.CLEANSHEETS) + end);
-        }
-        if (getCurrentSequence(SequenceType.GAMES_SCORED_IN) >= 10)
-        {
-            notes.add(res.getString("team.playing_record.scored_last") + getCurrentSequence(SequenceType.GAMES_SCORED_IN) + end);
-        }
-
-        return notes;
     }
 
 

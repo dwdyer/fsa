@@ -26,7 +26,7 @@ import net.footballpredictions.footballstats.model.LeagueMetaData;
  * Customised {@link LeagueTableRenderer} that formats position labels. 
  * @author Daniel Dyer
  */
-public class PositionRenderer extends LeagueTableRenderer
+class PositionRenderer extends LeagueTableRenderer
 {
     /**
      * @param metadata League metadata is used to determine row colours.

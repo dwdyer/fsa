@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ResourceBundle;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -39,9 +40,10 @@ import net.footballpredictions.footballstats.model.VenueType;
  * to include all matches).
  * @author Daniel Dyer
  */
-class LeagueTablePanel extends JPanel implements StatsPanel
+public class LeagueTablePanel extends JPanel implements StatsPanel
 {
     private final boolean form;
+    private final ResourceBundle messageResources;
 
     private LeagueSeason data = null;
 
@@ -54,13 +56,21 @@ class LeagueTablePanel extends JPanel implements StatsPanel
     }
     private final VenueComboBox venueCombo = new VenueComboBox();
 
-    public LeagueTablePanel(boolean form)
+    
+    /**
+     * @param form If true, this panel displays a form table, otherwise it displays normal league tables.
+     * @param messageResources Localised messages for used by the GUI.
+     */
+    public LeagueTablePanel(boolean form,
+                            ResourceBundle messageResources)
     {
         super(new BorderLayout());
         this.form = form;
+        this.messageResources = messageResources;
         add(createControls(), BorderLayout.NORTH);
         add(createTable(), BorderLayout.CENTER);
     }
+
 
     private JComponent createTable()
     {
@@ -87,12 +97,12 @@ class LeagueTablePanel extends JPanel implements StatsPanel
         if (!form) // Only show table type drop-down if it's not a form table.
         {
             tableTypeCombo.addItemListener(itemListener);
-            panel.add(new JLabel("Table Type:"));
+            panel.add(new JLabel(messageResources.getString("league.table.table_type")));
             panel.add(tableTypeCombo);
         }
 
         venueCombo.addItemListener(itemListener);
-        panel.add(new JLabel("Matches:"));
+        panel.add(new JLabel(messageResources.getString("league.matches.label")));
         panel.add(venueCombo);
 
         return panel;

@@ -65,13 +65,13 @@ public final class LeagueSeason
     private int aggregateAttendance = 0;
     
 
-    public LeagueSeason(LeagueDataProvider dataProvider, ResourceBundle res)
+    public LeagueSeason(LeagueDataProvider dataProvider)
     {
         this.metaData = dataProvider.getLeagueMetaData();
         this.teamNames = dataProvider.getTeams();
-        for (String teamName : dataProvider.getTeams())
+        for (String teamName : teamNames)
         {
-            teamMappings.put(teamName, new Team(teamName, res));
+            teamMappings.put(teamName, new Team(teamName));
         }
 
         List<Result> results = dataProvider.getResults();

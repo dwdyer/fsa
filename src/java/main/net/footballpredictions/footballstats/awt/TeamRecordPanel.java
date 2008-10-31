@@ -25,11 +25,14 @@ import java.awt.Panel;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.List;
+import java.util.LinkedList;
 
 import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.StandardRecord;
 import net.footballpredictions.footballstats.model.Team;
 import net.footballpredictions.footballstats.model.VenueType;
+import net.footballpredictions.footballstats.model.SequenceType;
 
 /**
  * Sub-panel of Head-to-Head display.
@@ -241,12 +244,68 @@ final class TeamRecordPanel extends Panel
         mostRecentLabel.setText(resultAsString(team, mostRecent));
         mostRecentLabel.setForeground(getResultColour(team, mostRecent));
             
-        Iterator<String> notes = record.getNotes().iterator();
+        Iterator<String> notes = getNotes(record, where).iterator();
         for (Label notesLabel : notesLabels)
         {
             notesLabel.setText(notes.hasNext() ? notes.next() : "");
         }
     }
+
+
+    /**
+     * Returns interesting facts about the team's form.
+     */
+    public List<String> getNotes(StandardRecord record, VenueType where)
+    {
+        List<String> notes = new LinkedList<String>();
+        String end = " " + res.getString(where.getDescription()).toLowerCase()
+        				 + res.getString("team.playing_record.matches");
+
+        // Check unbeatean/without win sequences.
+        if (record.getCurrentSequence(SequenceType.UNBEATEN) >= 3)
+        {
+            notes.add( res.getString("team.playing_record.unbeaten")
+            			+  record.getCurrentSequence(SequenceType.UNBEATEN)
+            			+ end);
+        }
+        if (record.getCurrentSequence(SequenceType.NO_WIN) >= 3)
+        {
+            notes.add(res.getString("team.playing_record.haventWon")
+            			+ record.getCurrentSequence(SequenceType.NO_WIN)
+            			+ end);
+        }
+
+        // Check win/loss sequences.
+        if (record.getCurrentSequence(SequenceType.WINS) >= 3)
+        {
+            notes.add( res.getString("team.playing_record.won_last") + record.getCurrentSequence(SequenceType.WINS) + end);
+        }
+        else if (record.getCurrentSequence(SequenceType.DRAWS) >= 3)
+        {
+            notes.add( res.getString("team.playing_record.drawn_last") + record.getCurrentSequence(SequenceType.DRAWS) + end);
+        }
+        else if (record.getCurrentSequence(SequenceType.DEFEATS) >= 3)
+        {
+            notes.add( res.getString("team.playing_record.lost_last") + record.getCurrentSequence(SequenceType.DEFEATS) + end);
+        }
+
+        // Check cleansheet/scoring sequences.
+        if (record.getCurrentSequence(SequenceType.GAMES_NOT_SCORED_IN) >= 3)
+        {
+            notes.add( res.getString("team.playing_record.havent_scored_last") + record.getCurrentSequence(SequenceType.GAMES_NOT_SCORED_IN) + end);
+        }
+        if (record.getCurrentSequence(SequenceType.CLEANSHEETS) >= 3)
+        {
+            notes.add( res.getString("team.playing_record.havent_conceded_last") + record.getCurrentSequence(SequenceType.CLEANSHEETS) + end);
+        }
+        if (record.getCurrentSequence(SequenceType.GAMES_SCORED_IN) >= 10)
+        {
+            notes.add(res.getString("team.playing_record.scored_last") + record.getCurrentSequence(SequenceType.GAMES_SCORED_IN) + end);
+        }
+
+        return notes;
+    }
+
         
         
     private String getVenueText(VenueType venue)

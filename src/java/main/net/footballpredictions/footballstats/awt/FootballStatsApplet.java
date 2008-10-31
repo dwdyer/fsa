@@ -46,9 +46,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
-import net.footballpredictions.footballstats.model.LeagueSeason;
 import net.footballpredictions.footballstats.data.RLTDataProvider;
+import net.footballpredictions.footballstats.model.LeagueSeason;
 
 /**
  * This class provides football stats for a web page as an AWT applet.
@@ -343,7 +342,7 @@ public final class FootballStatsApplet extends Applet
             try
             {
                 InputStream dataStream = dataFileURL.openStream();
-                LeagueSeason data = new LeagueSeason(new RLTDataProvider(dataStream), res);
+                LeagueSeason data = new LeagueSeason(new RLTDataProvider(dataStream));
                 System.out.println("Done.");
 
                 for (StatsPanel panel : panels.values())
