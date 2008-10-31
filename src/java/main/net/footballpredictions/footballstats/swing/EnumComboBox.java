@@ -18,44 +18,56 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.Component;
+import java.lang.reflect.Method;
 import java.util.ResourceBundle;
-import javax.swing.AbstractListModel;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JList;
-import net.footballpredictions.footballstats.model.VenueType;
 
 /**
- * Combo-box component for choosing between home matches, away matches or both.
+ * Combo-box component for choosing between values of an enumerated type.
  * @author Daniel Dyer
  */
-class VenueComboBox extends JComboBox
+class EnumComboBox<E extends Enum<E>> extends JComboBox
 {
-    public VenueComboBox(ResourceBundle messageResources)
+    @SuppressWarnings("unchecked")
+    public EnumComboBox(Class<E> enumClass,
+                        ResourceBundle messageResources)
     {
-        addItem(VenueType.BOTH);
-        addItem(VenueType.HOME);
-        addItem(VenueType.AWAY);
-        setRenderer(new VenueComboBoxRenderer(messageResources));
-        setSelectedItem(VenueType.BOTH);
+        try
+        {
+            Method valuesMethod = enumClass.getMethod("values");
+            E[] values = (E[]) valuesMethod.invoke(null);
+            for (E value : values)
+            {
+                addItem(value);
+            }
+            setRenderer(new EnumComboBoxRenderer(messageResources));
+            setSelectedIndex(0);
+        }
+        catch (Exception ex)
+        {
+            // Will never happen if E is an enum type.
+            throw new IllegalStateException(ex);
+        }
     }
 
 
     /**
-     * Renders {@link VenueType} constants for display.
+     * Renders enum constants for display.
      */
-    private static final class VenueComboBoxRenderer extends DefaultListCellRenderer
+    private static final class EnumComboBoxRenderer<E extends Enum<E>> extends DefaultListCellRenderer
     {
         private final ResourceBundle messageResources;
 
-        public VenueComboBoxRenderer(ResourceBundle messageResources)
+        public EnumComboBoxRenderer(ResourceBundle messageResources)
         {
             this.messageResources = messageResources;
         }
 
-        
+
         @Override
+        @SuppressWarnings("unchecked")
         public Component getListCellRendererComponent(JList list,
                                                       Object object,
                                                       int index,
@@ -63,22 +75,17 @@ class VenueComboBox extends JComboBox
                                                       boolean hasFocus)
         {
             return super.getListCellRendererComponent(list,
-                                                      describe((VenueType) object),
+                                                      describe((E) object),
                                                       index,
                                                       isSelected,
                                                       hasFocus);
         }
 
 
-        private String describe(VenueType venue)
+        private String describe(E value)
         {
-            switch (venue)
-            {
-                case BOTH: return messageResources.getString("league.matches.home_away");
-                case HOME: return messageResources.getString("league.matches.home");
-                case AWAY: return messageResources.getString("league.matches.away");
-                default: throw new IllegalStateException("Unexpected venue type: " + venue);
-            }
+            String key = "combo." + value.getClass().getSimpleName() + '.' + value.name();
+            return messageResources.getString(key);
         }
     }
 }

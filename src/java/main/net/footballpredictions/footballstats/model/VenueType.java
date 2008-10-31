@@ -24,9 +24,9 @@ package net.footballpredictions.footballstats.model;
  */
 public enum VenueType
 {
+    BOTH("venue_type.both"),
     HOME("venue_type.home"),
-    AWAY("venue_type.away"),
-    BOTH("venue_type.both");
+    AWAY("venue_type.away");
 
     private final String description;
 

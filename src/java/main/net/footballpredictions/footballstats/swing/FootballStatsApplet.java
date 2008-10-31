@@ -75,10 +75,10 @@ public final class FootballStatsApplet extends JApplet
         JTabbedPane tabs = new JTabbedPane();
         LeagueTablePanel leagueTable = new LeagueTablePanel(false, messageResources);
         panels.add(leagueTable);
-        tabs.add("League Table", leagueTable);
+        tabs.add(messageResources.getString("fsa.panel.league_table"), leagueTable);
         LeagueTablePanel formTable = new LeagueTablePanel(true, messageResources);
         panels.add(formTable);
-        tabs.add("Form", formTable);
+        tabs.add(messageResources.getString("fsa.panel.form"), formTable);
 
         add(createSeasonSelector(), BorderLayout.NORTH);
         add(tabs, BorderLayout.CENTER);

@@ -23,7 +23,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ResourceBundle;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -48,18 +47,13 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
     private LeagueSeason data = null;
 
     private final JTable leagueTable = new JTable();
-    private final JComboBox tableTypeCombo = new JComboBox();
-    {
-        tableTypeCombo.addItem(TableType.POINTS_WON);
-        tableTypeCombo.addItem(TableType.POINTS_PER_GAME);
-        tableTypeCombo.addItem(TableType.POINTS_DROPPED);
-    }
-    private VenueComboBox venueCombo;
+    private EnumComboBox<TableType> tableTypeCombo;
+    private EnumComboBox<VenueType> venueCombo;
 
     
     /**
      * @param form If true, this panel displays a form table, otherwise it displays normal league tables.
-     * @param messageResources Localised messages for used by the GUI.
+     * @param messageResources Internationalised messages for used by the GUI.
      */
     public LeagueTablePanel(boolean form,
                             ResourceBundle messageResources)
@@ -96,11 +90,12 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
 
         if (!form) // Only show table type drop-down if it's not a form table.
         {
+            tableTypeCombo = new EnumComboBox<TableType>(TableType.class, messageResources);
             tableTypeCombo.addItemListener(itemListener);
             panel.add(new JLabel(messageResources.getString("league.table.table_type")));
             panel.add(tableTypeCombo);
         }
-        venueCombo = new VenueComboBox(messageResources);
+        venueCombo = new EnumComboBox<VenueType>(VenueType.class, messageResources);
         venueCombo.addItemListener(itemListener);
         panel.add(new JLabel(messageResources.getString("league.matches.label")));
         panel.add(venueCombo);
@@ -121,7 +116,7 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
 
     private void changeTable()
     {
-        TableType type = (TableType) tableTypeCombo.getSelectedItem(); // Will be null for form tables.
+        TableType type = form ? null : (TableType) tableTypeCombo.getSelectedItem();
         
         leagueTable.setModel(getTableModel(type, (VenueType) venueCombo.getSelectedItem()));
         TableColumnModel columnModel = leagueTable.getColumnModel();
@@ -192,21 +187,8 @@ public class LeagueTablePanel extends JPanel implements StatsPanel
 
     private static enum TableType
     {
-        POINTS_WON("Points Won"),
-        POINTS_PER_GAME("Average Points"),
-        POINTS_DROPPED("Points Dropped");
-
-        private final String description;
-
-        private TableType(String description)
-        {
-            this.description = description;
-        }
-
-        @Override
-        public String toString()
-        {
-            return description;
-        }
+        POINTS_WON,
+        POINTS_PER_GAME,
+        POINTS_DROPPED
     }
 }
