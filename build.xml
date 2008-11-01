@@ -71,7 +71,9 @@
   <!-- Packages and deploys all distributable files. -->
   <target name="dist" depends="compile" description="Builds JAR file and deploys all files.">
     <mkdir dir="${dist.dir}"/>
-    <jar jarfile="${dist.dir}/${project.jar}" basedir="${classes.dir}/main"/>
+    <jar jarfile="${dist.dir}/${project.jar}" basedir="${classes.dir}/main">
+      <fileset dir="${src.dir}/java/main" includes="**/*.properties" />
+    </jar>
     <copy todir="${dist.dir}">
       <fileset dir="${src.dir}/conf" includes="*"/>
       <fileset dir="${src.dir}/data" includes="*"/>

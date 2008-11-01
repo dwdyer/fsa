@@ -25,25 +25,24 @@ import java.awt.event.ItemListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.ResourceBundle;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTable;
 import javax.swing.JScrollPane;
-import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.table.TableColumn;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.VenueType;
 import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.Team;
+import net.footballpredictions.footballstats.model.VenueType;
 
 /**
  * Displays lists of results (grouped either by team or by date).
@@ -130,6 +129,8 @@ public class ResultsPanel extends JPanel implements StatsPanel
 
         dateOption.addItemListener(itemListener);
         teamOption.addItemListener(itemListener);
+        datesCombo.addItemListener(itemListener);
+        teamsCombo.addItemListener(itemListener);
         venueCombo.addItemListener(itemListener);
 
         panel.add(dateOption);
@@ -156,11 +157,11 @@ public class ResultsPanel extends JPanel implements StatsPanel
     {
         this.data = data;
         datesCombo.removeAllItems();
-        teamsCombo.removeAllItems();
         for (Date date : data.getDates())
         {
             datesCombo.addItem(date);
         }
+        teamsCombo.removeAllItems();
         for (String teamName : data.getTeamNames())
         {
             teamsCombo.addItem(teamName);
