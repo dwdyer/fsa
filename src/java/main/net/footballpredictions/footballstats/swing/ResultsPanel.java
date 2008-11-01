@@ -48,7 +48,7 @@ import net.footballpredictions.footballstats.model.VenueType;
  * Displays lists of results (grouped either by team or by date).
  * @author Daniel Dyer
  */
-public class ResultsPanel extends JPanel implements StatsPanel
+public class ResultsPanel extends JPanel implements DataListener
 {
     private final DateFormat dateFormat;
 

@@ -12,7 +12,7 @@
   <property name="classes.dir" value="${build.dir}/classes"/>
   <property name="temp.dir" value="./temp"/>
   <property name="lib.dir" value="./lib"/>
-  <property name="tools.dir" value="${lib.dir}/tools"/>
+  <property name="tools.dir" value="${lib.dir}/compiletime"/>
   <property name="dist.dir" value="./dist"/>
   <property name="release.dir" value="./release"/>
   <property name="docs.dir" value="./docs"/>
@@ -30,7 +30,7 @@
 
   <path id="base.path">
     <pathelement path="${classes.dir}/main" />
-    <fileset dir="${tools.dir}" includes="*.jar" />
+    <fileset dir="${tools.dir}" includes="**/*.jar" />
   </path>
 
   <!-- Removes all files created by this build process. -->
@@ -84,7 +84,7 @@
   
   <!-- Shrinks and obfuscates the applet jar file. -->
   <target name="obfuscate" depends="dist" description="Shrinks and obfuscates the applet JAR file.">
-    <taskdef resource="proguard/ant/task.properties" classpath="${tools.dir}/proguard.jar" />
+    <taskdef resource="proguard/ant/task.properties" classpath="${tools.dir}/proguard/proguard.jar" />
     <proguard shrink="true"
               obfuscate="true"
               optimize="true"

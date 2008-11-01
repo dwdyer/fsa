@@ -18,25 +18,12 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import javax.swing.JApplet;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import net.footballpredictions.footballstats.data.RLTDataProvider;
-import net.footballpredictions.footballstats.model.LeagueSeason;
 
 /**
  * This class provides football stats for a web page as a Swing applet.
@@ -48,11 +35,6 @@ public final class FootballStatsApplet extends JApplet
     private static final String COPYRIGHT_STRING = "© Copyright 2000-2008, Daniel W. Dyer";
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
 
-    // Mapping from display name to file name for results files.
-    private final Map<String, URL> dataFiles = new LinkedHashMap<String, URL>(10);
-
-    private final List<StatsPanel> panels = new LinkedList<StatsPanel>();
-
     public FootballStatsApplet()
     {
         System.out.println(getAppletInfo());
@@ -63,132 +45,47 @@ public final class FootballStatsApplet extends JApplet
     public void init()
     {
         System.out.println("Initialising applet...");
-        loadConfiguration();
 
-        // Use the default JVM locale unless it has been over-ridden in the properties file.
-        String localeString = getParameter("locale");
-        Locale locale = localeString != null ? new Locale(localeString) : Locale.getDefault();
-
-        ResourceBundle messageResources = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa",
-                                                                   locale);
-
-        JTabbedPane tabs = new JTabbedPane();
-
-        LeagueTablePanel leagueTable = new LeagueTablePanel(false, messageResources);
-        panels.add(leagueTable);
-        tabs.add(messageResources.getString("leagueTable.tab"), leagueTable);
-
-        ResultsPanel results = new ResultsPanel(messageResources);
-        panels.add(results);
-        tabs.add(messageResources.getString("results.tab"), results);
-
-        LeagueTablePanel formTable = new LeagueTablePanel(true, messageResources);
-        panels.add(formTable);
-        tabs.add(messageResources.getString("formTable.tab"), formTable);
-
-        SequencesPanel sequences = new SequencesPanel(messageResources);
-        panels.add(sequences);
-        tabs.add(messageResources.getString("sequences.tab"), sequences);
-
-
-        add(createSeasonSelector(), BorderLayout.NORTH);
-        add(tabs, BorderLayout.CENTER);
-
-        // Load the initial data.
-        updateLeagueData(dataFiles.values().iterator().next());
-    }
-
-
-    private JComponent createSeasonSelector()
-    {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JComboBox seasonCombo = new JComboBox();
-        for (String name : dataFiles.keySet())
-        {
-            seasonCombo.addItem(name);
-        }
-        seasonCombo.addItemListener(new ItemListener()
-        {
-            public void itemStateChanged(ItemEvent itemEvent)
-            {
-                if (itemEvent.getStateChange() == ItemEvent.SELECTED)
-                {
-                    final URL dataURL = dataFiles.get(itemEvent.getItem());
-                    updateLeagueData(dataURL);
-                }
-            }
-        });
-        panel.add(seasonCombo);
-        return panel;
-    }
-
-
-    /**
-     * Load a new data file and update all stats panels.
-     * @param dataURL The URL of the results to load.
-     */
-    private void updateLeagueData(final URL dataURL)
-    {
-        new SwingBackgroundTask<LeagueSeason>()
-        {
-            protected LeagueSeason performTask() throws Exception
-            {
-                return new LeagueSeason(new RLTDataProvider(dataURL.openStream()));
-            }
-
-            @Override
-            protected void postProcessing(LeagueSeason result)
-            {
-                for (StatsPanel panel : panels)
-                {
-                    panel.setLeagueData(result);
-                }
-            }
-        }.execute();
-    }
-
-
-    private void loadConfiguration()
-    {
-        System.out.println("Processing configuration options...");
-        Properties properties = new Properties();
         try
         {
             URL configURL = new URL(getDocumentBase(), getParameter("config.url"));
-            System.out.println("Loading configuration from " + configURL.toString());
-            properties.load(configURL.openStream());
+            DataSelector dataSelector = new DataSelector();
+            add(dataSelector, BorderLayout.NORTH);
+
+            // Use the default JVM locale unless it has been over-ridden in the properties file.
+            String localeString = getParameter("locale");
+            Locale locale = localeString != null ? new Locale(localeString) : Locale.getDefault();
+
+            ResourceBundle messageResources = ResourceBundle.getBundle("net.footballpredictions.footballstats.messages.fsa",
+                                                                       locale);
+
+            JTabbedPane tabs = new JTabbedPane();
+
+            LeagueTablePanel leagueTable = new LeagueTablePanel(false, messageResources);
+            dataSelector.addDataListener(leagueTable);
+            tabs.add(messageResources.getString("leagueTable.tab"), leagueTable);
+
+            ResultsPanel results = new ResultsPanel(messageResources);
+            dataSelector.addDataListener(results);
+            tabs.add(messageResources.getString("results.tab"), results);
+
+            LeagueTablePanel formTable = new LeagueTablePanel(true, messageResources);
+            dataSelector.addDataListener(formTable);
+            tabs.add(messageResources.getString("formTable.tab"), formTable);
+
+            SequencesPanel sequences = new SequencesPanel(messageResources);
+            dataSelector.addDataListener(sequences);
+            tabs.add(messageResources.getString("sequences.tab"), sequences);
+
+            add(tabs, BorderLayout.CENTER);
+            
+            dataSelector.loadConfig(configURL.openStream(), getDocumentBase());
         }
         catch (IOException ex)
         {
-            System.out.println("ERROR: Failed to load configuration file.");
-            return;
+            ex.printStackTrace();
         }
-
-        String displayName;
-        int count = 0;
-        do
-        {
-            count++;
-            displayName = properties.getProperty("datafile" + count + ".displayname");
-            String fileURL = properties.getProperty("datafile" + count + ".url");
-            if (displayName != null && fileURL != null)
-            {
-                try
-                {
-                    URL old = dataFiles.put(displayName, new URL(getDocumentBase(), fileURL));
-                    if (old != null)
-                    {
-                        System.out.println("WARNING: Duplicate data file entry for " + displayName);
-                    }
-                }
-                catch (IOException ex)
-                {
-                    System.out.println("WARNING: Unable to open data file " + fileURL + " - " + ex.getMessage());
-                }
-            }
-        } while (displayName != null);
     }
-
 
 
     /**

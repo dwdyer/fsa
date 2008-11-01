@@ -473,7 +473,14 @@
   <component name="libraryTable">
     <library name="testng-5.6-jdk15">
       <CLASSES>
-        <root url="jar:///Users/dan/Projects/fsa/lib/tools/testng-5.6-jdk15.jar!/" />
+        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/testng/testng-5.6-jdk15.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="fest-swing-1.0b2.1">
+      <CLASSES>
+        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/fest/fest-swing-1.0b2.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

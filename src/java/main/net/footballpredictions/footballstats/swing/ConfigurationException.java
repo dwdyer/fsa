@@ -17,16 +17,14 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import net.footballpredictions.footballstats.model.LeagueSeason;
-
 /**
+ * Exception thrown when the configuration XML is invalid.
  * @author Daniel Dyer
  */
-public interface StatsPanel
+public class ConfigurationException extends RuntimeException
 {
-    /**
-     * Sets the data to use for the stats.  Implementing classes should recalculate their
-     * stats when the data changes.
-     */
-    void setLeagueData(LeagueSeason data);
+    public ConfigurationException(String string, Throwable throwable)
+    {
+        super(string, throwable);
+    }
 }

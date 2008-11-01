@@ -40,7 +40,7 @@ import net.footballpredictions.footballstats.model.StandardRecord;
  * Displays tables of sequences (consecutive wins, games without defeat, etc.)
  * @author Daniel Dyer
  */
-public class SequencesPanel extends JPanel implements StatsPanel
+public class SequencesPanel extends JPanel implements DataListener
 {
     private final ResourceBundle messageResources;
 

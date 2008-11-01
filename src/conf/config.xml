@@ -1,0 +1,18 @@
+<config>
+  <league name="England">
+    <division name="Premier League">
+      <season name="2008/09" href="englishpremiership0809.rlt" />
+      <season name="2007/08" href="englishpremiership0708.rlt" />
+      <season name="2006/07" href="englishpremiership0607.rlt" />
+      <season name="2005/06" href="englishpremiership0506.rlt" />
+      <season name="2004/05" href="englishpremiership0405.rlt" />
+      <season name="2003/04" href="englishpremiership0304.rlt" />
+      <season name="2002/03" href="englishpremiership0203.rlt" />
+      <season name="2001/02" href="englishpremiership0102.rlt" />
+      <season name="2000/01" href="englishpremiership0001.rlt" />
+      <season name="1999/2000" href="englishpremiership9900.rlt" />
+      <season name="1998/99" href="englishpremiership9899.rlt" />
+      <season name="1997/98" href="englishpremiership9798.rlt" />
+    </division>
+  </league>
+</config>

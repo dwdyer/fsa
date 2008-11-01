@@ -39,7 +39,7 @@ import net.footballpredictions.footballstats.model.VenueType;
  * home games or only away games (default is to include all matches).
  * @author Daniel Dyer
  */
-public class LeagueTablePanel extends JPanel implements StatsPanel
+public class LeagueTablePanel extends JPanel implements DataListener
 {
     private final boolean form;
     private final ResourceBundle messageResources;
