@@ -143,6 +143,7 @@ abstract class SwingBackgroundTask<V>
      */
     protected void onError(Throwable throwable)
     {
+        throwable.printStackTrace();
         // Over-ride in sub-class.
     }
 }
