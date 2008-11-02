@@ -24,5 +24,6 @@ package net.footballpredictions.footballstats.swing;
 enum GraphType
 {
     LEAGUE_POSITION,
-    POINTS
+    POINTS,
+    GOALS
 }

@@ -114,6 +114,27 @@ public final class Team
         // TO DO: What about points adjustments?
         return data;
     }
+
+
+    public int[][] getGoalsData()
+    {
+        List<Result> results = overallRecord.getResults();
+        int[][] data = new int[results.size() + 1][2];
+        data[0][0] = 0;
+        data[0][1] = 0;
+        int scored = 0;
+        int conceded = 0;
+        int index = 1;
+        for (Result result : results)
+        {
+            scored += result.getGoalsFor(getName());
+            conceded += result.getGoalsAgainst(getName());
+            data[index][0] = scored;
+            data[index][1] = conceded;
+            ++index;
+        }
+        return data;        
+    }
     
     
     public void addResult(Result result)

@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -407,25 +406,5 @@ public final class LeagueSeason
     public LeagueMetaData getMetaData()
     {
         return metaData;
-    }
-
-    
-    public int getHighestPointsTotal()
-    {
-        return getRoundsCount(VenueType.BOTH) * metaData.getPointsForWin();
-    }
-
-
-    private int getRoundsCount(VenueType where)
-    {
-    	int rounds = 0;
-    	// Find maximum number of matches played
-    	for (Team team : teamMappings.values())
-        {
-    		int teamPlayed = team.getRecord(where).getPlayed();
-            rounds =  teamPlayed > rounds ? teamPlayed : rounds; 
-        }
-    	 
-    	return rounds; 
     }
 }

@@ -19,6 +19,7 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Date;
@@ -31,12 +32,14 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.time.Day;
@@ -94,15 +97,16 @@ public class GraphsPanel extends JPanel implements DataListener
 
     private JComponent createTeamSelector()
     {
-        ListSelectionListener selectionListener = new ListSelectionListener()
+        teamsList.addListSelectionListener(new ListSelectionListener()
         {
             public void valueChanged(ListSelectionEvent listSelectionEvent)
             {
-                changeGraph();
+                if (teamsList.getSelectedIndex() >= 0)
+                {
+                    changeGraph();
+                }
             }
-        };
-
-        teamsList.addListSelectionListener(selectionListener);
+        });
         JScrollPane scroller = new JScrollPane(teamsList);
         scroller.setBackground(null);
         scroller.setBorder(BorderFactory.createTitledBorder(messageResources.getString("graphs.teams")));
@@ -123,14 +127,20 @@ public class GraphsPanel extends JPanel implements DataListener
         GraphType type = (GraphType) graphTypeCombo.getSelectedItem();
         if (type == GraphType.LEAGUE_POSITION)
         {
+            teamsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             chartPanel.setChart(createLeaguePositionGraph());
         }
         else if (type == GraphType.POINTS)
         {
+            teamsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
             chartPanel.setChart(createPointsGraph());
         }
-
-
+        else if (type == GraphType.GOALS)
+        {
+            teamsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            teamsList.setSelectedIndex(teamsList.getSelectedIndex()); // Only one team can be selected now.
+            chartPanel.setChart(createGoalsGraph());
+        }
     }
 
 
@@ -175,6 +185,7 @@ public class GraphsPanel extends JPanel implements DataListener
     {
         XYSeriesCollection dataSet = new XYSeriesCollection();
         Object[] teamNames = teamsList.getSelectedValues();
+        int max = 0;
         for (Object team : teamNames)
         {
             String teamName = (String) team;
@@ -186,6 +197,7 @@ public class GraphsPanel extends JPanel implements DataListener
             {
                 pointsSeries.add(i, points[i]);
             }
+            max = Math.max(max, points[points.length - 1]);
             dataSet.addSeries(pointsSeries);
         }
         JFreeChart chart = ChartFactory.createXYLineChart(null, // Title
@@ -197,7 +209,50 @@ public class GraphsPanel extends JPanel implements DataListener
                                                           false, // Tooltips.
                                                           false); // URLs.
         chart.getXYPlot().getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        chart.getXYPlot().getRangeAxis().setRange(0, data.getHighestPointsTotal());
+        chart.getXYPlot().getDomainAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        chart.getXYPlot().getRangeAxis().setRange(0, max + 1);
+        return chart;
+    }
+
+
+    /**
+     * Plot goals scored and conceded against number of matches played.
+     */
+    private JFreeChart createGoalsGraph()
+    {
+        XYSeriesCollection dataSet = new XYSeriesCollection();
+        String teamName = (String) teamsList.getSelectedValue();
+        XYSeries forSeries = new XYSeries(teamName + ' ' + messageResources.getString("graphs.scored"));
+        XYSeries againstSeries = new XYSeries(teamName + ' ' + messageResources.getString("graphs.conceded"));
+
+        int[][] goals = data.getTeam(teamName).getGoalsData();
+        for (int i = 0; i < goals.length; i++)
+        {
+            forSeries.add(i, goals[i][0]);
+            againstSeries.add(i, goals[i][1]);
+        }
+
+        dataSet.addSeries(forSeries);
+        dataSet.addSeries(againstSeries);
+
+        JFreeChart chart = ChartFactory.createXYLineChart(null, // Title
+                                                          messageResources.getString("graphs.matches"),
+                                                          messageResources.getString("combo.GraphType.GOALS"),
+                                                          dataSet,
+                                                          PlotOrientation.VERTICAL,
+                                                          true, // Legend.
+                                                          false, // Tooltips.
+                                                          false); // URLs.
+        chart.getXYPlot().getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        chart.getXYPlot().getDomainAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        int max = Math.max(goals[goals.length - 1][0], goals[goals.length - 1][1]);
+        chart.getXYPlot().getRangeAxis().setRange(0, max + 1);
+        XYDifferenceRenderer renderer = new XYDifferenceRenderer();
+        renderer.setSeriesPaint(0, new Color(0, 128, 0)); // Green.
+        renderer.setPositivePaint(new Color(0, 255, 0, 128)); // Translucent green.
+        renderer.setSeriesPaint(1, new Color(192, 0, 0)); // Red.
+        renderer.setNegativePaint(new Color(255, 0, 0, 128)); // Translucent red.
+        chart.getXYPlot().setRenderer(renderer);
         return chart;
     }
 }
