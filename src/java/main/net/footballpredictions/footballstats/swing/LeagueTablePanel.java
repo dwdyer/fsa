@@ -188,10 +188,4 @@ public class LeagueTablePanel extends JPanel implements DataListener
     }
 
 
-    private static enum TableType
-    {
-        POINTS_WON,
-        POINTS_PER_GAME,
-        POINTS_DROPPED
-    }
 }

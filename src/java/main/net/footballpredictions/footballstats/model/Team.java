@@ -168,7 +168,7 @@ public final class Team
      */
     private void updateAttendanceFigures(Result result)
     {
-        assert result.getHomeTeam().equals(this) : "Not a home game for this team.";
+        assert result.getHomeTeam().equals(this.getName()) : "Not a home game for this team.";
         if (result.getAttendance() >= 0) // Negative value means attendance data is not available.
         {
             aggregateCrowd += result.getAttendance();

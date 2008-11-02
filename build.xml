@@ -96,6 +96,9 @@
       <injar location="${dist.dir}/${project.jar}" />
       <outjar name="${dist.dir}/obfuscated.${project.jar}" />
       <keep access="public" name="*" extends="javax.swing.JApplet" />
+      <keepnames extends="java.lang.Enum">
+        <method name="values" />
+      </keepnames>
     </proguard>
     <delete file="${dist.dir}/${project.jar}" />
     <move file="${dist.dir}/obfuscated.${project.jar}" tofile="${dist.dir}/${project.jar}" />
