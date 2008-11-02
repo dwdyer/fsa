@@ -91,12 +91,11 @@ public final class Team
     }
     
     
-    public int[][] getPointsData(int pointsForWin, int pointsForDraw)
+    public int[] getPointsData(int pointsForWin, int pointsForDraw)
     {
         List<Result> results = overallRecord.getResults();
-        int[][] data = new int[results.size() + 1][2];
-        data[0][0] = 0;
-        data[0][1] = 0;
+        int[] data = new int[results.size() + 1];
+        data[0] = 0;
         int total = 0;
         int index = 1;
         for (Result result : results)
@@ -109,8 +108,7 @@ public final class Team
             {
                 total += pointsForWin;
             }
-            data[index][0] = index;
-            data[index][1] = total;
+            data[index] = total;
             ++index;
         }
         // TO DO: What about points adjustments?

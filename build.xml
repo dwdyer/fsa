@@ -106,9 +106,9 @@
             extends="javax.swing.JApplet" />
       <keep access="public"
             name="org.jfree.chart.JFreeChart" />
-      <keepnames extends="java.lang.Enum">
+      <keep extends="java.lang.Enum">
         <method name="values" />
-      </keepnames>
+      </keep>
       <keep access="public"
             name="*"
             extends="java.util.ListResourceBundle" />
