@@ -80,15 +80,15 @@ public class GraphsPanel extends JPanel implements DataListener
     private JComponent createGraph()
     {
         chart = ChartFactory.createTimeSeriesChart(null, // Title
-                                                   "Time",
+                                                   "Date",
                                                    "League Position",
                                                    dataSet,
                                                    true, // Legend.
-                                                   false, // Tooltips.
+                                                   true, // Tooltips.
                                                    false); // URLs.
         chart.getXYPlot().getRangeAxis().setInverted(true);
         chart.getXYPlot().getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        return new ChartPanel(chart);
+        return new ChartPanel(chart, false, false, false, false, true);
     }
 
 
