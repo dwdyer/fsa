@@ -30,7 +30,7 @@
 
   <path id="base.path">
     <pathelement path="${classes.dir}/main" />
-    <fileset dir="${tools.dir}" includes="**/*.jar" />
+    <fileset dir="${lib.dir}" includes="**/*.jar" />
   </path>
 
   <!-- Removes all files created by this build process. -->
@@ -54,6 +54,7 @@
            optimize="on"
            deprecation="on">
       <compilerarg line="-Xlint:unchecked" />
+      <classpath refid="base.path" />
     </javac>
     <mkdir dir="${classes.dir}/test"/>
     <javac srcdir="${src.dir}/java/test"
@@ -73,12 +74,16 @@
     <mkdir dir="${dist.dir}"/>
     <jar jarfile="${dist.dir}/${project.jar}" basedir="${classes.dir}/main">
       <fileset dir="${src.dir}/java/main" includes="**/*.properties" />
+      <manifest>
+        <attribute name="Class-Path" value="jfreechart-1.0.11.jar jcommon-1.0.14.jar" />
+      </manifest>
     </jar>
-    <copy todir="${dist.dir}">
+    <copy todir="${dist.dir}" flatten="true">
       <fileset dir="${src.dir}/conf" includes="*"/>
       <fileset dir="${src.dir}/data" includes="*"/>
       <fileset dir="${src.dir}/html" includes="*"/>
       <fileset dir="." includes="*.txt"/>
+      <fileset dir="${lib.dir}/runtime" includes="**/*.jar" />
     </copy>
   </target>
   
@@ -95,7 +100,9 @@
       <libraryjar path="${jdk.libs}" />
       <injar location="${dist.dir}/${project.jar}" />
       <outjar name="${dist.dir}/obfuscated.${project.jar}" />
-      <keep access="public" name="*" extends="javax.swing.JApplet" />
+      <keep access="public"
+            name="net.footballpredictions.footballstats.swing.*"
+            extends="javax.swing.JApplet" />
       <keepnames extends="java.lang.Enum">
         <method name="values" />
       </keepnames>
