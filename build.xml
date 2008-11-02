@@ -96,8 +96,8 @@
       <libraryjar path="${jdk.libs}" />
       <libraryjar path="${lib.dir}/compiletime/jfreechart/servlet.jar" />
       <injar location="${dist.dir}/${project.jar}" />
-      <injar location="${lib.dir}/runtime/jfreechart/jfreechart-1.0.11.jar" />
-      <injar location="${lib.dir}/runtime/jfreechart/jcommon-1.0.14.jar" />
+      <injar location="${lib.dir}/runtime/jfreechart/jfreechart-1.0.0.jar" />
+      <injar location="${lib.dir}/runtime/jfreechart/jcommon-1.0.0.jar" />
       <outjar name="${dist.dir}/obfuscated.${project.jar}" />
       <keep access="public"
             name="net.footballpredictions.footballstats.swing.*"
