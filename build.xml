@@ -89,29 +89,28 @@
     <proguard shrink="true"
               obfuscate="true"
               optimize="true"
-              usemixedcaseclassnames="false"
+              usemixedcaseclassnames="true"
               allowaccessmodification="true"
               overloadaggressively="true"
-              defaultpackage="">
+              defaultpackage=""
+              printseeds="true">
       <libraryjar path="${jdk.libs}" />
       <libraryjar path="${lib.dir}/compiletime/jfreechart/servlet.jar" />
       <injar location="${dist.dir}/${project.jar}" />
       <injar location="${lib.dir}/runtime/jfreechart/jfreechart-1.0.0.jar"
-             filter="!META-INF/MANIFEST.MF,!**/*.jpg,!org/jfree/chart/editor/**,!org/jfree/data/resources/**" />
+             filter="!META-INF/MANIFEST.MF,!**/*.jpg,!org/jfree/chart/editor/**,!org/jfree/chart/encoders/**,!org/jfree/data/resources/**" />
       <injar location="${lib.dir}/runtime/jfreechart/jcommon-1.0.0.jar"
              filter="!META-INF/MANIFEST.MF,!org/jfree/ui/about/resources/**,!org/jfree/ui/*.properties" />
       <outjar name="${dist.dir}/obfuscated.${project.jar}" />
-      <keep access="public"
-            name="net.footballpredictions.footballstats.swing.*"
-            extends="javax.swing.JApplet" />
-      <keep access="public"
-            name="org.jfree.chart.JFreeChart" />
+      <keep name="net.footballpredictions.footballstats.swing.FootballStatsApplet" />
+      <keepnames name="org.jfree.chart.JFreeChart" />
       <keep extends="java.lang.Enum">
         <method name="values" />
       </keep>
-      <keep access="public"
-            name="*"
-            extends="java.util.ListResourceBundle" />
+      <keep access="public" name="*" extends="java.util.ListResourceBundle" />
+      <assumenosideeffects name="org.jfree.chart.ChartPanel">
+        <method name="createPopupMenu" />
+      </assumenosideeffects>
     </proguard>
     <delete file="${dist.dir}/${project.jar}" />
     <move file="${dist.dir}/obfuscated.${project.jar}" tofile="${dist.dir}/${project.jar}" />

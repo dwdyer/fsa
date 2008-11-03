@@ -18,14 +18,11 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.FlowLayout;
-import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Date;
-import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.SortedMap;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -36,17 +33,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import net.footballpredictions.footballstats.model.LeagueSeason;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  * Panel for displaying graphs illustrating the performance of one or more teams.
@@ -57,9 +43,14 @@ public class GraphsPanel extends JPanel implements DataListener
     private final ResourceBundle messageResources;
 
     private LeagueSeason data = null;
+    
+    private final CardLayout chartsLayout = new CardLayout();
+    private final JPanel chartsPanel = new JPanel(chartsLayout);
     private final JList teamsList = new JList();
     private EnumComboBox<GraphType> graphTypeCombo;
-    private ChartPanel chartPanel = new ChartPanel(null, false, false, false, false, true);
+    private LeaguePositionGraph leaguePositionGraph;
+    private PointsGraph pointsGraph;
+    private GoalsGraph goalsGraph;
 
     public GraphsPanel(ResourceBundle messageResources)
     {
@@ -68,10 +59,23 @@ public class GraphsPanel extends JPanel implements DataListener
         
         JPanel inner = new JPanel(new BorderLayout());
         inner.add(createControls(), BorderLayout.NORTH);
-        inner.add(chartPanel, BorderLayout.CENTER);
+
+        inner.add(createCharts(), BorderLayout.CENTER);
         add(inner, BorderLayout.CENTER);
 
         add(createTeamSelector(), BorderLayout.EAST);
+    }
+
+
+    private JComponent createCharts()
+    {
+        leaguePositionGraph = new LeaguePositionGraph(messageResources);
+        chartsPanel.add(leaguePositionGraph, GraphType.LEAGUE_POSITION.name());
+        pointsGraph = new PointsGraph(messageResources);
+        chartsPanel.add(pointsGraph, GraphType.POINTS.name());
+        goalsGraph = new GoalsGraph(messageResources);
+        chartsPanel.add(goalsGraph, GraphType.GOALS.name());
+        return chartsPanel;
     }
 
 
@@ -122,137 +126,32 @@ public class GraphsPanel extends JPanel implements DataListener
     }
 
 
+    /**
+     * Updates the graph in response to a change in the selected graph type or selected
+     * team(s).
+     */
     private void changeGraph()
     {
         GraphType type = (GraphType) graphTypeCombo.getSelectedItem();
         if (type == GraphType.LEAGUE_POSITION)
         {
             teamsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-            chartPanel.setChart(createLeaguePositionGraph());
+            leaguePositionGraph.updateGraph(teamsList.getSelectedValues(), data);
         }
         else if (type == GraphType.POINTS)
         {
             teamsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-            chartPanel.setChart(createPointsGraph());
+            pointsGraph.updateGraph(teamsList.getSelectedValues(), data);
         }
         else if (type == GraphType.GOALS)
         {
+            // Only one team can be selected for the goals graph.
             teamsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            teamsList.setSelectedIndex(teamsList.getSelectedIndex()); // Only one team can be selected now.
-            chartPanel.setChart(createGoalsGraph());
+            // If there is more than one selected already, change the selection so that
+            // only the first one is selected.
+            teamsList.setSelectedIndex(teamsList.getSelectedIndex());
+            goalsGraph.updateGraph((String) teamsList.getSelectedValue(), data);
         }
-    }
-
-
-    /**
-     * Plot league positions by date.
-     */
-    private JFreeChart createLeaguePositionGraph()
-    {
-        TimeSeriesCollection dataSet = new TimeSeriesCollection();
-        Object[] teamNames = teamsList.getSelectedValues();
-        for (Object team : teamNames)
-        {
-            String teamName = (String) team;
-            TimeSeries positionSeries = new TimeSeries(teamName);
-
-            SortedMap<Date, Integer> positions = data.getTeam(teamName).getLeaguePositions();
-            for (Map.Entry<Date, Integer> entry : positions.entrySet())
-            {
-                positionSeries.add(new Day(entry.getKey()), entry.getValue());
-            }
-            dataSet.addSeries(positionSeries);
-        }
-
-        JFreeChart chart = ChartFactory.createTimeSeriesChart(null, // Title
-                                                              messageResources.getString("graphs.date"),
-                                                              messageResources.getString("combo.GraphType.LEAGUE_POSITION"),
-                                                              dataSet,
-                                                              true, // Legend.
-                                                              false, // Tooltips.
-                                                              false); // URLs.
-        chart.getXYPlot().getRangeAxis().setInverted(true);
-        chart.getXYPlot().getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        chart.getXYPlot().getRangeAxis().setRangeWithMargins(1, data.getTeamNames().size());
-        return chart;
-    }
-
-
-    /**
-     * Plot points earned against number of matches played.
-     */
-    private JFreeChart createPointsGraph()
-    {
-        XYSeriesCollection dataSet = new XYSeriesCollection();
-        Object[] teamNames = teamsList.getSelectedValues();
-        int max = 0;
-        for (Object team : teamNames)
-        {
-            String teamName = (String) team;
-            XYSeries pointsSeries = new XYSeries(teamName);
-
-            int[] points = data.getTeam(teamName).getPointsData(data.getMetaData().getPointsForWin(),
-                                                                data.getMetaData().getPointsForDraw());
-            for (int i = 0; i < points.length; i++)
-            {
-                pointsSeries.add(i, points[i]);
-            }
-            max = Math.max(max, points[points.length - 1]);
-            dataSet.addSeries(pointsSeries);
-        }
-        JFreeChart chart = ChartFactory.createXYLineChart(null, // Title
-                                                          messageResources.getString("graphs.matches"),
-                                                          messageResources.getString("combo.GraphType.POINTS"),
-                                                          dataSet,
-                                                          PlotOrientation.VERTICAL,
-                                                          true, // Legend.
-                                                          false, // Tooltips.
-                                                          false); // URLs.
-        chart.getXYPlot().getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        chart.getXYPlot().getDomainAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        chart.getXYPlot().getRangeAxis().setRange(0, max + 1);
-        return chart;
-    }
-
-
-    /**
-     * Plot goals scored and conceded against number of matches played.
-     */
-    private JFreeChart createGoalsGraph()
-    {
-        XYSeriesCollection dataSet = new XYSeriesCollection();
-        String teamName = (String) teamsList.getSelectedValue();
-        XYSeries forSeries = new XYSeries(teamName + ' ' + messageResources.getString("graphs.scored"));
-        XYSeries againstSeries = new XYSeries(teamName + ' ' + messageResources.getString("graphs.conceded"));
-
-        int[][] goals = data.getTeam(teamName).getGoalsData();
-        for (int i = 0; i < goals.length; i++)
-        {
-            forSeries.add(i, goals[i][0]);
-            againstSeries.add(i, goals[i][1]);
-        }
-
-        dataSet.addSeries(forSeries);
-        dataSet.addSeries(againstSeries);
-
-        JFreeChart chart = ChartFactory.createXYLineChart(null, // Title
-                                                          messageResources.getString("graphs.matches"),
-                                                          messageResources.getString("combo.GraphType.GOALS"),
-                                                          dataSet,
-                                                          PlotOrientation.VERTICAL,
-                                                          true, // Legend.
-                                                          false, // Tooltips.
-                                                          false); // URLs.
-        chart.getXYPlot().getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        chart.getXYPlot().getDomainAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        int max = Math.max(goals[goals.length - 1][0], goals[goals.length - 1][1]);
-        chart.getXYPlot().getRangeAxis().setRange(0, max + 1);
-        XYDifferenceRenderer renderer = new XYDifferenceRenderer();
-        renderer.setSeriesPaint(0, new Color(0, 128, 0)); // Green.
-        renderer.setPositivePaint(new Color(0, 255, 0, 128)); // Translucent green.
-        renderer.setSeriesPaint(1, new Color(192, 0, 0)); // Red.
-        renderer.setNegativePaint(new Color(255, 0, 0, 128)); // Translucent red.
-        chart.getXYPlot().setRenderer(renderer);
-        return chart;
+        chartsLayout.show(chartsPanel, type.name());
     }
 }
