@@ -86,6 +86,21 @@ public class FormRecord extends AbstractTeamRecord
 
 
     /**
+     * @param min The lowest number of form points (points from the the last
+     * n games) of all teams in the league.
+     * @param max The highest number of form points (points from the the last
+     * n games) of all teams in the league.
+     * @return This team's form as a number of stars between 1 and 5.
+     */
+    public int getFormStars(int min, int max)
+    {
+        double range = max - min;
+        double form = (getPoints() - min) / range;
+        return Math.max(1, (int) Math.ceil(form * 5));
+    }
+
+
+    /**
      * {@inheritDoc}
      */
     public int getPlayed()

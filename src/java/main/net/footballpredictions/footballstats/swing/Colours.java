@@ -47,4 +47,29 @@ final class Colours
 
     public static final Color[] RELEGATION = new Color[]{new Color(255, 153, 153),
                                                          new Color(255, 204, 204)};
+    
+    public static final Color STARS = new Color(255, 153, 0);
+
+    
+    private Colours()
+    {
+        // Private constructor prevents instantiation.
+    }
+
+
+    public static Color getNumberColour(int value)
+    {
+        if (value == 0)
+        {
+            return ZERO;
+        }
+        else if (value > 0)
+        {
+            return POSITIVE;
+        }
+        else
+        {
+            return NEGATIVE;
+        }
+    }
 }

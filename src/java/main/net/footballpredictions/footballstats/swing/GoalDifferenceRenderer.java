@@ -54,19 +54,11 @@ class GoalDifferenceRenderer extends TableRenderer
                                                                         row,
                                                                         column);
         Integer goalDifference = (Integer) value;
-        if (goalDifference == 0)
+        component.setForeground(Colours.getNumberColour(goalDifference));
+        if (goalDifference > 0)
         {
-            component.setForeground(Colours.ZERO);
-        }
-        else if (goalDifference > 0)
-        {
-            component.setForeground(Colours.POSITIVE);
             // Add explicit plus sign for positive goal differences.
             component.setText('+' + component.getText());
-        }
-        else
-        {
-            component.setForeground(Colours.NEGATIVE);
         }
         
         return component;

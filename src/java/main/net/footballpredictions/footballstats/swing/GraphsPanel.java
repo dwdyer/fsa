@@ -33,6 +33,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import net.footballpredictions.footballstats.model.LeagueSeason;
+import org.jfree.ui.RectangleEdge;
 
 /**
  * Panel for displaying graphs illustrating the performance of one or more teams.
@@ -69,7 +70,7 @@ public class GraphsPanel extends JPanel implements DataListener
 
     private JComponent createCharts()
     {
-        leaguePositionGraph = new LeaguePositionGraph(messageResources);
+        leaguePositionGraph = new LeaguePositionGraph(messageResources, RectangleEdge.BOTTOM);
         chartsPanel.add(leaguePositionGraph, GraphType.LEAGUE_POSITION.name());
         pointsGraph = new PointsGraph(messageResources);
         chartsPanel.add(pointsGraph, GraphType.POINTS.name());

@@ -77,6 +77,10 @@ public final class FootballStatsApplet extends JApplet
             dataSelector.addDataListener(sequences);
             tabs.add(messageResources.getString("sequences.tab"), sequences);
 
+            HeadToHeadPanel headToHead = new HeadToHeadPanel(messageResources);
+            dataSelector.addDataListener(headToHead);
+            tabs.add(messageResources.getString("headToHead.tab"), headToHead);
+
             GraphsPanel graphs = new GraphsPanel(messageResources);
             dataSelector.addDataListener(graphs);
             tabs.add(messageResources.getString("graphs.tab"), graphs);

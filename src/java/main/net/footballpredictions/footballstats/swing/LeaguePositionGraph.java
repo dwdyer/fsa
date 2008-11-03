@@ -24,6 +24,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.Day;
+import org.jfree.ui.RectangleEdge;
 import java.util.Date;
 import java.util.SortedMap;
 import java.util.Map;
@@ -37,11 +38,13 @@ import net.footballpredictions.footballstats.model.LeagueSeason;
 class LeaguePositionGraph extends ChartPanel
 {
     private final ResourceBundle messageResources;
+    private final RectangleEdge legendPosition;
 
-    public LeaguePositionGraph(ResourceBundle messageResources)
+    public LeaguePositionGraph(ResourceBundle messageResources, RectangleEdge legendPosition)
     {
         super(null, false, false, false, false, true);
         this.messageResources = messageResources;
+        this.legendPosition = legendPosition;
     }
 
 
@@ -75,6 +78,7 @@ class LeaguePositionGraph extends ChartPanel
         chart.getXYPlot().getRangeAxis().setInverted(true);
         chart.getXYPlot().getRangeAxis().setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         chart.getXYPlot().getRangeAxis().setRangeWithMargins(1, data.getTeamNames().size());
+        chart.getLegend().setPosition(legendPosition);
         setChart(chart);
     }
 }
