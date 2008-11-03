@@ -39,11 +39,11 @@ final class SequenceComparator implements Comparator<StandardRecord>
         int compare;
         if (current)
         {
-            compare = team2.getCurrentSequence(sequence) - team1.getCurrentSequence(sequence); // Swap teams for descending sort.
+            compare = team2.getCurrentSequence(sequence).size() - team1.getCurrentSequence(sequence).size(); // Swap teams for descending sort.
         }
         else
         {
-            compare = team2.getBestSequence(sequence) - team1.getBestSequence(sequence); // Swap teams for descending sort.
+            compare = team2.getBestSequence(sequence).size() - team1.getBestSequence(sequence).size(); // Swap teams for descending sort.
         }
         if (compare == 0)
         {

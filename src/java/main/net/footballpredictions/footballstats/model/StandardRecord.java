@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedList;
 
 /**
  * Models a single team's record for the season.  This may be their overall record,
@@ -41,14 +42,17 @@ public final class StandardRecord extends AbstractTeamRecord
     private int scored = 0;
     private int conceded = 0;
 
-    private final Map<SequenceType, Integer> currentSequences = new EnumMap<SequenceType, Integer>(SequenceType.class);
-    private final Map<SequenceType, Integer> bestSequences = new EnumMap<SequenceType, Integer>(SequenceType.class);
+    private final Map<SequenceType, List<Result>> currentSequences = new EnumMap<SequenceType, List<Result>>(SequenceType.class);
+    private final Map<SequenceType, List<Result>> bestSequences = new EnumMap<SequenceType, List<Result>>(SequenceType.class);
 
     private Result biggestWin = null;
     private Result biggestDefeat = null;
 
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
+     * @param team The team that this record corresponds to.
+     * @param where Which matches are included in this record (home matches, away matches
+     * or both?)
      */
     public StandardRecord(Team team, VenueType where)
     {
@@ -58,8 +62,8 @@ public final class StandardRecord extends AbstractTeamRecord
         // Intialise sequences to zero.
         for (SequenceType sequence : SequenceType.values())
         {
-            currentSequences.put(sequence, 0);
-            bestSequences.put(sequence, 0);
+            currentSequences.put(sequence, new LinkedList<Result>());
+            bestSequences.put(sequence, new LinkedList<Result>());
         }
     }
 
@@ -139,10 +143,10 @@ public final class StandardRecord extends AbstractTeamRecord
      * This method answers questions such as "How many consecutive wins
      * does this team currently have?"
      * @param sequence The sequence to return the length of.
-     * @return The current length of the specified sequence.
+     * @return The specified current sequence.
      * @see #getBestSequence(SequenceType)
      */
-    public int getCurrentSequence(SequenceType sequence)
+    public List<Result> getCurrentSequence(SequenceType sequence)
     {
         return currentSequences.get(sequence);
     }
@@ -150,13 +154,13 @@ public final class StandardRecord extends AbstractTeamRecord
 
     /**
      * This method answers questions such as "What is the longest sequence
-     * of consecutive wins this has achieved this season"
+     * of consecutive wins this team has achieved this season?"
      * @param sequence The sequence to return the length of.
-     * @return The length of the longest sequence of the specified type achieved
+     * @return The longest sequence of the specified type achieved
      * this season..
      * @see #getCurrentSequence(SequenceType)
      */
-    public int getBestSequence(SequenceType sequence)
+    public List<Result> getBestSequence(SequenceType sequence)
     {
         return bestSequences.get(sequence);
     }
@@ -219,8 +223,8 @@ public final class StandardRecord extends AbstractTeamRecord
         {
             lost++;
 
-            incrementSequence(SequenceType.NO_WIN);
-            incrementSequence(SequenceType.DEFEATS);
+            addToSequence(SequenceType.NO_WIN, result);
+            addToSequence(SequenceType.DEFEATS, result);
             resetSequence(SequenceType.UNBEATEN);
             resetSequence(SequenceType.WINS);
             resetSequence(SequenceType.DRAWS);
@@ -232,22 +236,22 @@ public final class StandardRecord extends AbstractTeamRecord
         }
         else
         {
-            incrementSequence(SequenceType.UNBEATEN);
+            addToSequence(SequenceType.UNBEATEN, result);
             resetSequence(SequenceType.DEFEATS);
 
             if (result.isDraw())
             {
                 drawn++;
 
-                incrementSequence(SequenceType.DRAWS);
-                incrementSequence(SequenceType.NO_WIN);
+                addToSequence(SequenceType.DRAWS, result);
+                addToSequence(SequenceType.NO_WIN, result);
                 resetSequence(SequenceType.WINS);
             }
             else // Must be a win
             {
                 won++;
 
-                incrementSequence(SequenceType.WINS);
+                addToSequence(SequenceType.WINS, result);
                 resetSequence(SequenceType.NO_WIN);
                 resetSequence(SequenceType.DRAWS);
 
@@ -263,18 +267,18 @@ public final class StandardRecord extends AbstractTeamRecord
         conceded += goalsAgainst;
         if (goalsFor == 0)
         {
-            incrementSequence(SequenceType.GAMES_NOT_SCORED_IN);
+            addToSequence(SequenceType.GAMES_NOT_SCORED_IN, result);
             resetSequence(SequenceType.GAMES_SCORED_IN);
         }
         else
         {
             resetSequence(SequenceType.GAMES_NOT_SCORED_IN);
-            incrementSequence(SequenceType.GAMES_SCORED_IN);
+            addToSequence(SequenceType.GAMES_SCORED_IN, result);
         }
 
         if (goalsAgainst == 0)
         {
-            incrementSequence(SequenceType.CLEANSHEETS);
+            addToSequence(SequenceType.CLEANSHEETS, result);
         }
         else
         {
@@ -283,22 +287,22 @@ public final class StandardRecord extends AbstractTeamRecord
     }
 
 
-    private void incrementSequence(SequenceType sequence)
+    private void addToSequence(SequenceType sequence, Result result)
     {
-        int newValue = currentSequences.get(sequence) + 1;
-        currentSequences.put(sequence, newValue);
+        List<Result> list = currentSequences.get(sequence);
+        list.add(result);
         // If the current sequence is better than the best this season, then
         // update the best this season.
-        if (newValue > bestSequences.get(sequence))
+        if (list.size() > bestSequences.get(sequence).size())
         {
-            bestSequences.put(sequence, newValue);
+            bestSequences.put(sequence, new LinkedList<Result>(list));
         }
     }
 
 
     private void resetSequence(SequenceType sequence)
     {
-        currentSequences.put(sequence, 0);
+        currentSequences.get(sequence).clear();
     }
 
 

@@ -30,7 +30,7 @@ import net.footballpredictions.footballstats.model.StandardRecord;
  * in a {@link javax.swing.JTable} component.
  * @author Daniel Dyer
  */
-public class SequenceTableModel extends AbstractTableModel
+class SequenceTableModel extends AbstractTableModel
 {
     static final int POSITION_COLUMN = 0;
     static final int TEAM_COLUMN = 1;
@@ -98,7 +98,7 @@ public class SequenceTableModel extends AbstractTableModel
         {
             case POSITION_COLUMN: return row + 1;
             case TEAM_COLUMN: return team.getName();
-            case SEQUENCE_COLUMN: return current ? team.getCurrentSequence(sequence) : team.getBestSequence(sequence);
+            case SEQUENCE_COLUMN: return current ? team.getCurrentSequence(sequence).size() : team.getBestSequence(sequence).size();
             default: throw new IllegalArgumentException("Invalid column index: " + column);
         }
     }
