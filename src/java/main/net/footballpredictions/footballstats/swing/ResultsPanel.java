@@ -210,7 +210,8 @@ public class ResultsPanel extends JPanel implements DataListener
         }
         else
         {
-            Team team = data.getTeam((String) teamsCombo.getSelectedItem());
+            String teamName = (String) teamsCombo.getSelectedItem();
+            Team team = data.getTeam(teamName);
             List<Result> results = team.getRecord((VenueType) venueCombo.getSelectedItem()).getResults();
             resultsTable.setModel(new TeamResultsTableModel(results, team.getName(), messageResources));
 
@@ -218,6 +219,7 @@ public class ResultsPanel extends JPanel implements DataListener
             columnModel.getColumn(TeamResultsTableModel.DATE_COLUMN).setPreferredWidth(50);
             columnModel.getColumn(TeamResultsTableModel.OPPOSITION_COLUMN).setPreferredWidth(200);
             columnModel.getColumn(TeamResultsTableModel.SCORE_COLUMN).setPreferredWidth(10);
+            columnModel.getColumn(TeamResultsTableModel.SCORE_COLUMN).setCellRenderer(new ScoreRenderer(teamName));
         }
     }
 }

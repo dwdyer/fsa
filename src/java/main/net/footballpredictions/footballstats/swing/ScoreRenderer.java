@@ -19,6 +19,7 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import net.footballpredictions.footballstats.model.Result;
@@ -30,7 +31,25 @@ import net.footballpredictions.footballstats.model.Result;
 class ScoreRenderer extends TableRenderer
 {
     private static final Font FIXED_WIDTH_FONT = new Font("Monospaced", Font.BOLD, 13);
-    
+    private final String team;
+
+    public ScoreRenderer()
+    {
+        this(null);
+    }
+
+
+    /**
+     * Render scores for a particular team (results are coloured depending on
+     * whether the team won, drew or lost).
+     * @param team The team that is involved in all results.
+     */
+    public ScoreRenderer(String team)
+    {
+        this.team = team;
+    }
+
+
     @Override
     public Component getTableCellRendererComponent(JTable table,
                                                    Object value,
@@ -39,14 +58,16 @@ class ScoreRenderer extends TableRenderer
                                                    int row,
                                                    int column)
     {
+        Result result = (Result) value;
         JLabel component = (JLabel) super.getTableCellRendererComponent(table,
-                                                                        resultToString((Result) value),
+                                                                        resultToString(result),
                                                                         isSelected,
                                                                         hasFocus,
                                                                         row,
                                                                         column);
         component.setFont(FIXED_WIDTH_FONT);
         component.setHorizontalAlignment(JLabel.CENTER);
+        component.setBackground(getColour(result));
         return component;
     }
 
@@ -69,5 +90,26 @@ class ScoreRenderer extends TableRenderer
         }
 
         return buffer.toString();
+    }
+
+
+    private Color getColour(Result result)
+    {
+        if (team == null)
+        {
+            return null;
+        }
+        else if (result.isWin(team))
+        {
+            return Colours.WIN;
+        }
+        else if (result.isDraw())
+        {
+            return Colours.DRAW;
+        }
+        else
+        {
+            return Colours.DEFEAT;
+        }
     }
 }

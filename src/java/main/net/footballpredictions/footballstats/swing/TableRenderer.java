@@ -32,14 +32,6 @@ import net.footballpredictions.footballstats.model.LeagueMetaData;
  */
 class TableRenderer extends DefaultTableCellRenderer
 {
-    private static final Color[] PRIZE_COLOURS = new Color[]{hexStringToColor("FFCC00"),
-                                                             hexStringToColor("FFFF66"),
-                                                             hexStringToColor("FFFFCC"),
-                                                             hexStringToColor("EEEEEE")};
-
-    private static final Color[] RELEGATION_COLOURS = new Color[]{hexStringToColor("FF9999"),
-                                                                  hexStringToColor("FFCCCC")};
-
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#0.00");
 
     private final LeagueMetaData metadata;
@@ -99,25 +91,13 @@ class TableRenderer extends DefaultTableCellRenderer
             int zone = metadata.getZoneForPosition(row + 1); // Convert zero-based row index into one-based position.
             if (zone > 0)
             {
-                return PRIZE_COLOURS[Math.min(zone, PRIZE_COLOURS.length) - 1];
+                return Colours.PRIZES[Math.min(zone, Colours.PRIZES.length) - 1];
             }
             else if (zone < 0)
             {
-                return RELEGATION_COLOURS[Math.min(-zone, RELEGATION_COLOURS.length) - 1];
+                return Colours.RELEGATION[Math.min(-zone, Colours.RELEGATION.length) - 1];
             }
         }
         return null;
-    }
-
-
-    /**
-     * Converts an RGB hex string (as using in HTML/CSS) into a Color object.
-     * @param hex The hex string to convert.
-     * @return The colour represented by the hex value.
-     */
-    protected static Color hexStringToColor(String hex)
-    {
-        int value = Integer.parseInt(hex, 16);
-        return new Color(value);
     }
 }

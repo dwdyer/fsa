@@ -17,17 +17,16 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
+import java.util.ResourceBundle;
+import net.footballpredictions.footballstats.model.LeagueSeason;
+import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.chart.renderer.xy.XYDifferenceRenderer;
 import org.jfree.data.xy.XYSeries;
-import java.util.ResourceBundle;
-import java.awt.Color;
-import net.footballpredictions.footballstats.model.LeagueSeason;
+import org.jfree.data.xy.XYSeriesCollection;
 
 /**
  * Plot goals scored and conceded against number of matches played.
@@ -77,10 +76,10 @@ class GoalsGraph extends ChartPanel
         int max = Math.max(goals[goals.length - 1][0], goals[goals.length - 1][1]);
         chart.getXYPlot().getRangeAxis().setRange(0, max + 1);
         XYDifferenceRenderer renderer = new XYDifferenceRenderer();
-        renderer.setSeriesPaint(0, new Color(0, 128, 0)); // Green.
-        renderer.setPositivePaint(new Color(0, 255, 0, 128)); // Translucent green.
-        renderer.setSeriesPaint(1, new Color(192, 0, 0)); // Red.
-        renderer.setNegativePaint(new Color(255, 0, 0, 128)); // Translucent red.
+        renderer.setSeriesPaint(0, Colours.POSITIVE); // Green.
+        renderer.setPositivePaint(Colours.POSITIVE_FILL); // Translucent green.
+        renderer.setSeriesPaint(1, Colours.NEGATIVE); // Red.
+        renderer.setNegativePaint(Colours.NEGATIVE_FILL); // Translucent red.
         chart.getXYPlot().setRenderer(renderer);
         setChart(chart);
     }
