@@ -41,6 +41,20 @@ import javax.swing.UIManager;
  */
 public final class FootballStatsApplet extends JApplet
 {
+    // Attempt to set a native look-and-feel.
+    static
+    {
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (Exception ex)
+        {
+            // Won't happen, we're loading a known look-and-feel.
+            ex.printStackTrace();
+        }
+    }
+    
     private static final String NAME_STRING = "Football Statistics Applet";
     private static final String VERSION_STRING = "Version 3.0 (Preview)";
     private static final String COPYRIGHT_STRING = "\u00A9 Copyright 2000-2008, Daniel W. Dyer";
@@ -59,17 +73,6 @@ public final class FootballStatsApplet extends JApplet
     {
         System.out.println("Initialising applet...");
 
-        try
-        {
-            // Attempt to set a native look-and-feel.
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch (Exception ex)
-        {
-            // Won't happen, we're loading a known look-and-feel.
-            ex.printStackTrace();
-        }
-        
         try
         {
             URL configURL = new URL(getDocumentBase(), getParameter("config.url"));
