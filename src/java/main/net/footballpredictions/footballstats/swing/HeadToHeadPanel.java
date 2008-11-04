@@ -29,6 +29,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.model.VenueType;
 import org.jfree.ui.RectangleEdge;
 
 /**
@@ -90,8 +91,8 @@ public class HeadToHeadPanel extends JPanel implements DataListener
     private JComponent createTeamsPanel()
     {
         JPanel teamsPanel = new JPanel(new GridLayout(1, 2, 5, 0));
-        homeTeamPanel = new TeamPanel(messageResources);
-        awayTeamPanel = new TeamPanel(messageResources);
+        homeTeamPanel = new TeamPanel(messageResources, VenueType.HOME);
+        awayTeamPanel = new TeamPanel(messageResources, VenueType.AWAY);
         teamsPanel.add(homeTeamPanel);
         teamsPanel.add(awayTeamPanel);
         return teamsPanel;

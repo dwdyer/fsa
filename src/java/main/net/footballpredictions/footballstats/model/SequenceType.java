@@ -23,12 +23,29 @@ package net.footballpredictions.footballstats.model;
  */
 public enum SequenceType
 {
-    WINS,
-    DRAWS,
-    DEFEATS,
-    UNBEATEN,
-    NO_WIN,
-    CLEANSHEETS,
-    GAMES_SCORED_IN,
-    GAMES_NOT_SCORED_IN
+    UNBEATEN(3),
+    NO_WIN(3),
+    WINS(3),
+    DRAWS(3),
+    DEFEATS(3),
+    CLEANSHEETS(3),
+    GAMES_SCORED_IN(10),
+    GAMES_NOT_SCORED_IN(10);
+
+    private final int interestLevel;
+
+    /**
+     * @param interestLevel The threshold at which the sequence becomes "interesting".
+     * Used to determine which notes to display about a team's current sequences.
+     */
+    private SequenceType(int interestLevel)
+    {
+        this.interestLevel = interestLevel;
+    }
+
+
+    public int getInterestLevel()
+    {
+        return interestLevel;
+    }
 }

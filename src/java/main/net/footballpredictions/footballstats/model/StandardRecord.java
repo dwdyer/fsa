@@ -22,6 +22,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedList;
+import java.util.LinkedHashMap;
 
 /**
  * Models a single team's record for the season.  This may be their overall record,
@@ -209,6 +210,37 @@ public final class StandardRecord extends AbstractTeamRecord
     public Result getBiggestDefeat()
     {
         return biggestDefeat;
+    }
+
+
+    /**
+     * Queries for any current sequences that are long enough to be interesting.
+     * @return All current sequences that are deemed to be "interesting".
+     */
+    public Map<SequenceType, Integer> getInterestingSequences()
+    {
+        Map<SequenceType, Integer> sequences = new LinkedHashMap<SequenceType, Integer>();
+        for (Map.Entry<SequenceType, List<Result>> entry : currentSequences.entrySet())
+        {
+            int sequenceLength = entry.getValue().size();
+            if (sequenceLength >= entry.getKey().getInterestLevel())
+            {
+                sequences.put(entry.getKey(), sequenceLength);
+            }
+        }
+
+        // No point in saying "5 consecutive wins" and "5 matches unbeaten".
+        if (sequences.containsKey(SequenceType.UNBEATEN)
+            && sequences.get(SequenceType.UNBEATEN).equals(sequences.get(SequenceType.WINS)))
+        {
+            sequences.remove(SequenceType.UNBEATEN);
+        }
+        if (sequences.containsKey(SequenceType.NO_WIN)
+            && sequences.get(SequenceType.NO_WIN).equals(sequences.get(SequenceType.DEFEATS)))
+        {
+            sequences.remove(SequenceType.NO_WIN);
+        }
+        return sequences;
     }
 
 

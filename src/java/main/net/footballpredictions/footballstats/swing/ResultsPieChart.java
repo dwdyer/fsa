@@ -34,11 +34,14 @@ import org.jfree.data.general.PieDataset;
 class ResultsPieChart extends ChartPanel
 {
     private final ResourceBundle messageResources;
+    private final String title;
 
-    public ResultsPieChart(ResourceBundle messageResources)
+    public ResultsPieChart(ResourceBundle messageResources,
+                           String title)
     {
         super(null, false, false, false, false, true);
         this.messageResources = messageResources;
+        this.title = title;
     }
 
 
@@ -53,7 +56,7 @@ class ResultsPieChart extends ChartPanel
         values.addValue(messageResources.getString("headToHead.lost"), lost);
         PieDataset dataSet = new DefaultPieDataset(values);
 
-        JFreeChart chart = ChartFactory.createPieChart(messageResources.getString("headToHead.results"), // Title
+        JFreeChart chart = ChartFactory.createPieChart(title,
                                                        dataSet,
                                                        false, // Legend.
                                                        true, // Tooltips.
