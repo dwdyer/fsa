@@ -42,13 +42,15 @@ final class Colours
 
     public static final Color[] PRIZES = new Color[]{new Color(255, 204, 0),
                                                      new Color(255, 255, 102),
-                                                     new Color(255, 255, 204),
+                                                     new Color(255, 255, 187),
                                                      new Color(238, 238, 238)};
 
     public static final Color[] RELEGATION = new Color[]{new Color(255, 153, 153),
                                                          new Color(255, 204, 204)};
     
     public static final Color STARS = new Color(255, 153, 0);
+
+    public static final Color NOTES = Color.BLUE;
 
     
     private Colours()

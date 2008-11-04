@@ -111,7 +111,7 @@ class TeamPanel extends JPanel
         notes.setWrapStyleWord(true);
         notes.setEnabled(false);
         notes.setFont(new Font("Dialog", Font.PLAIN, 10));
-        notes.setDisabledTextColor(Color.BLUE);
+        notes.setDisabledTextColor(Colours.NOTES);
         return notes;
     }
 

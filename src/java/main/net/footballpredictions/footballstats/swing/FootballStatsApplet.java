@@ -18,12 +18,21 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.swing.JApplet;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.BorderFactory;
 
 /**
  * This class provides football stats for a web page as a Swing applet.
@@ -31,9 +40,12 @@ import javax.swing.JTabbedPane;
  */
 public final class FootballStatsApplet extends JApplet
 {
-    private static final String VERSION_STRING = "Version 3.0 Alpha";
-    private static final String COPYRIGHT_STRING = "© Copyright 2000-2008, Daniel W. Dyer";
+    private static final String NAME_STRING = "Football Statistics Applet";
+    private static final String VERSION_STRING = "Version 3.0 (Preview)";
+    private static final String COPYRIGHT_STRING = "\u00A9 Copyright 2000-2008, Daniel W. Dyer";
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
+
+    private final DataSelector dataSelector = new DataSelector();
 
     public FootballStatsApplet()
     {
@@ -49,8 +61,7 @@ public final class FootballStatsApplet extends JApplet
         try
         {
             URL configURL = new URL(getDocumentBase(), getParameter("config.url"));
-            DataSelector dataSelector = new DataSelector();
-            add(dataSelector, BorderLayout.NORTH);
+            add(createTopBar(), BorderLayout.NORTH);
 
             // Use the default JVM locale unless it has been over-ridden in the properties file.
             String localeString = getParameter("locale");
@@ -96,11 +107,46 @@ public final class FootballStatsApplet extends JApplet
     }
 
 
+    private JComponent createTopBar()
+    {
+        JPanel topBar = new JPanel(new BorderLayout());
+        topBar.add(dataSelector, BorderLayout.CENTER);
+        // Using JLabel's hacky HTML support to allow for multi-line label.
+        JLabel infoLabel = new JLabel("<html><p align='right'>" + NAME_STRING + "<br>" + VERSION_STRING + "</p></html>");
+        infoLabel.setVerticalAlignment(JLabel.TOP);
+        infoLabel.setFont(new Font("Dialog", Font.ITALIC, 10));
+        infoLabel.setForeground(Colours.NOTES);
+        infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        infoLabel.setToolTipText(URL_STRING);
+        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+        infoLabel.addMouseListener(new MouseAdapter()
+        {
+            public void mouseClicked(MouseEvent mouseEvent)
+            {
+                if (mouseEvent.getButton() == MouseEvent.BUTTON1)
+                {
+                    try
+                    {
+                        getAppletContext().showDocument(new URL(URL_STRING), "_top");
+                    }
+                    catch (MalformedURLException ex)
+                    {
+                        // Won't happen.
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        topBar.add(infoLabel, BorderLayout.EAST);
+        return topBar;
+    }
+
+
     /**
      * @return Information about this applet.
      */
     public String getAppletInfo()
     {
-        return "Football Statistics Applet - " + VERSION_STRING + "\n" + COPYRIGHT_STRING + "\n" + URL_STRING;
+        return NAME_STRING + " - " + VERSION_STRING + "\n" + COPYRIGHT_STRING + "\n" + URL_STRING;
     }
 }
