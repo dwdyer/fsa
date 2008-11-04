@@ -17,27 +17,24 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
-import java.awt.GridLayout;
 import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Font;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.util.ResourceBundle;
-import java.util.SortedSet;
-import java.util.Map;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.text.MessageFormat;
+import java.util.Map;
+import java.util.ResourceBundle;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.model.SequenceType;
 import net.footballpredictions.footballstats.model.StandardRecord;
 import net.footballpredictions.footballstats.model.Team;
 import net.footballpredictions.footballstats.model.VenueType;
-import net.footballpredictions.footballstats.model.LeagueSeason;
-import net.footballpredictions.footballstats.model.FormRecord;
-import net.footballpredictions.footballstats.model.SequenceType;
 
 /**
  * Displays a summary of an individual team's performance over the season.
@@ -131,9 +128,7 @@ class TeamPanel extends JPanel
         // Goal difference is rendered green for positive, red for negative and black for zero.
         goalDifferenceLabel.setForeground(Colours.getNumberColour(record.getGoalDifference()));
         positionLabel.setText(String.valueOf(team.getLastLeaguePosition()));
-        SortedSet<FormRecord> formTable = data.getFormTable(VenueType.BOTH);
-        int stars = record.getFormRecord().getFormStars(formTable.last().getPoints(),
-                                                        formTable.first().getPoints());
+        int stars = record.getFormRecord().getFormStars();
         formLabel.setForm(stars, record.getForm());
         overallPieChart.updateGraph(record.getWon(),
                                     record.getDrawn(),

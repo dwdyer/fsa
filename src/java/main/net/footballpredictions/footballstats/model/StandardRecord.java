@@ -54,12 +54,20 @@ public final class StandardRecord extends AbstractTeamRecord
      * @param team The team that this record corresponds to.
      * @param where Which matches are included in this record (home matches, away matches
      * or both?)
+     * @param pointsForWin The number of points awarded for each win.
+     * @param pointsForDraw The number of points awarded for each draw.
      */
-    public StandardRecord(Team team, VenueType where)
+    public StandardRecord(Team team,
+                          VenueType where,
+                          int pointsForWin,
+                          int pointsForDraw)
     {
-        super(team);
+        super(team, pointsForWin, pointsForDraw);
         
-        this.form = new FormRecord(team, where == VenueType.BOTH ? 6 : 4);
+        this.form = new FormRecord(team,
+                                   pointsForWin,
+                                   pointsForDraw,
+                                   where == VenueType.BOTH ? 6 : 4);
         // Intialise sequences to zero.
         for (SequenceType sequence : SequenceType.values())
         {

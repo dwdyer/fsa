@@ -115,5 +115,14 @@ public interface TeamRecord
      * means points have been deducted.
      */
     void adjustPoints(int amount);
-        
+
+    /**
+     * @return The number of points awarded for each win.
+     */
+    int getPointsForWin();
+
+    /**
+     * @return The number of points awarded for each draw.
+     */
+    int getPointsForDraw();
 }

@@ -34,10 +34,15 @@ public class FormRecord extends AbstractTeamRecord
      * @param team The team that the form data relates to.                                       
      * @param length The number of matches that make up the form record (typically six for
      * an overall form record and 4 for home/away form).
+     * @param pointsForWin The number of points awarded for each win.
+     * @param pointsForDraw The number of points awarded for each draw.
      */
-    public FormRecord(Team team, int length)
+    public FormRecord(Team team,
+                      int pointsForWin,
+                      int pointsForDraw,
+                      int length)
     {
-        super(team);
+        super(team, pointsForWin, pointsForDraw);
         this.length = length;
         this.formResults = new FixedSizeSortedSet<Result>(length, Collections.reverseOrder(new ResultDateComparator()));
     }
@@ -86,16 +91,12 @@ public class FormRecord extends AbstractTeamRecord
 
 
     /**
-     * @param min The lowest number of form points (points from the the last
-     * n games) of all teams in the league.
-     * @param max The highest number of form points (points from the the last
-     * n games) of all teams in the league.
      * @return This team's form as a number of stars between 1 and 5.
      */
-    public int getFormStars(int min, int max)
+    public int getFormStars()
     {
-        double range = max - min;
-        double form = (getPoints() - min) / range;
+        double max = getPointsForWin() * length;
+        double form = getPoints() / max;
         return Math.max(1, (int) Math.ceil(form * 5));
     }
 

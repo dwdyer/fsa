@@ -23,15 +23,18 @@ package net.footballpredictions.footballstats.model;
  */
 public abstract class AbstractTeamRecord implements TeamRecord
 {
-    private static int pointsForWin = 3;
-    private static int pointsForDraw = 1;
+    private final int pointsForWin;
+    private final int pointsForDraw;
 
     private final Team team;
     private int pointsAdjustment = 0;
 
-    protected AbstractTeamRecord(Team team)
+
+    protected AbstractTeamRecord(Team team, int pointsForWin, int pointsForDraw)
     {
         this.team = team;
+        this.pointsForWin = pointsForWin;
+        this.pointsForDraw = pointsForDraw;
     }
 
 
@@ -98,6 +101,24 @@ public abstract class AbstractTeamRecord implements TeamRecord
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
+    public int getPointsForWin()
+    {
+        return pointsForWin;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public int getPointsForDraw()
+    {
+        return pointsForDraw;
+    }
+
+    
     /**
      * Over-ride equals.  Records are equal if the teams are the same.
      */

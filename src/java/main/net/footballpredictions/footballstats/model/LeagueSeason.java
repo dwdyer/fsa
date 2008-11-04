@@ -70,7 +70,9 @@ public final class LeagueSeason
         this.teamNames = dataProvider.getTeams();
         for (String teamName : teamNames)
         {
-            teamMappings.put(teamName, new Team(teamName));
+            teamMappings.put(teamName, new Team(teamName,
+                                                metaData.getPointsForWin(),
+                                                metaData.getPointsForDraw()));
         }
 
         List<Result> results = dataProvider.getResults();

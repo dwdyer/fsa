@@ -46,17 +46,30 @@ public final class Team
     private int lowestCrowd;
     private int highestCrowd;
     private int aggregateCrowd;
-    
+
+
     /**
      * Constructor, sets name.  All other data is added via the addResult method later.
      * @param name The name of the team.
      */
     public Team(String name)
     {
+        this(name, 3, 1);
+    }
+
+
+    /**
+     * Constructor, sets name.  All other data is added via the addResult method later.
+     * @param name The name of the team.
+     * @param pointsForWin The number of points awarded for each win.
+     * @param pointsForDraw The number of points awarded for each draw.
+     */
+    public Team(String name, int pointsForWin, int pointsForDraw)
+    {
         this.name = name;
-        this.homeRecord = new StandardRecord(this, VenueType.HOME);
-        this.awayRecord = new StandardRecord(this, VenueType.AWAY);
-        this.overallRecord = new StandardRecord(this, VenueType.BOTH);
+        this.homeRecord = new StandardRecord(this, VenueType.HOME, pointsForWin, pointsForDraw);
+        this.awayRecord = new StandardRecord(this, VenueType.AWAY, pointsForWin, pointsForDraw);
+        this.overallRecord = new StandardRecord(this, VenueType.BOTH, pointsForWin, pointsForDraw);
     }
 
 

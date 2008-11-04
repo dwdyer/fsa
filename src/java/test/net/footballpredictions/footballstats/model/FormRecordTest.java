@@ -31,7 +31,7 @@ public class FormRecordTest
     @Test
     public void testMaximumFormStars()
     {
-        FormRecord record = new FormRecord(new Team("Fulham"), 6);
+        FormRecord record = new FormRecord(new Team("Fulham"), 3, 1, 6);
         Date today = new Date();
         record.addResult(new Result("Fulham", "Hull City", 1, 0, 0, today));
         record.addResult(new Result("Fulham", "Everton", 1, 0, 0, new Date(today.getTime() + ONE_DAY)));
@@ -40,7 +40,7 @@ public class FormRecordTest
         record.addResult(new Result("Fulham", "Wigan Athletic", 1, 0, 0, new Date(today.getTime() + (ONE_DAY * 4))));
         record.addResult(new Result("Fulham", "Stoke City", 1, 0, 0, new Date(today.getTime() + (ONE_DAY * 5))));
 
-        int stars = record.getFormStars(0, 18);
+        int stars = record.getFormStars();
         assert stars == 5 : "Perfect form should be rated 5 stars, not " + stars;
     }
 
@@ -48,7 +48,7 @@ public class FormRecordTest
     @Test
     public void testMinimumFormStars()
     {
-        FormRecord record = new FormRecord(new Team("Fulham"), 6);
+        FormRecord record = new FormRecord(new Team("Fulham"), 3, 1, 6);
         Date today = new Date();
         record.addResult(new Result("Fulham", "Hull City", 0, 1, 0, today));
         record.addResult(new Result("Fulham", "Everton", 0, 1, 0, new Date(today.getTime() + ONE_DAY)));
@@ -57,7 +57,7 @@ public class FormRecordTest
         record.addResult(new Result("Fulham", "Wigan Athletic", 0, 1, 0, new Date(today.getTime() + (ONE_DAY * 4))));
         record.addResult(new Result("Fulham", "Stoke City", 0, 1, 0, new Date(today.getTime() + (ONE_DAY * 5))));
 
-        int stars = record.getFormStars(0, 18);
+        int stars = record.getFormStars();
         assert stars == 1 : "Abysmal form should be rated 1 star, not " + stars;
     }
 }
