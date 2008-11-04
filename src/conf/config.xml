@@ -18,7 +18,7 @@
       <season name="1994/95" href="england/premier/1994-1995.rlt" />
       <season name="1993/94" href="england/premier/1993-1994.rlt" />
       <season name="1992/93" href="england/premier/1992-1993.rlt" />
-      <season name="(All Time)" href="england/premier/alltime.rtl" />
+      <season name="(All Time)" href="england/premier/alltime.rlt" />
     </division>
   </league>
 </config>

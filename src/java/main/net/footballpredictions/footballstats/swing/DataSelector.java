@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.GZIPInputStream;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -219,7 +220,13 @@ class DataSelector extends JPanel
                     {
                         protected LeagueSeason performTask() throws Exception
                         {
-                            return new LeagueSeason(new RLTDataProvider(dataURL.openStream()));
+                            InputStream inputStream = dataURL.openStream();
+                            // We can also handle GZipped RLT files.
+                            if (dataURL.getFile().endsWith(".gz"))
+                            {
+                                inputStream = new GZIPInputStream(inputStream);
+                            }
+                            return new LeagueSeason(new RLTDataProvider(inputStream));
                         }
 
                         @Override
