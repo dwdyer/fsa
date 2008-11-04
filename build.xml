@@ -77,10 +77,17 @@
     </jar>
     <copy todir="${dist.dir}">
       <fileset dir="${src.dir}/conf" includes="*"/>
-      <fileset dir="${src.dir}/data" includes="**/*"/>
       <fileset dir="${src.dir}/html" includes="*"/>
       <fileset dir="." includes="*.txt"/>
     </copy>
+    <mkdir dir="${dist.dir}/data"/>
+    <copy todir="${dist.dir}/data">
+      <fileset dir="${src.dir}/data" includes="england/premier/*"/>
+    </copy>
+    <!-- GZip task doesn't allow zipping of multiple files, so use exec instead. -->
+    <exec executable="sh" dir="${dist.dir}/data/england/premier">
+      <arg line="-c 'gzip *.rlt'" />
+    </exec>
   </target>
   
   <!-- Shrinks and obfuscates the applet jar file. -->
