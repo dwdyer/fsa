@@ -32,7 +32,9 @@ class FormLabel extends JLabel
     {
         setHorizontalAlignment(RIGHT);
         setForeground(Colours.STARS);
-        setForm(3, null);
+        // Make sure preferred size is big enough to accomodate a full set of stars.
+        setForm(5, null);
+        setPreferredSize(getPreferredSize());
     }
 
     public void setForm(int stars, String form)

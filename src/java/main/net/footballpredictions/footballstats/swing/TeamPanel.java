@@ -23,6 +23,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Font;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
 import java.util.Map;
@@ -57,11 +58,11 @@ class TeamPanel extends JPanel
 
     public TeamPanel(ResourceBundle messageResources, VenueType venue)
     {
-        super(new GridLayout(1, 2, 5, 0));
+        super(new BorderLayout(5, 0));
         this.messageResources = messageResources;
         this.venue = venue;
-        add(createSummaryPanel());
-        add(createPieCharts());
+        add(createSummaryPanel(), BorderLayout.WEST);
+        add(createPieCharts(), BorderLayout.CENTER);
     }
 
 
@@ -148,6 +149,12 @@ class TeamPanel extends JPanel
     }
 
 
+    /**
+     * Generate and display notes containing interesting facts about the team's form.
+     * @param overallSequences Interesting sequences involving all matches.
+     * @param venueSequences Interesting sequences involving only home or away matches
+     * as appropriate.
+     */
     private void updateNotes(Map<SequenceType, Integer> overallSequences,
                              Map<SequenceType, Integer> venueSequences)
     {
