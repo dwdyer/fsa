@@ -23,14 +23,14 @@ package net.footballpredictions.footballstats.model;
  */
 public enum SequenceType
 {
-    UNBEATEN(3),
-    NO_WIN(3),
     WINS(3),
     DRAWS(3),
     DEFEATS(3),
+    UNBEATEN(3),
+    NO_WIN(3),
     CLEANSHEETS(3),
     GAMES_SCORED_IN(10),
-    GAMES_NOT_SCORED_IN(10);
+    GAMES_NOT_SCORED_IN(3);
 
     private final int interestLevel;
 

@@ -75,9 +75,9 @@
     <jar jarfile="${dist.dir}/${project.jar}" basedir="${classes.dir}/main">
       <fileset dir="${src.dir}/java/main" includes="**/*.properties" />
     </jar>
-    <copy todir="${dist.dir}" flatten="true">
+    <copy todir="${dist.dir}">
       <fileset dir="${src.dir}/conf" includes="*"/>
-      <fileset dir="${src.dir}/data" includes="*"/>
+      <fileset dir="${src.dir}/data" includes="**/*"/>
       <fileset dir="${src.dir}/html" includes="*"/>
       <fileset dir="." includes="*.txt"/>
     </copy>

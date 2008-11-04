@@ -1,18 +1,19 @@
 <config>
   <league name="England">
     <division name="Premier League">
-      <season name="2008/09" href="englishpremiership0809.rlt" />
-      <season name="2007/08" href="englishpremiership0708.rlt" />
-      <season name="2006/07" href="englishpremiership0607.rlt" />
-      <season name="2005/06" href="englishpremiership0506.rlt" />
-      <season name="2004/05" href="englishpremiership0405.rlt" />
-      <season name="2003/04" href="englishpremiership0304.rlt" />
-      <season name="2002/03" href="englishpremiership0203.rlt" />
-      <season name="2001/02" href="englishpremiership0102.rlt" />
-      <season name="2000/01" href="englishpremiership0001.rlt" />
-      <season name="1999/00" href="englishpremiership9900.rlt" />
-      <season name="1998/99" href="englishpremiership9899.rlt" />
-      <season name="1997/98" href="englishpremiership9798.rlt" />
+      <season name="2008/09" href="england/premier/2008-2009.rlt" />
+      <season name="2007/08" href="england/premier/2007-2008.rlt" />
+      <season name="2006/07" href="england/premier/2006-2007.rlt" />
+      <season name="2005/06" href="england/premier/2005-2006.rlt" />
+      <season name="2004/05" href="england/premier/2004-2005.rlt" />
+      <season name="2003/04" href="england/premier/2003-2004.rlt" />
+      <season name="2002/03" href="england/premier/2002-2003.rlt" />
+      <season name="2001/02" href="england/premier/2001-2002.rlt" />
+      <season name="2000/01" href="england/premier/2000-2001.rlt" />
+      <season name="1999/00" href="england/premier/1999-2000.rlt" />
+      <season name="1998/99" href="england/premier/1998-1999.rlt" />
+      <season name="1997/98" href="england/premier/1997-1998.rlt" />
+      <season name="1996/97" href="england/premier/1996-1997.rlt" />
     </division>
   </league>
 </config>
