@@ -90,7 +90,7 @@ public class HeadToHeadPanel extends JPanel implements DataListener
 
     private JComponent createTeamsPanel()
     {
-        JPanel teamsPanel = new JPanel(new GridLayout(1, 2, 5, 0));
+        JPanel teamsPanel = new JPanel(new GridLayout(1, 2));
         homeTeamPanel = new TeamPanel(messageResources, VenueType.HOME);
         awayTeamPanel = new TeamPanel(messageResources, VenueType.AWAY);
         teamsPanel.add(homeTeamPanel);

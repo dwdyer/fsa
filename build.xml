@@ -126,7 +126,7 @@
   <target name="release" depends="test, obfuscate" description="Zips files ready for release.">
     <mkdir dir="${release.dir}" />
     <zip destfile="${release.dir}/${release.zip}">
-      <fileset dir="${dist.dir}" includes="*"/>
+      <fileset dir="${dist.dir}" includes="**/*"/>
     </zip>
   </target>
 

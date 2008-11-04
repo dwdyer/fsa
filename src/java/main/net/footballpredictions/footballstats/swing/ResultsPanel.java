@@ -149,6 +149,7 @@ public class ResultsPanel extends JPanel implements DataListener
         resultsTable.setDefaultRenderer(String.class, new TableRenderer());
         resultsTable.setDefaultRenderer(Date.class, new DateRenderer(dateFormat));
         resultsTable.setDefaultRenderer(Result.class, new ScoreRenderer());
+        resultsTable.setShowGrid(false);
         return new JScrollPane(resultsTable);
     }
 

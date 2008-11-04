@@ -69,6 +69,7 @@ public class LeagueTablePanel extends JPanel implements DataListener
     private JComponent createTable()
     {
         leagueTable.setIntercellSpacing(new Dimension(0, 1));
+        leagueTable.setShowGrid(false);
         return new JScrollPane(leagueTable);
     }
 

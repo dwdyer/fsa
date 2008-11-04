@@ -27,12 +27,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.swing.BorderFactory;
 import javax.swing.JApplet;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.BorderFactory;
+import javax.swing.UIManager;
 
 /**
  * This class provides football stats for a web page as a Swing applet.
@@ -58,6 +59,17 @@ public final class FootballStatsApplet extends JApplet
     {
         System.out.println("Initialising applet...");
 
+        try
+        {
+            // Attempt to set a native look-and-feel.
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (Exception ex)
+        {
+            // Won't happen, we're loading a known look-and-feel.
+            ex.printStackTrace();
+        }
+        
         try
         {
             URL configURL = new URL(getDocumentBase(), getParameter("config.url"));

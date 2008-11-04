@@ -93,6 +93,8 @@ public class SequencesPanel extends JPanel implements DataListener
     private JComponent createTables()
     {
         JPanel container = new JPanel(new GridLayout(1, 2));
+        currentSequenceTable.setShowGrid(false);
+        bestSequenceTable.setShowGrid(false);
         container.add(createTablePanel(currentSequenceTable, messageResources.getString("sequences.current")));
         container.add(createTablePanel(bestSequenceTable, messageResources.getString("sequences.season")));
         return container;

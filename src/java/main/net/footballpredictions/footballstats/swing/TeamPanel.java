@@ -18,7 +18,6 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -26,6 +25,7 @@ import java.awt.GridLayout;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -60,6 +60,7 @@ class TeamPanel extends JPanel
         this.venue = venue;
         add(createSummaryPanel(), BorderLayout.WEST);
         add(createPieCharts(), BorderLayout.CENTER);
+        setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
     }
 
 
