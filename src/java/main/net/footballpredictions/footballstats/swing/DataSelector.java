@@ -17,6 +17,7 @@
 // ============================================================================
 package net.footballpredictions.footballstats.swing;
 
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -33,11 +34,11 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathFactory;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import net.footballpredictions.footballstats.data.RLTDataProvider;
 import net.footballpredictions.footballstats.model.LeagueSeason;
 import org.w3c.dom.Document;
@@ -72,7 +73,7 @@ class DataSelector extends JPanel
         // Set component names to aid manipulation from FEST unit tests.
         leagueCombo.setName("LeagueCombo");
         divisionCombo.setName("DivisionCombo");
-        seasonCombo.setName("SeasonCombo");
+        seasonCombo.setName("SeasonCombo");        
     }
 
 
@@ -215,7 +216,7 @@ class DataSelector extends JPanel
                     String selectedSeason = (String) itemEvent.getItem();
 
                     final URL dataURL = leagues.get(selectedLeague).get(selectedDivision).get(selectedSeason);
-
+                    getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                     new SwingBackgroundTask<LeagueSeason>()
                     {
                         protected LeagueSeason performTask() throws Exception
@@ -238,6 +239,7 @@ class DataSelector extends JPanel
                                 {
                                     listener.setLeagueData(data);
                                 }
+                                getTopLevelAncestor().setCursor(null);
                             }
                         }
                     }.execute();

@@ -1,42 +1,58 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EB" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-  <html>
-    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <meta name="author" content="Daniel Dyer" />
-      <title>Football Statistics Applet - Demo Page</title>
-    </head>
-    <body>
-
-      <div style="text-align: center;">
-        <!-- Begin FSA code.  The nested object tags are necessary to work in both IE (inner tag) and Firefox
-             (outer tag).  Opera will work with either.  It should not be necessary to modify this code.
-             Configuration is achieved by editing the fsa.properties file. -->
-        <!--[if !IE]>-->
-        <object classid="java:net.footballpredictions.footballstats.swing.FootballStatsApplet.class" 
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Daniel Dyer" />
+    <title>Football Statistics Applet - Demo Page - FA Premier League</title>
+  </head>
+  <body>
+    <h1>FA Premier League Statistics</h1>
+    <p>
+      This page provides historical data and statistics for the
+      <a href="http://www.premierleague.com/">FA Premier League</a>.
+      By default it shows the league table, results, form guide and graphs for the current season.
+      However, by changing the value of the "Season" drop-down box you can view data from
+      any year.  Alternatively, by selecting "(All Time)" from the "Season" drop-down, you
+      can view the all-time Premier League table and statistics.  The data files include
+      every match played since the competition's commencement on 15th August 1992.
+    </p>
+    <div style="text-align: center;">
+      <!-- Begin FSA code.  The nested object tags are necessary to work in both IE (inner tag) and Firefox
+           (outer tag).  Opera will work with either.  It should not be necessary to modify this code.
+           Configuration is achieved by editing the fsa.properties file. -->
+      <!--[if !IE]>-->
+      <object classid="java:net.footballpredictions.footballstats.swing.FootballStatsApplet.class"
+              type="application/x-java-applet"
+              archive="fsa.jar"
+              height="500"
+              width="700"
+              standby="Loading the Football Statistics Applet...">
+        <param name="config.url" value="config.xml" />
+        <param name="locale" value="en" />
+      <!--<![endif]-->
+        <object classid="clsid:08B0E5C0-4FCB-11CF-AAA5-00401C608501"
                 type="application/x-java-applet"
-                archive="fsa.jar" 
-                height="480"
-                width="680"
+                archive="fsa.jar"
+                height="500"
+                width="700"
                 standby="Loading the Football Statistics Applet...">
+          <param name="code" value="net.footballpredictions.footballstats.swing.FootballStatsApplet.class" />
           <param name="config.url" value="config.xml" />
           <param name="locale" value="en" />
-        <!--<![endif]-->
-          <object classid="clsid:08B0E5C0-4FCB-11CF-AAA5-00401C608501"
-                  type="application/x-java-applet"
-                  archive="fsa.jar" 
-                  height="480"
-                  width="680"
-                  standby="Loading the Football Statistics Applet...">
-
-            <param name="code" value="net.footballpredictions.footballstats.swing.FootballStatsApplet.class" />
-            <param name="config.url" value="config.xml" />
-            <param name="locale" value="en" />
-          </object>
-        <!--[if !IE]>-->
         </object>
-        <!--<![endif]-->
-        <!-- End FSA code. -->
-      </div>            
-    </body>
+      <!--[if !IE]>-->
+      </object>
+      <!--<![endif]-->
+      <!-- End FSA code. -->
+    </div>
+    <p>
+      This page is intended to demonstrate the capabilities of the
+      <a href="http://fsa.dev.java.net">Football Statistics Applet</a>.  The version of the
+      software embedded on this page is a preview build of version 3.0.  It is still under
+      active development.  If you find any problems with it, or have any suggestions for
+      enhancements please use the <a href="https://fsa.dev.java.net/servlets/ProjectIssues">issue
+      tracker</a> or e-mail <tt>dan at uncommons dot org</tt>.
+    </p>
+  </body>
 </html>
