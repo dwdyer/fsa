@@ -104,6 +104,15 @@ public abstract class AbstractTeamRecord implements TeamRecord
     /**
      * {@inheritDoc}
      */
+    public int getPointsAdjustment()
+    {
+        return pointsAdjustment;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     public int getPointsForWin()
     {
         return pointsForWin;

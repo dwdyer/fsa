@@ -111,7 +111,7 @@ class LeagueTableModel extends AbstractTableModel
         switch (column)
         {
             case POSITION_COLUMN: return row + 1;
-            case TEAM_COLUMN: return team.getName();
+            case TEAM_COLUMN: return team.getName() + getPointsAdjustmentString(team);
             case PLAYED_COLUMN: return team.getPlayed();
             case WINS_COLUMN: return team.getWon();
             case DRAWS_COLUMN: return team.getDrawn();
@@ -124,6 +124,29 @@ class LeagueTableModel extends AbstractTableModel
             case POINTS_DROPPED_COLUMN: return team.getDroppedPoints();
             case FORM_COLUMN: return team.getForm(); 
             default: throw new IllegalArgumentException("Invalid column index: " + column);
+        }
+    }
+
+
+    private String getPointsAdjustmentString(TeamRecord team)
+    {
+        int adjustment = team.getPointsAdjustment();
+        if (adjustment == 0)
+        {
+            return "";
+        }
+        else
+        {
+            StringBuilder buffer = new StringBuilder();
+            buffer.append(" (");
+            if (adjustment > 0)
+            {
+                buffer.append('+');
+            }
+            buffer.append(adjustment);
+            buffer.append(messageResources.getString("table.points").toLowerCase());
+            buffer.append(")");
+            return buffer.toString();
         }
     }
 }

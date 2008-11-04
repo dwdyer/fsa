@@ -117,6 +117,12 @@ public interface TeamRecord
     void adjustPoints(int amount);
 
     /**
+     * @return Any adjustment made to a team's points total (i.e. points awarded or
+     * deducted for infringements of the rules).
+     */
+    int getPointsAdjustment();
+
+    /**
      * @return The number of points awarded for each win.
      */
     int getPointsForWin();
