@@ -67,28 +67,22 @@ class ScoreRenderer extends TableRenderer
                                                                         column);
         component.setFont(FIXED_WIDTH_FONT);
         component.setHorizontalAlignment(JLabel.CENTER);
-        component.setBackground(getColour(result));
+        if (!isSelected) // Don't over-ride the background colour of selected cells.
+        {
+            component.setBackground(getColour(result));
+        }
         return component;
     }
 
 
     private String resultToString(Result result)
     {
+        // If no team is specified, render the home team's score first, otherwise
+        // render the specified team's score first.
         StringBuilder buffer = new StringBuilder();
-        if (result.getHomeGoals() < 10)
-        {
-            buffer.append(' ');
-        }
-        buffer.append(result.getHomeGoals());
-
+        buffer.append(team == null ? result.getHomeGoals() : result.getGoalsFor(team));
         buffer.append(" - ");
-
-        buffer.append(result.getAwayGoals());
-        if (result.getAwayGoals() < 10)
-        {
-            buffer.append(' ');
-        }
-
+        buffer.append(team == null ? result.getAwayGoals() : result.getGoalsAgainst(team));
         return buffer.toString();
     }
 

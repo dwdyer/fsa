@@ -56,7 +56,7 @@ public class ResultsPanel extends JPanel implements DataListener
 
     private LeagueSeason data = null;
 
-    private final JTable resultsTable = new JTable();
+    private JTable resultsTable;
     private EnumComboBox<VenueType> venueCombo;
     private JRadioButton dateOption;
     private JRadioButton teamOption;
@@ -146,10 +146,7 @@ public class ResultsPanel extends JPanel implements DataListener
 
     private JComponent createTable()
     {
-        resultsTable.setDefaultRenderer(String.class, new TableRenderer());
-        resultsTable.setDefaultRenderer(Date.class, new DateRenderer(dateFormat));
-        resultsTable.setDefaultRenderer(Result.class, new ScoreRenderer());
-        resultsTable.setShowGrid(false);
+        resultsTable = new StatisticsTable(messageResources);
         return new JScrollPane(resultsTable);
     }
 

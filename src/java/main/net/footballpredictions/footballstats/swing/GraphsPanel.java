@@ -110,6 +110,10 @@ public class GraphsPanel extends JPanel implements DataListener
                 {
                     changeGraph();
                 }
+                else // Don't let there be no row selected.
+                {
+                    teamsList.setSelectedIndex(listSelectionEvent.getFirstIndex());
+                }
             }
         });
         JScrollPane scroller = new JScrollPane(teamsList);

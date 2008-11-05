@@ -19,8 +19,6 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -78,30 +76,15 @@ class TeamPanel extends JPanel
 
     private JComponent createSummaryPanel()
     {
-        JPanel summary = new JPanel(new GridBagLayout());
-        GridBagConstraints labelConstraints = new GridBagConstraints();
-        labelConstraints.gridwidth = GridBagConstraints.RELATIVE;
-        labelConstraints.weightx = 1;
-        labelConstraints.fill = GridBagConstraints.HORIZONTAL;
-        labelConstraints.anchor = GridBagConstraints.NORTHWEST;
-        GridBagConstraints valueConstraints = (GridBagConstraints) labelConstraints.clone();
-        valueConstraints.gridwidth = GridBagConstraints.REMAINDER;
-        valueConstraints.weightx = 0;
-        summary.add(new JLabel(messageResources.getString("headToHead.played")), labelConstraints);
-        summary.add(matchesLabel, valueConstraints);
-        summary.add(new JLabel(messageResources.getString("headToHead.points")), labelConstraints);
+        LabelledComponentsPanel summary = new LabelledComponentsPanel();
+        summary.addLabelledComponent(messageResources.getString("headToHead.played"), matchesLabel);
         pointsLabel.setFont(pointsLabel.getFont().deriveFont(Font.BOLD));
-        summary.add(pointsLabel, valueConstraints);
-        summary.add(new JLabel(messageResources.getString("headToHead.goalDifference")), labelConstraints);
-        summary.add(goalDifferenceLabel, valueConstraints);
-        summary.add(new JLabel(messageResources.getString("headToHead.leaguePosition")), labelConstraints);
-        summary.add(positionLabel, valueConstraints);
-        summary.add(new JLabel(messageResources.getString("headToHead.form")), labelConstraints);
-        summary.add(formLabel, valueConstraints);
-        JPanel wrapper = new JPanel(new BorderLayout(0, 10));
-        wrapper.add(summary, BorderLayout.NORTH);
-        wrapper.add(createNotes(), BorderLayout.CENTER);
-        return wrapper;
+        summary.addLabelledComponent(messageResources.getString("headToHead.points"), pointsLabel);
+        summary.addLabelledComponent(messageResources.getString("headToHead.goalDifference"), goalDifferenceLabel);
+        summary.addLabelledComponent(messageResources.getString("headToHead.leaguePosition"), positionLabel);
+        summary.addLabelledComponent(messageResources.getString("headToHead.form"), formLabel);
+        summary.add(createNotes(), BorderLayout.CENTER);
+        return summary;
     }
 
 

@@ -22,19 +22,25 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.SortedSet;
+import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.TableColumnModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.model.Result;
 import net.footballpredictions.footballstats.model.SequenceType;
-import net.footballpredictions.footballstats.model.VenueType;
 import net.footballpredictions.footballstats.model.StandardRecord;
+import net.footballpredictions.footballstats.model.VenueType;
 
 /**
  * Displays tables of sequences (consecutive wins, games without defeat, etc.)
@@ -45,11 +51,13 @@ public class SequencesPanel extends JPanel implements DataListener
     private final ResourceBundle messageResources;
 
     private LeagueSeason data = null;
-
-    private final JTable currentSequenceTable = new JTable();
-    private final JTable bestSequenceTable = new JTable();
+    
+    private JTable teamsTable;
+    private JTable matchesTable;
     private EnumComboBox<SequenceType> sequenceTypeCombo;
     private EnumComboBox<VenueType> venueCombo;
+    private JRadioButton currentOption;
+    private JRadioButton longestOption;
 
     /**
      * @param messageResources Internationalised messages for used by the GUI.
@@ -59,7 +67,10 @@ public class SequencesPanel extends JPanel implements DataListener
         super(new BorderLayout());
         this.messageResources = messageResources;
         add(createControls(), BorderLayout.NORTH);
-        add(createTables(), BorderLayout.CENTER);
+        JPanel main = new JPanel(new GridLayout(1, 2));
+        main.add(createTeamsPanel());
+        main.add(createMatchesPanel());
+        add(main, BorderLayout.CENTER);
     }
 
 
@@ -73,7 +84,7 @@ public class SequencesPanel extends JPanel implements DataListener
             {
                 if (itemEvent.getStateChange() == ItemEvent.SELECTED)
                 {
-                    changeTables();
+                    updateTeamsTable();
                 }
             }
         };
@@ -86,31 +97,50 @@ public class SequencesPanel extends JPanel implements DataListener
         venueCombo.addItemListener(itemListener);
         panel.add(venueCombo);
 
+        currentOption = new JRadioButton(messageResources.getString("sequences.current"), true);
+        currentOption.addItemListener(itemListener);
+        longestOption = new JRadioButton(messageResources.getString("sequences.longest"), false);
+        ButtonGroup group = new ButtonGroup();
+        longestOption.addItemListener(itemListener);
+        group.add(currentOption);
+        group.add(longestOption);
+        panel.add(currentOption);
+        panel.add(longestOption);
+
         return panel;
     }
 
 
-    private JComponent createTables()
+    private JComponent createTeamsPanel()
     {
-        JPanel container = new JPanel(new GridLayout(1, 2));
-        currentSequenceTable.setShowGrid(false);
-        bestSequenceTable.setShowGrid(false);
-        container.add(createTablePanel(currentSequenceTable, messageResources.getString("sequences.current")));
-        container.add(createTablePanel(bestSequenceTable, messageResources.getString("sequences.season")));
-        return container;
+        teamsTable = new StatisticsTable(messageResources);
+        teamsTable.setRowSelectionAllowed(true);
+        teamsTable.setColumnSelectionAllowed(false);
+        teamsTable.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
+            public void valueChanged(ListSelectionEvent listSelectionEvent)
+            {
+                if (teamsTable.getSelectedRow() >= 0)
+                {
+                    updateMatchesTable();
+                }
+                else // Don't let there be no row selected.
+                {
+                    teamsTable.setRowSelectionInterval(listSelectionEvent.getFirstIndex(),
+                                                       listSelectionEvent.getFirstIndex());
+                }
+            }
+        });
+        return new JScrollPane(teamsTable);
     }
 
 
-    private JComponent createTablePanel(JTable table, String title)
+    private JComponent createMatchesPanel()
     {
-        JPanel tablePanel = new JPanel(new BorderLayout());
-        tablePanel.add(new JLabel(title, JLabel.CENTER), BorderLayout.NORTH);
-        tablePanel.add(new JScrollPane(table));
-        TableRenderer renderer = new TableRenderer();
-        table.setDefaultRenderer(Object.class, renderer);
-        table.setDefaultRenderer(String.class, renderer);
-        table.setDefaultRenderer(Integer.class, renderer);
-        return tablePanel;
+        matchesTable = new StatisticsTable(messageResources);
+        JScrollPane scroller = new JScrollPane(matchesTable);
+        scroller.setBackground(null);
+        return scroller;
     }
 
 
@@ -120,39 +150,48 @@ public class SequencesPanel extends JPanel implements DataListener
     public void setLeagueData(LeagueSeason data)
     {
         this.data = data;
-        changeTables();
+        updateTeamsTable();
     }
 
 
-    private void changeTables()
+    private void updateTeamsTable()
     {
         SequenceType type = (SequenceType) sequenceTypeCombo.getSelectedItem();
         VenueType venue = (VenueType) venueCombo.getSelectedItem();
+        boolean current = currentOption.isSelected();
 
-        SortedSet<StandardRecord> modelData = data.getSequenceTable(type, venue, true);
-        updateTable(currentSequenceTable, modelData, type, true);
-
-        modelData = data.getSequenceTable(type, venue, false);
-        updateTable(bestSequenceTable, modelData, type, false);
-    }
-
-
-    private void updateTable(JTable table,
-                             SortedSet<StandardRecord> modelData,
-                             SequenceType type,
-                             boolean current)
-    {
-        table.setModel(new SequenceTableModel(modelData, type, current, messageResources));
-        TableColumnModel columnModel = table.getColumnModel();
-
+        // Update teams table.
+        SortedSet<StandardRecord> teamData = data.getSequenceTable(type, venue, current);
+        teamsTable.setModel(new SequenceTableModel(teamData, type, current, messageResources));
+        TableColumnModel columnModel = teamsTable.getColumnModel();
         for (int i = 0; i < columnModel.getColumnCount(); i++)
         {
             TableColumn column = columnModel.getColumn(i);
             // Team name column should be much wider than others (others should all be equal).
             column.setPreferredWidth(i == SequenceTableModel.TEAM_COLUMN ? 125 : 10);
         }
-
         TableColumn positionColumn = columnModel.getColumn(SequenceTableModel.POSITION_COLUMN);
         positionColumn.setCellRenderer(new PositionRenderer(data.getMetaData(), false));
+        teamsTable.setRowSelectionInterval(0, 0); // Select first row by default.
+    }
+
+
+    private void updateMatchesTable()
+    {
+        int row = teamsTable.getSelectedRow();
+        String team = (String) teamsTable.getModel().getValueAt(row, SequenceTableModel.TEAM_COLUMN);
+        SequenceType type = (SequenceType) sequenceTypeCombo.getSelectedItem();
+        VenueType venue = (VenueType) venueCombo.getSelectedItem();
+        boolean current = currentOption.isSelected();
+
+        StandardRecord record = data.getTeam(team).getRecord(venue);
+        List<Result> sequence = current ? record.getCurrentSequence(type) : record.getBestSequence(type);
+        matchesTable.setModel(new TeamResultsTableModel(sequence, team, messageResources));
+        TableColumnModel columnModel = matchesTable.getColumnModel();
+        TableColumn scoreColumn = columnModel.getColumn(TeamResultsTableModel.SCORE_COLUMN);
+        scoreColumn.setPreferredWidth(50);
+        scoreColumn.setCellRenderer(new ScoreRenderer(team));
+        columnModel.getColumn(TeamResultsTableModel.DATE_COLUMN).setPreferredWidth(115);
+        columnModel.getColumn(TeamResultsTableModel.OPPOSITION_COLUMN).setPreferredWidth(185);
     }
 }

@@ -28,7 +28,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
 /**
- * Plot points earned against number of matches played for one or more teams.
+ * Displays wins, draws and defeats for an individual team as a pie chart.
  * @author Daniel Dyer
  */
 class ResultsPieChart extends ChartPanel
@@ -46,7 +46,7 @@ class ResultsPieChart extends ChartPanel
 
 
     /**
-     * Plot points earned against number of matches played.
+     * Updates the relative sizes of the pie chart segments.
      */
     public void updateGraph(int won, int drawn, int lost)
     {
@@ -62,9 +62,6 @@ class ResultsPieChart extends ChartPanel
                                                        true, // Tooltips.
                                                        false); // URLs.
         PiePlot plot = (PiePlot) chart.getPlot();
-        plot.setCircular(true);
-        plot.setLabelGap(-0.1);
-        plot.setLabelLinksVisible(false);
         plot.setInteriorGap(0);
         plot.setSectionPaint(0, Colours.WIN);
         plot.setSectionPaint(1, Colours.DRAW);

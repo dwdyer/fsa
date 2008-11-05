@@ -18,7 +18,6 @@
 package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -46,7 +45,7 @@ public class LeagueTablePanel extends JPanel implements DataListener
 
     private LeagueSeason data = null;
 
-    private final JTable leagueTable = new JTable();
+    private JTable leagueTable;
     private EnumComboBox<TableType> tableTypeCombo;
     private EnumComboBox<VenueType> venueCombo;
 
@@ -68,8 +67,7 @@ public class LeagueTablePanel extends JPanel implements DataListener
 
     private JComponent createTable()
     {
-        leagueTable.setIntercellSpacing(new Dimension(0, 1));
-        leagueTable.setShowGrid(false);
+        leagueTable = new StatisticsTable(messageResources);
         return new JScrollPane(leagueTable);
     }
 
@@ -154,6 +152,7 @@ public class LeagueTablePanel extends JPanel implements DataListener
 
         TableRenderer renderer = new TableRenderer(data.getMetaData(), !form);
         leagueTable.setDefaultRenderer(Object.class, renderer);
+        leagueTable.setDefaultRenderer(String.class, renderer);
         leagueTable.setDefaultRenderer(Number.class, renderer);
         leagueTable.setDefaultRenderer(Double.class, renderer);
         TableColumn positionColumn = columnModel.getColumn(LeagueTableModel.POSITION_COLUMN);

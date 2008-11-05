@@ -26,7 +26,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.footballpredictions.footballstats.model.LeagueMetaData;
 
 /**
- * Default renderer for cells in a statistics table.  Never renders selection or
+ * Default renderer for cells in a statistics table.  Never renders
  * focus and deals with optional row highlighting for configured 'zones'.
  * @author Daniel Dyer
  */
@@ -67,11 +67,14 @@ class TableRenderer extends DefaultTableCellRenderer
         Object formattedValue = value instanceof Double ? DECIMAL_FORMAT.format(value) : value;
         JLabel component = (JLabel) super.getTableCellRendererComponent(table,
                                                                         formattedValue,
-                                                                        false, // Never render selection.
+                                                                        isSelected, // Never render selection.
                                                                         false, // Never render focus.
                                                                         row,
                                                                         column);
-        component.setBackground(getRowColour(row));
+        if (!isSelected) // Don't over-ride the background colour of selected cells.
+        {
+            component.setBackground(getRowColour(row));
+        }
         component.setHorizontalAlignment(value instanceof Number ? JLabel.RIGHT : JLabel.LEFT);
 
         return component;
