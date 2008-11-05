@@ -128,7 +128,7 @@ public class LeagueTablePanel extends JPanel implements DataListener
             // Team name column should be much wider than others (others should all be equal).
             column.setPreferredWidth(i == LeagueTableModel.TEAM_COLUMN ? 125 : 10);
         }
-
+        
         TableColumn averageColumn = columnModel.getColumn(LeagueTableModel.AVERAGE_POINTS_COLUMN);
         averageColumn.setPreferredWidth(30);
         TableColumn droppedColumn = columnModel.getColumn(LeagueTableModel.POINTS_DROPPED_COLUMN);
@@ -150,7 +150,7 @@ public class LeagueTablePanel extends JPanel implements DataListener
             columnModel.removeColumn(droppedColumn);
         }
 
-        TableRenderer renderer = new TableRenderer(data.getMetaData(), !form);
+        TableRenderer renderer = new TableRenderer(data.getMetaData(), !form, false);
         leagueTable.setDefaultRenderer(Object.class, renderer);
         leagueTable.setDefaultRenderer(String.class, renderer);
         leagueTable.setDefaultRenderer(Number.class, renderer);
@@ -160,6 +160,15 @@ public class LeagueTablePanel extends JPanel implements DataListener
         TableColumn goalDifferenceColumn = columnModel.getColumn(LeagueTableModel.GOAL_DIFFERENCE_COLUMN);
         goalDifferenceColumn.setCellRenderer(new GoalDifferenceRenderer(data.getMetaData(), !form));
         formColumn.setCellRenderer(new FormRenderer(data.getMetaData(), !form));
+
+        // Render the most significant column with bold text.
+        TableRenderer boldRenderer = new TableRenderer(data.getMetaData(), !form, true);
+        if (type == TableType.POINTS_WON)
+        {
+            columnModel.getColumn(LeagueTableModel.POINTS_COLUMN).setCellRenderer(boldRenderer);
+        }
+        averageColumn.setCellRenderer(boldRenderer);
+        droppedColumn.setCellRenderer(boldRenderer);
     }
 
 

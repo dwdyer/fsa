@@ -19,6 +19,7 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.text.DecimalFormat;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -36,11 +37,12 @@ class TableRenderer extends DefaultTableCellRenderer
 
     private final LeagueMetaData metadata;
     private final boolean highlightZones;
+    private final Font font;
 
 
     public TableRenderer()
     {
-        this(null, false);
+        this(null, false, false);
     }
 
     
@@ -48,11 +50,13 @@ class TableRenderer extends DefaultTableCellRenderer
      * @param metadata League metadata is used to determine row colours.
      * @param highlightZones Whether or not to render promotion and relegation zones
      * in different colours to other positions.
+     * @param bold Whether or not to render the text in a bold font.
      */
-    public TableRenderer(LeagueMetaData metadata, boolean highlightZones)
+    public TableRenderer(LeagueMetaData metadata, boolean highlightZones, boolean bold)
     {
         this.metadata = metadata;
         this.highlightZones = highlightZones;
+        this.font = bold ? getFont().deriveFont(Font.BOLD) : getFont();
     }
 
 
@@ -76,6 +80,7 @@ class TableRenderer extends DefaultTableCellRenderer
             component.setBackground(getRowColour(row));
         }
         component.setHorizontalAlignment(value instanceof Number ? JLabel.RIGHT : JLabel.LEFT);
+        component.setFont(font);
 
         return component;
     }

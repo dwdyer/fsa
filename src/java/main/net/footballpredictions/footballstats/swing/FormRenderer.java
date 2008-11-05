@@ -38,7 +38,7 @@ class FormRenderer extends TableRenderer
      */
     public FormRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
-        super(metadata, highlightZones);
+        super(metadata, highlightZones, false);
     }
 
 

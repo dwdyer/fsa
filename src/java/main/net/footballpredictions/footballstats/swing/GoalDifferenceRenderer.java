@@ -35,7 +35,7 @@ class GoalDifferenceRenderer extends TableRenderer
      */
     public GoalDifferenceRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
-        super(metadata, highlightZones);
+        super(metadata, highlightZones, false);
     }
 
 

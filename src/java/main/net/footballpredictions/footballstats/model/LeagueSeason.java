@@ -291,17 +291,24 @@ public final class LeagueSeason
 
 
     /**
-     * @param sequence Which sequence to use.
+     * @param type Which sequence to use.
      * @param where Whether the sequence is for home games, away games or both.
      * @param current Whether to use the current value of the sequence or the season's best sequence.
      * @return A set of teams, sorted in descending order of the sequence specified by the above parameters.
      */
-    public SortedSet<StandardRecord> getSequenceTable(SequenceType sequence, VenueType where, boolean current)
+    public SortedSet<StandardRecord> getSequenceTable(SequenceType type,
+                                                      VenueType where,
+                                                      boolean current)
     {
-        SortedSet<StandardRecord> sequenceTable = new TreeSet<StandardRecord>(new SequenceComparator(sequence, current));
+        SortedSet<StandardRecord> sequenceTable = new TreeSet<StandardRecord>(new SequenceComparator(type, current));
         for (Team team : teamMappings.values())
         {
-            sequenceTable.add(team.getRecord(where));
+            StandardRecord record = team.getRecord(where);
+            List<Result> sequence = current ? record.getCurrentSequence(type) : record.getBestSequence(type);
+            if (!sequence.isEmpty()) // Don't include teams with zero-length sequences.
+            {
+                sequenceTable.add(record);
+            }
         }
         return sequenceTable;
     }

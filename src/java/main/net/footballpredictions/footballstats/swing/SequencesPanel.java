@@ -66,7 +66,7 @@ public class SequencesPanel extends JPanel implements DataListener
         super(new BorderLayout());
         this.messageResources = messageResources;
         add(createControls(), BorderLayout.NORTH);
-        JPanel main = new JPanel(new RatioLayout(0.4));
+        JPanel main = new JPanel(new RatioLayout(0.45));
         main.add(createTeamsPanel());
         main.add(createMatchesPanel());
         add(main, BorderLayout.CENTER);
@@ -99,8 +99,8 @@ public class SequencesPanel extends JPanel implements DataListener
         currentOption = new JRadioButton(messageResources.getString("sequences.current"), true);
         currentOption.addItemListener(itemListener);
         longestOption = new JRadioButton(messageResources.getString("sequences.longest"), false);
-        ButtonGroup group = new ButtonGroup();
         longestOption.addItemListener(itemListener);
+        ButtonGroup group = new ButtonGroup();
         group.add(currentOption);
         group.add(longestOption);
         panel.add(currentOption);
@@ -171,6 +171,8 @@ public class SequencesPanel extends JPanel implements DataListener
         }
         TableColumn positionColumn = columnModel.getColumn(SequenceTableModel.POSITION_COLUMN);
         positionColumn.setCellRenderer(new PositionRenderer(data.getMetaData(), false));
+        TableColumn sequenceColumn = columnModel.getColumn(SequenceTableModel.SEQUENCE_COLUMN);
+        sequenceColumn.setCellRenderer(new TableRenderer(null, false, true));
         teamsTable.setRowSelectionInterval(0, 0); // Select first row by default.
     }
 

@@ -35,7 +35,7 @@ class PositionRenderer extends TableRenderer
      */
     public PositionRenderer(LeagueMetaData metadata, boolean highlightZones)
     {
-        super(metadata, highlightZones);
+        super(metadata, highlightZones, false);
     }
 
 
