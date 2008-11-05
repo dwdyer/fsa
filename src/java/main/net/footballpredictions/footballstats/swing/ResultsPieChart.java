@@ -69,7 +69,7 @@ class ResultsPieChart extends ChartPanel
         plot.setBackgroundPaint(null);
         plot.setOutlinePaint(null);
         plot.setLabelGenerator(null);
-        plot.setToolTipGenerator(new StandardPieToolTipGenerator("{0} {1} ({2})"));
+        plot.setToolTipGenerator(new StandardPieToolTipGenerator("{0} {1} ({2})"));        
         setChart(chart);
     }
 }

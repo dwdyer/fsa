@@ -55,8 +55,10 @@ public class HeadToHeadPanel extends JPanel implements DataListener
 
 
         add(createControls(), BorderLayout.NORTH);
-        add(createTeamsPanel(), BorderLayout.CENTER);
-        add(createComparisonPanel(), BorderLayout.SOUTH);
+        JPanel main = new JPanel(new RatioLayout(0.6, false));
+        main.add(createTeamsPanel());
+        main.add(createComparisonPanel());
+        add(main, BorderLayout.CENTER);
     }
 
 
@@ -102,7 +104,6 @@ public class HeadToHeadPanel extends JPanel implements DataListener
     private JComponent createComparisonPanel()
     {
         positionGraph = new LeaguePositionGraph(messageResources, RectangleEdge.RIGHT);
-        positionGraph.setPreferredSize(new Dimension(0, 150));
         return positionGraph;
     }
 

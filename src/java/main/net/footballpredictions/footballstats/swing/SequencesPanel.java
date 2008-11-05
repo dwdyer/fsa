@@ -19,7 +19,6 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
@@ -67,7 +66,7 @@ public class SequencesPanel extends JPanel implements DataListener
         super(new BorderLayout());
         this.messageResources = messageResources;
         add(createControls(), BorderLayout.NORTH);
-        JPanel main = new JPanel(new GridLayout(1, 2));
+        JPanel main = new JPanel(new RatioLayout(0.4));
         main.add(createTeamsPanel());
         main.add(createMatchesPanel());
         add(main, BorderLayout.CENTER);
@@ -191,7 +190,7 @@ public class SequencesPanel extends JPanel implements DataListener
         TableColumn scoreColumn = columnModel.getColumn(TeamResultsTableModel.SCORE_COLUMN);
         scoreColumn.setPreferredWidth(50);
         scoreColumn.setCellRenderer(new ScoreRenderer(team));
-        columnModel.getColumn(TeamResultsTableModel.DATE_COLUMN).setPreferredWidth(115);
-        columnModel.getColumn(TeamResultsTableModel.OPPOSITION_COLUMN).setPreferredWidth(185);
+        columnModel.getColumn(TeamResultsTableModel.DATE_COLUMN).setPreferredWidth(110);
+        columnModel.getColumn(TeamResultsTableModel.OPPOSITION_COLUMN).setPreferredWidth(190);
     }
 }

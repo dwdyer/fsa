@@ -53,11 +53,11 @@ class TeamPanel extends JPanel
 
     public TeamPanel(ResourceBundle messageResources, VenueType venue)
     {
-        super(new BorderLayout(5, 0));
+        super(new RatioLayout(0.55));
         this.messageResources = messageResources;
         this.venue = venue;
-        add(createSummaryPanel(), BorderLayout.WEST);
-        add(createPieCharts(), BorderLayout.CENTER);
+        add(createSummaryPanel());
+        add(createPieCharts());
         setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
     }
 
@@ -96,6 +96,7 @@ class TeamPanel extends JPanel
         notes.setEnabled(false);
         notes.setFont(new Font("Dialog", Font.PLAIN, 10));
         notes.setDisabledTextColor(Colours.NOTES);
+        notes.setBorder(BorderFactory.createEmptyBorder(10, 5, 0, 0));
         return notes;
     }
 
