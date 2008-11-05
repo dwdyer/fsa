@@ -23,7 +23,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ResourceBundle;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -57,13 +56,8 @@ public class GraphsPanel extends JPanel implements DataListener
     {
         super(new BorderLayout());
         this.messageResources = messageResources;
-        
-        JPanel inner = new JPanel(new BorderLayout());
-        inner.add(createControls(), BorderLayout.NORTH);
-
-        inner.add(createCharts(), BorderLayout.CENTER);
-        add(inner, BorderLayout.CENTER);
-
+        add(createControls(), BorderLayout.NORTH);
+        add(createCharts(), BorderLayout.CENTER);
         add(createTeamSelector(), BorderLayout.EAST);
     }
 
@@ -116,10 +110,7 @@ public class GraphsPanel extends JPanel implements DataListener
                 }
             }
         });
-        JScrollPane scroller = new JScrollPane(teamsList);
-        scroller.setBackground(null);
-        scroller.setBorder(BorderFactory.createTitledBorder(messageResources.getString("graphs.teams")));
-        return scroller;
+        return new JScrollPane(teamsList);
     }
 
 

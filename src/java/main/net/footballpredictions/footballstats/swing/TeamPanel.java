@@ -48,7 +48,8 @@ class TeamPanel extends JPanel
     private JLabel pointsLabel = new JLabel("0", JLabel.RIGHT);
     private JLabel goalDifferenceLabel = new JLabel("0", JLabel.RIGHT);
     private JLabel positionLabel = new JLabel("0", JLabel.RIGHT);
-    private FormLabel formLabel = new FormLabel();
+    private FormLabel overallFormLabel = new FormLabel();
+    private FormLabel venueFormLabel = new FormLabel();
     private final JTextArea notes = new JTextArea();
 
     public TeamPanel(ResourceBundle messageResources, VenueType venue)
@@ -82,7 +83,9 @@ class TeamPanel extends JPanel
         summary.addLabelledComponent(messageResources.getString("headToHead.points"), pointsLabel);
         summary.addLabelledComponent(messageResources.getString("headToHead.goalDifference"), goalDifferenceLabel);
         summary.addLabelledComponent(messageResources.getString("headToHead.leaguePosition"), positionLabel);
-        summary.addLabelledComponent(messageResources.getString("headToHead.form"), formLabel);
+        summary.addLabelledComponent(messageResources.getString("headToHead.overallForm"), overallFormLabel);
+        String key = venue == VenueType.HOME ? "headToHead.homeForm" : "headToHead.awayForm";
+        summary.addLabelledComponent(messageResources.getString(key), venueFormLabel);
         summary.add(createNotes(), BorderLayout.CENTER);
         return summary;
     }
@@ -104,6 +107,7 @@ class TeamPanel extends JPanel
     public void setTeam(Team team, LeagueSeason data)
     {
         StandardRecord record = team.getRecord(VenueType.BOTH);
+        StandardRecord venueRecord = team.getRecord(venue);
         matchesLabel.setText(String.valueOf(record.getPlayed()));
         pointsLabel.setText(String.valueOf(record.getPoints()));
         int goalDifference = record.getGoalDifference();
@@ -113,13 +117,15 @@ class TeamPanel extends JPanel
         // Goal difference is rendered green for positive, red for negative and black for zero.
         goalDifferenceLabel.setForeground(Colours.getNumberColour(record.getGoalDifference()));
         positionLabel.setText(String.valueOf(team.getLastLeaguePosition()));
-        int stars = record.getFormRecord().getFormStars();
-        formLabel.setForm(stars, record.getForm());
+        int overallStars = record.getFormRecord().getFormStars();
+        overallFormLabel.setForm(overallStars, record.getForm());
+        int venueStars = venueRecord.getFormRecord().getFormStars();
+        venueFormLabel.setForm(venueStars, venueRecord.getForm());
         overallPieChart.updateGraph(record.getWon(),
                                     record.getDrawn(),
                                     record.getLost());
 
-        StandardRecord venueRecord = team.getRecord(venue);
+
         venuePieChart.updateGraph(venueRecord.getWon(),
                                   venueRecord.getDrawn(),
                                   venueRecord.getLost());

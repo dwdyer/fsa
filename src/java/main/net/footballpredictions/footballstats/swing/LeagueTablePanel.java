@@ -195,6 +195,4 @@ public class LeagueTablePanel extends JPanel implements DataListener
             }
         }
     }
-
-
 }
