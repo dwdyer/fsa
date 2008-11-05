@@ -126,8 +126,12 @@ public class SequencesPanel extends JPanel implements DataListener
                 }
                 else // Don't let there be no row selected.
                 {
-                    teamsTable.setRowSelectionInterval(listSelectionEvent.getFirstIndex(),
-                                                       listSelectionEvent.getFirstIndex());
+                    int index = listSelectionEvent.getFirstIndex();
+                    if (index >= teamsTable.getRowCount())
+                    {
+                        index = 0;
+                    }
+                    teamsTable.setRowSelectionInterval(index, index);
                 }
             }
         });
