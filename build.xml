@@ -5,7 +5,7 @@
 -->
 
 <project name="fsa"
-         default="obfuscate"
+         default="dist"
          xmlns:uncommons="antlib:org.uncommons.antlib"
          basedir=".">
 
@@ -46,6 +46,7 @@
     <delete dir="${docs.dir}"/>
     <uncommons:clean module="core" />
     <uncommons:clean module="swing" />
+    <uncommons:clean module="applet" />
   </target>
 
 
@@ -65,23 +66,14 @@
   </target>
 
 
-  <!-- Packages and deploys all distributable files. -->
-  <target name="dist" depends="core, swing" description="Builds JAR file and deploys all files.">
-    <mkdir dir="${dist.dir}"/>
-    <copy todir="${dist.dir}">
-      <fileset dir="swing/${src.dir}/conf" includes="*"/>
-      <fileset dir="swing/${src.dir}/html" includes="*"/>
-      <fileset dir="." includes="*.txt"/>
-      <fileset dir="." includes="data/england/premier/*"/>
-    </copy>
-    <!-- GZip task doesn't allow zipping of multiple files, so use exec instead. -->
-    <exec executable="sh" dir="${dist.dir}/data/england/premier">
-      <arg line="-c 'gzip *.rlt'" />
-    </exec>
+  <target name="applet.build" depends="core, swing" description="Builds the Swing applet.">
+    <uncommons:compile module="applet" />
+    <uncommons:jar module="applet" />
   </target>
-  
-  <!-- Shrinks and obfuscates the applet jar file. -->
-  <target name="obfuscate" depends="dist" description="Shrinks and obfuscates the applet JAR file.">
+
+
+  <target name="applet.shrink" depends="clean, applet.build" description="Packs the applet and all dependencies into a single, obfuscated JAR.">
+    <!-- Make the applet as small as possible. -->
     <taskdef resource="proguard/ant/task.properties" classpath="${lib.compiletime}/proguard/proguard.jar" />
     <proguard shrink="true"
               obfuscate="true"
@@ -93,23 +85,44 @@
               printseeds="true">
       <libraryjar path="${jdk.libs}" />
       <libraryjar path="${lib.dir}/compiletime/jfreechart/servlet.jar" />
-      <injar location="core/build/core.jar" filter="!META-INF/MANIFEST.MF"/>
-      <injar location="swing/build/swing.jar" />
+      <injar location="applet/build/applet.jar" />
+      <injar location="swing/build/swing.jar" filter="!META-INF/MANIFEST.MF" />
+      <injar location="core/build/core.jar" filter="!META-INF/MANIFEST.MF" />
       <injar location="${lib.dir}/runtime/jfreechart/jfreechart-1.0.0.jar"
              filter="!META-INF/MANIFEST.MF,!**/*.jpg,!org/jfree/chart/editor/**,!org/jfree/chart/encoders/**,!org/jfree/data/resources/**" />
       <injar location="${lib.dir}/runtime/jfreechart/jcommon-1.0.0.jar"
              filter="!META-INF/MANIFEST.MF,!org/jfree/ui/about/resources/**,!org/jfree/ui/*.properties" />
-      <outjar name="${dist.dir}/${project.jar}" />
-      <keep name="net.footballpredictions.footballstats.swing.FootballStatsApplet" />
+      <outjar name="applet/${build.dir}/${project.jar}" />
+      <keep name="net.footballpredictions.footballstats.applet.FootballStatsApplet" />
       <keepnames name="org.jfree.chart.JFreeChart" />
       <keep extends="java.lang.Enum">
         <method name="values" />
       </keep>
       <keep access="public" name="*" extends="java.util.ListResourceBundle" />
     </proguard>
+    <!-- Remove unobfuscated applet JAR. -->
+    <delete file="applet/${build.dir}/applet.jar" />
+  </target>
+
+
+  <!-- Packages and deploys all distributable files. -->
+  <target name="dist" depends="applet.shrink" description="Builds JAR file and deploys all files.">
+    <mkdir dir="${dist.dir}"/>
+    <copy todir="${dist.dir}">
+      <fileset dir="." includes="*.txt"/>
+      <fileset dir="." includes="data/england/premier/*" />
+      <fileset file="applet/${build.dir}/${project.jar}" />
+      <fileset dir="applet/${src.dir}/conf" includes="*" />
+      <fileset dir="applet/${src.dir}/html" includes="*" />
+    </copy>
+    <!-- GZip task doesn't allow zipping of multiple files, so use exec instead. -->
+    <exec executable="sh" dir="${dist.dir}/data/england/premier">
+      <arg line="-c 'gzip *.rlt'" />
+    </exec>
   </target>
   
-  <target name="release" depends="test, obfuscate" description="Zips files ready for release.">
+
+  <target name="release" depends="test, dist" description="Zips files ready for release.">
     <mkdir dir="${release.dir}" />
     <zip destfile="${release.dir}/${release.zip}">
       <fileset dir="${dist.dir}" includes="**/*"/>
@@ -119,7 +132,7 @@
 
   <!-- Runs unit tests for all modules. -->
   <target name="test"
-          depends="core, swing"
+          depends="core, swing, applet.build"
           description="Run the unit test suite.">
     <mkdir dir="${temp.dir}" />
 

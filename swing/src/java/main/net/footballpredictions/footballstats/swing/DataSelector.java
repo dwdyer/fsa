@@ -50,7 +50,7 @@ import org.xml.sax.SAXException;
  * Set of combo-boxes for selecting a data file to load.
  * @author Daniel Dyer
  */
-class DataSelector extends JPanel
+public class DataSelector extends JPanel
 {
     private Map<String, Map<String, Map<String, URL>>> leagues;
 

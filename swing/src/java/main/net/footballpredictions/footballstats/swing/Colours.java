@@ -23,7 +23,7 @@ import java.awt.Color;
  * Colour constants used by the applet.
  * @author Daniel Dyer
  */
-final class Colours
+public final class Colours
 {
     /** Green colour for rendering positive numbers. */
     public static final Color POSITIVE = new Color(0, 102, 0);

@@ -8,6 +8,7 @@
     <content url="file://$MODULE_DIR$/../../swing">
       <sourceFolder url="file://$MODULE_DIR$/../../swing/src/java/main" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../swing/src/java/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../../swing/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -8,6 +8,7 @@
     <content url="file://$MODULE_DIR$/../../core">
       <sourceFolder url="file://$MODULE_DIR$/../../core/src/java/main" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../core/src/java/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../../core/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

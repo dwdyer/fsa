@@ -15,7 +15,7 @@
 //   You should have received a copy of the GNU General Public License
 //   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ============================================================================
-package net.footballpredictions.footballstats.swing;
+package net.footballpredictions.footballstats.applet;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -34,6 +34,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
+import net.footballpredictions.footballstats.swing.DataSelector;
+import net.footballpredictions.footballstats.swing.LeagueTablePanel;
+import net.footballpredictions.footballstats.swing.ResultsPanel;
+import net.footballpredictions.footballstats.swing.SequencesPanel;
+import net.footballpredictions.footballstats.swing.HeadToHeadPanel;
+import net.footballpredictions.footballstats.swing.GraphsPanel;
+import net.footballpredictions.footballstats.swing.Colours;
 
 /**
  * This class provides football stats for a web page as a Swing applet.
