@@ -82,12 +82,4 @@ public class FixedSizeSortedSet<E> extends TreeSet<E>
     {
         return maxSize;
     }
-
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public FixedSizeSortedSet<E> clone()
-    {
-        return (FixedSizeSortedSet<E>) super.clone();
-    }
 }

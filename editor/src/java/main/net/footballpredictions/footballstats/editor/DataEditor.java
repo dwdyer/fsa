@@ -17,8 +17,11 @@
 // ============================================================================
 package net.footballpredictions.footballstats.editor;
 
-import javax.swing.JFrame;
 import java.awt.BorderLayout;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 /**
  * Top-level window for the FSA data editor application.
@@ -26,10 +29,19 @@ import java.awt.BorderLayout;
  */
 public class DataEditor extends JFrame
 {
+    private final OpenAction openAction = new OpenAction(DataEditor.this);
+
     public DataEditor()
     {
         super("FSA Data Editor");
-        add(new TeamsPanel(), BorderLayout.WEST);
+
+        TeamsPanel teamsPanel = new TeamsPanel();
+        openAction.addDataListener(teamsPanel);
+        add(teamsPanel, BorderLayout.WEST);
+
+        add(new ResultsPanel(), BorderLayout.CENTER);
+        
+        setJMenuBar(createMenuBar());
     }
 
 
@@ -40,5 +52,19 @@ public class DataEditor extends JFrame
         editor.setSize(800, 600);
         editor.validate();
         editor.setVisible(true);
+    }
+
+
+    private JMenuBar createMenuBar()
+    {
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+        fileMenu.add(new JMenuItem(openAction));
+        fileMenu.addSeparator();
+        fileMenu.add(new JMenuItem(new ExitAction()));
+
+        return menuBar;
     }
 }

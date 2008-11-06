@@ -21,6 +21,7 @@ import javax.swing.AbstractListModel;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Collection;
 
 /**
  * List model for team names, used by {@link TeamsPanel}.  Maintains a list of team
@@ -44,9 +45,17 @@ final class TeamsListModel extends AbstractListModel
 
     public void addTeam(String team)
     {
+        if (team.length() == 0)
+        {
+            throw new IllegalArgumentException("Team name cannot be empty.");
+        }
         // Insert teams in alphabetical order.
         int index = Collections.binarySearch(teams, team);
-        if (index < 0) // Don't add duplicates.
+        if (index >= 0) // Don't add duplicates.
+        {
+            throw new IllegalArgumentException("Team name already exists in list.");
+        }
+        else
         {
             index = -index - 1;
             teams.add(index, team);
@@ -66,6 +75,27 @@ final class TeamsListModel extends AbstractListModel
         {
             teams.remove(rowIndices[i]);
             fireIntervalRemoved(this, rowIndices[i], rowIndices[i]);
+        }
+    }
+
+
+    /**
+     * Replace the existing model contents with a new set of team names.
+     * @param newTeams The names of the new teams.
+     */
+    public void setTeams(Collection<String> newTeams)
+    {
+        int oldSize = getSize();
+        if (oldSize > 0)
+        {
+            teams.clear();
+            fireIntervalRemoved(this, 0, oldSize - 1);
+        }
+        if (!newTeams.isEmpty())
+        {
+            teams.addAll(newTeams);
+            Collections.sort(teams);
+            fireIntervalAdded(this, 0, getSize() - 1);
         }
     }
 }

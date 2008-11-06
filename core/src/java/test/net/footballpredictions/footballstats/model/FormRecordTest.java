@@ -18,6 +18,7 @@
 package net.footballpredictions.footballstats.model;
 
 import org.testng.annotations.Test;
+import org.testng.Reporter;
 import java.util.Date;
 
 /**
@@ -28,6 +29,46 @@ public class FormRecordTest
 {
     private static final int ONE_DAY = 86400000;
 
+    @Test
+    public void testFormString()
+    {
+        FormRecord record = new FormRecord(new Team("Celtic"), 3, 1, 6);
+        Date today = new Date();
+        record.addResult(new Result("Celtic", "Rangers", 1, 1, 0, today));
+        record.addResult(new Result("Celtic", "Hearts", 1, 0, 0, new Date(today.getTime() + ONE_DAY)));
+        record.addResult(new Result("Celtic", "Hibernian", 0, 1, 0, new Date(today.getTime() + (ONE_DAY * 2))));
+        record.addResult(new Result("Celtic", "Aberdeen", 1, 1, 0, new Date(today.getTime() + (ONE_DAY * 3))));
+        record.addResult(new Result("Celtic", "Motherwell", 0, 1, 0, new Date(today.getTime() + (ONE_DAY * 4))));
+        record.addResult(new Result("Celtic", "Kilmarnock", 0, 1, 0, new Date(today.getTime() + (ONE_DAY * 5))));
+
+        String form = record.getForm();
+        Reporter.log(form);
+        assert form.length() == 6 : "Form string should have one char per match.";
+        assert form.equals("DWLDLL") : "Form should be DWLDLL, not " + form;
+    }
+
+
+    /**
+     * A form string should still be generated even if there is not a full set of matches.  Any
+     * unused positions in the string should use '-' as a place-holder.
+     */
+    @Test
+    public void testIncompleteFormString()
+    {
+        FormRecord record = new FormRecord(new Team("Celtic"), 3, 1, 6);
+        Date today = new Date();
+        record.addResult(new Result("Celtic", "Rangers", 1, 1, 0, today));
+        record.addResult(new Result("Celtic", "Hearts", 1, 0, 0, new Date(today.getTime() + ONE_DAY)));
+        record.addResult(new Result("Celtic", "Hibernian", 0, 1, 0, new Date(today.getTime() + (ONE_DAY * 2))));
+        record.addResult(new Result("Celtic", "Aberdeen", 1, 1, 0, new Date(today.getTime() + (ONE_DAY * 3))));
+
+        String form = record.getForm();
+        Reporter.log(form);
+        assert form.length() == 6 : "Form string should have 6 characters, not " + form.length();
+        assert form.equals("--DWLD") : "Form should be --DWLD, not " + form;
+    }
+
+    
     /**
      * The best possible form (6 wins from 6 games) should be rated 5 stars.  NOTE: This isn't
      * the only form that is rated 5-star, 5 wins from 6 is still over 80% of the available points
@@ -56,7 +97,7 @@ public class FormRecordTest
      * form.
      */
     @Test
-    public void testIncompleteRecord()
+    public void testIncompleteRecordStars()
     {
         FormRecord record = new FormRecord(new Team("Fulham"), 3, 1, 6);
         Date today = new Date();
@@ -73,7 +114,7 @@ public class FormRecordTest
      * Achieving half of the available points should result in the middle score (3 stars).
      */
     @Test
-    public void testAverageForm()
+    public void testAverageFormStars()
     {
         FormRecord record = new FormRecord(new Team("Fulham"), 3, 1, 6);
         Date today = new Date();

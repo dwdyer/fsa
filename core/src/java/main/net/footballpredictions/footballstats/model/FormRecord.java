@@ -64,13 +64,6 @@ public class FormRecord extends AbstractTeamRecord
     {
         StringBuilder formString = new StringBuilder();
 
-        // If we don't have a full set of results (because not enough games have been played
-        // yet), uses dashes in place of the missing results.
-        for (int i = formResults.size(); i < length; i++)
-        {
-            formString.append('-');
-        }
-
         for (Result result : formResults)
         {
             if (result.isDraw())
@@ -86,6 +79,13 @@ public class FormRecord extends AbstractTeamRecord
                 formString.append('L');
             }
         }
+        // If we don't have a full set of results (because not enough games have been played
+        // yet), uses dashes in place of the missing results.
+        for (int i = formResults.size(); i < length; i++)
+        {
+            formString.append('-');
+        }
+        
         return formString.reverse().toString();
     }
 

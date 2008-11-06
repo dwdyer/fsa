@@ -18,6 +18,7 @@
 package net.footballpredictions.footballstats.editor;
 
 import org.testng.annotations.Test;
+import java.util.Arrays;
 
 /**
  * Unit test for {@link TeamsListModel}.
@@ -61,16 +62,16 @@ public class TeamsListModelTest
     }
 
 
-    @Test(dependsOnMethods = "testAddRows")
+    @Test(dependsOnMethods = "testAddRows",
+          expectedExceptions = IllegalArgumentException.class)
     public void testAddDuplicate()
     {
         TeamsListModel model = new TeamsListModel();
         model.addTeam("Arsenal");
         // Sanity check.
         assert model.getSize() == 1 : "Model should have one row, not " + model.getSize();
-        // Attempting to add the same element again should be ignored.
+        // Attempting to add the same element again should cause an IllegalArgumentException.
         model.addTeam("Arsenal");
-        assert model.getSize() == 1 : "Model should have one row, not " + model.getSize();
     }
 
 
@@ -136,5 +137,71 @@ public class TeamsListModelTest
             : "First row should be Real Madrid, not " + model.getElementAt(0);
         assert model.getElementAt(1).equals("Valencia")
             : "Second row should be Valencia, not " + model.getElementAt(1);
+    }
+
+
+    @Test
+    public void testReplaceContents()
+    {
+        TeamsListModel model = new TeamsListModel();
+        model.addTeam("Bordeaux");
+        model.addTeam("Lyon");
+        model.addTeam("Paris Saint-Germain");
+        // Sanity check.
+        assert model.getSize() == 3 : "Model should have three rows, not " + model.getSize();
+
+        model.setTeams(Arrays.asList("Lille", "Marseille"));
+        assert model.getSize() == 2 : "Model should have two rows, not " + model.getSize();
+        // Check that correct teams remain.
+        assert model.getElementAt(0).equals("Lille")
+            : "First row should be Lille, not " + model.getElementAt(0);
+        assert model.getElementAt(1).equals("Marseille")
+            : "Second row should be Marseille, not " + model.getElementAt(1);
+    }
+
+
+    /**
+     * Similar to {@link #testReplaceContents()} except that the new contents
+     * are not sorted initially so must be sorted by the model.
+     */
+    @Test(dependsOnMethods = "testReplaceContents")
+    public void testReplaceContentsUnsorted()
+    {
+        TeamsListModel model = new TeamsListModel();
+        model.addTeam("Bordeaux");
+        model.addTeam("Lyon");
+        model.addTeam("Paris Saint-Germain");
+        // Sanity check.
+        assert model.getSize() == 3 : "Model should have three rows, not " + model.getSize();
+
+        model.setTeams(Arrays.asList("Marseille", "Lille"));
+        assert model.getSize() == 2 : "Model should have two rows, not " + model.getSize();
+        // Check that correct teams remain.
+        assert model.getElementAt(0).equals("Lille")
+            : "First row should be Lille, not " + model.getElementAt(0);
+        assert model.getElementAt(1).equals("Marseille")
+            : "Second row should be Marseille, not " + model.getElementAt(1);
+    }
+
+
+    /**
+     * Test that {@link TeamsListModel#setTeams(java.util.Collection)} works when the
+     * model is initially empty.  This is a regression test since the initial implementation
+     * threw an exception in this situation.
+     */
+    @Test
+    public void testReplaceEmptyContents()
+    {
+        TeamsListModel model = new TeamsListModel();
+        // Sanity check.
+        assert model.getSize() == 0 : "Model should have zero rows, not " + model.getSize();
+
+        model.setTeams(Arrays.asList("Lille", "Marseille"));
+        assert model.getSize() == 2 : "Model should have two rows, not " + model.getSize();
+        // Check that correct teams remain.
+        assert model.getElementAt(0).equals("Lille")
+            : "First row should be Lille, not " + model.getElementAt(0);
+        assert model.getElementAt(1).equals("Marseille")
+            : "Second row should be Marseille, not " + model.getElementAt(1);
     }
 }

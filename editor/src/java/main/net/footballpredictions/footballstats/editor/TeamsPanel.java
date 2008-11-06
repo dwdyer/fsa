@@ -33,12 +33,14 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import net.footballpredictions.footballstats.swing.DataListener;
+import net.footballpredictions.footballstats.model.LeagueSeason;
 
 /**
  * Panel for managing which teams are included in a data file.
  * @author Daniel Dyer
  */
-public class TeamsPanel extends JPanel
+class TeamsPanel extends JPanel implements DataListener
 {
     private final TeamsListModel teamsListModel = new TeamsListModel();
     private final JList teamsList = new JList(teamsListModel);
@@ -98,7 +100,17 @@ public class TeamsPanel extends JPanel
                                                              "Enter team name:",
                                                              "Add Team",
                                                              JOptionPane.QUESTION_MESSAGE);
-                teamsListModel.addTeam(newTeam);
+                try
+                {
+                    teamsListModel.addTeam(newTeam.trim());
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    JOptionPane.showMessageDialog(TeamsPanel.this,
+                                                  ex.getMessage(),
+                                                  "Error",
+                                                  JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         buttonsPanel.add(addButton);
@@ -116,4 +128,8 @@ public class TeamsPanel extends JPanel
     }
 
 
+    public void setLeagueData(LeagueSeason data)
+    {
+        teamsListModel.setTeams(data.getTeamNames());
+    }
 }
