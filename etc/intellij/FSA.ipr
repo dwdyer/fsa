@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4" relativePaths="false">
   <component name="AntConfiguration">
-    <defaultAnt bundledAnt="true" />
+    <defaultAnt name="Apache Ant version 1.7.1" />
     <buildFile url="file:///Users/dan/Projects/fsa/build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
@@ -440,11 +440,13 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FSA.iml" filepath="$PROJECT_DIR$/FSA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core.iml" filepath="$PROJECT_DIR$/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/global.iml" filepath="$PROJECT_DIR$/global.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swing.iml" filepath="$PROJECT_DIR$/swing.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" project-jdk-type="JavaSDK">
-    <output url="file:///Users/dan/Projects/fsa/build/classes" />
+    <output url="file:///Users/dan/Projects/fsa/core/build/classes/main" />
   </component>
   <component name="ProjectRunConfigurationManager" />
   <component name="RmicSettings">

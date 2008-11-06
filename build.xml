@@ -1,18 +1,19 @@
 <!--
-  Ant build script for The Football Statistics Applet
-  (you can download Apache Ant from http://ant.apache.org/).
+  Apache Ant build script for The Football Statistics Applet.  Version 1.7.1 or later
+  of Ant is required (you can download it from http://ant.apache.org/).
   Author: Daniel Dyer
 -->
 
-<project name="fsa" default="dist" basedir=".">
+<project name="fsa"
+         default="obfuscate"
+         xmlns:uncommons="antlib:org.uncommons.antlib"
+         basedir=".">
 
   <!-- Define build properties. -->
-  <property name="src.dir" value="./src"/>
-  <property name="build.dir" value="./build"/>
-  <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="lib.dir" value="lib" />
+  <property name="lib.compiletime" value="${lib.dir}/compiletime" />
+  <property name="lib.runtime" value="${lib.dir}/runtime" />
   <property name="temp.dir" value="./temp"/>
-  <property name="lib.dir" value="./lib"/>
-  <property name="tools.dir" value="${lib.dir}/compiletime"/>
   <property name="dist.dir" value="./dist"/>
   <property name="release.dir" value="./release"/>
   <property name="docs.dir" value="./docs"/>
@@ -29,9 +30,12 @@
   </condition>
 
   <path id="base.path">
-    <pathelement path="${classes.dir}/main" />
     <fileset dir="${lib.dir}" includes="**/*.jar" />
   </path>
+
+  <taskdef uri="antlib:org.uncommons.antlib"
+           resource="org/uncommons/antlib/antlib.xml"
+           classpathref="base.path"/>
 
   <!-- Removes all files created by this build process. -->
   <target name="clean" description="Deletes all files created by the build process.">
@@ -40,49 +44,35 @@
     <delete dir="${dist.dir}"/>
     <delete dir="${release.dir}"/>
     <delete dir="${docs.dir}"/>
+    <uncommons:clean module="core" />
+    <uncommons:clean module="swing" />
   </target>
 
-  <!-- Compiles all Java source files and copies all non-source resources into the build
-       location. -->
-  <target name="compile" description="Compiles all Java source files.">
-    <mkdir dir="${classes.dir}/main"/>
-    <javac srcdir="${src.dir}/java/main"
-           destdir="${classes.dir}/main"
-           source="1.5"
-           target="1.5"
-           debug="on"
-           optimize="on"
-           deprecation="on">
-      <compilerarg line="-Xlint:unchecked" />
-      <classpath refid="base.path" />
-    </javac>
-    <mkdir dir="${classes.dir}/test"/>
-    <javac srcdir="${src.dir}/java/test"
-           destdir="${classes.dir}/test"
-           source="1.5"
-           target="1.5"
-           debug="on"
-           optimize="on"
-           deprecation="on"
-           classpathref="base.path">
-      <compilerarg line="-Xlint:unchecked" />
-    </javac>
+
+  <target name="core" description="Builds the model and data processing classes.">
+    <uncommons:compile module="core" />
+    <uncommons:jar module="core" />
   </target>
+
+
+  <target name="swing" depends="core" description="Builds the user interface classes.">
+    <uncommons:compile module="swing" />
+    <uncommons:jar module="swing">
+      <additionalcontents>
+        <fileset dir="swing/${src.dir}/java/main" includes="net/footballpredictions/footballstats/messages/**/*" />
+      </additionalcontents>
+    </uncommons:jar>
+  </target>
+
 
   <!-- Packages and deploys all distributable files. -->
-  <target name="dist" depends="compile" description="Builds JAR file and deploys all files.">
+  <target name="dist" depends="core, swing" description="Builds JAR file and deploys all files.">
     <mkdir dir="${dist.dir}"/>
-    <jar jarfile="${dist.dir}/${project.jar}" basedir="${classes.dir}/main">
-      <fileset dir="${src.dir}/java/main" includes="**/*.properties" />
-    </jar>
     <copy todir="${dist.dir}">
-      <fileset dir="${src.dir}/conf" includes="*"/>
-      <fileset dir="${src.dir}/html" includes="*"/>
+      <fileset dir="swing/${src.dir}/conf" includes="*"/>
+      <fileset dir="swing/${src.dir}/html" includes="*"/>
       <fileset dir="." includes="*.txt"/>
-    </copy>
-    <mkdir dir="${dist.dir}/data"/>
-    <copy todir="${dist.dir}/data">
-      <fileset dir="${src.dir}/data" includes="england/premier/*"/>
+      <fileset dir="." includes="data/england/premier/*"/>
     </copy>
     <!-- GZip task doesn't allow zipping of multiple files, so use exec instead. -->
     <exec executable="sh" dir="${dist.dir}/data/england/premier">
@@ -92,7 +82,7 @@
   
   <!-- Shrinks and obfuscates the applet jar file. -->
   <target name="obfuscate" depends="dist" description="Shrinks and obfuscates the applet JAR file.">
-    <taskdef resource="proguard/ant/task.properties" classpath="${tools.dir}/proguard/proguard.jar" />
+    <taskdef resource="proguard/ant/task.properties" classpath="${lib.compiletime}/proguard/proguard.jar" />
     <proguard shrink="true"
               obfuscate="true"
               optimize="true"
@@ -103,24 +93,20 @@
               printseeds="true">
       <libraryjar path="${jdk.libs}" />
       <libraryjar path="${lib.dir}/compiletime/jfreechart/servlet.jar" />
-      <injar location="${dist.dir}/${project.jar}" />
+      <injar location="core/build/core.jar" filter="!META-INF/MANIFEST.MF"/>
+      <injar location="swing/build/swing.jar" />
       <injar location="${lib.dir}/runtime/jfreechart/jfreechart-1.0.0.jar"
              filter="!META-INF/MANIFEST.MF,!**/*.jpg,!org/jfree/chart/editor/**,!org/jfree/chart/encoders/**,!org/jfree/data/resources/**" />
       <injar location="${lib.dir}/runtime/jfreechart/jcommon-1.0.0.jar"
              filter="!META-INF/MANIFEST.MF,!org/jfree/ui/about/resources/**,!org/jfree/ui/*.properties" />
-      <outjar name="${dist.dir}/obfuscated.${project.jar}" />
+      <outjar name="${dist.dir}/${project.jar}" />
       <keep name="net.footballpredictions.footballstats.swing.FootballStatsApplet" />
       <keepnames name="org.jfree.chart.JFreeChart" />
       <keep extends="java.lang.Enum">
         <method name="values" />
       </keep>
       <keep access="public" name="*" extends="java.util.ListResourceBundle" />
-      <assumenosideeffects name="org.jfree.chart.ChartPanel">
-        <method name="createPopupMenu" />
-      </assumenosideeffects>
     </proguard>
-    <delete file="${dist.dir}/${project.jar}" />
-    <move file="${dist.dir}/obfuscated.${project.jar}" tofile="${dist.dir}/${project.jar}" />
   </target>
   
   <target name="release" depends="test, obfuscate" description="Zips files ready for release.">
@@ -133,7 +119,7 @@
 
   <!-- Runs unit tests for all modules. -->
   <target name="test"
-          depends="dist"
+          depends="core, swing"
           description="Run the unit test suite.">
     <mkdir dir="${temp.dir}" />
 
