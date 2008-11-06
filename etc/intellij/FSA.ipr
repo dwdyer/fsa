@@ -442,6 +442,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/applet.iml" filepath="$PROJECT_DIR$/applet.iml" group="modules" />
       <module fileurl="file://$PROJECT_DIR$/core.iml" filepath="$PROJECT_DIR$/core.iml" group="modules" />
+      <module fileurl="file://$PROJECT_DIR$/editor.iml" filepath="$PROJECT_DIR$/editor.iml" group="modules" />
       <module fileurl="file://$PROJECT_DIR$/global.iml" filepath="$PROJECT_DIR$/global.iml" />
       <module fileurl="file://$PROJECT_DIR$/swing.iml" filepath="$PROJECT_DIR$/swing.iml" group="modules" />
     </modules>

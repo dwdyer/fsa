@@ -95,7 +95,7 @@ public class FormRecord extends AbstractTeamRecord
      */
     public int getFormStars()
     {
-        double max = getPointsForWin() * length;
+        double max = getPointsForWin() * getPlayed();
         double form = getPoints() / max;
         return Math.max(1, (int) Math.ceil(form * 5));
     }

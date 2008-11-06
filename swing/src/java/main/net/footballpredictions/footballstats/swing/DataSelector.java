@@ -19,6 +19,7 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.Cursor;
 import java.awt.FlowLayout;
+import java.awt.Container;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.IOException;
@@ -216,7 +217,11 @@ public class DataSelector extends JPanel
                     String selectedSeason = (String) itemEvent.getItem();
 
                     final URL dataURL = leagues.get(selectedLeague).get(selectedDivision).get(selectedSeason);
-                    getTopLevelAncestor().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    final Container topLevelContainer = getTopLevelAncestor();
+                    if (topLevelContainer != null)
+                    {
+                        topLevelContainer.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    }
                     new SwingBackgroundTask<LeagueSeason>()
                     {
                         protected LeagueSeason performTask() throws Exception
@@ -239,7 +244,10 @@ public class DataSelector extends JPanel
                                 {
                                     listener.setLeagueData(data);
                                 }
-                                getTopLevelAncestor().setCursor(null);
+                                if (topLevelContainer != null)
+                                {
+                                    getTopLevelAncestor().setCursor(null);
+                                }
                             }
                         }
                     }.execute();

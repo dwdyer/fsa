@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="true" type="JAVA_MODULE">
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/../../editor/build/classes/main" />
+    <exclude-output />
+    <output-test url="file://$MODULE_DIR$/../../editor/build/classes/test" />
+    <content url="file://$MODULE_DIR$/../../editor">
+      <sourceFolder url="file://$MODULE_DIR$/../../editor/src/java/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../editor/src/java/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../../editor/build" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="swing" />
+    <orderEntry type="library" name="fest-swing-1.0b2.1" level="project" />
+    <orderEntry type="library" name="testng-5.6-jdk15" level="project" />
+    <orderEntryProperties />
+  </component>
+</module>
+

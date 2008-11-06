@@ -18,7 +18,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/runtime/jfreechart/jfreechart-1.0.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../swing/lib/runtime/jfreechart/jcommon-1.0.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -27,7 +27,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/runtime/jfreechart/jcommon-1.0.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../swing/lib/runtime/jfreechart/jfreechart-1.0.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

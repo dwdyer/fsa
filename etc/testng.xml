@@ -2,22 +2,31 @@
 
 <suite name="Unit Tests" verbose="1" >
 
-  <test name="Applet" >
+  <test name="Core" >
     <packages>
-      <package name="net.footballpredictions.footballstats.awt" />
+      <package name="net.footballpredictions.footballstats.model" />
+      <package name="net.footballpredictions.footballstats.util" />
+    </packages>
+  </test>
+
+
+  <test name="Swing" >
+    <packages>
       <package name="net.footballpredictions.footballstats.swing" />
     </packages>
   </test>
 
-  <test name="Model" >
+
+  <test name="Applet" >
     <packages>
-      <package name="net.footballpredictions.footballstats.model" />
+      <package name="net.footballpredictions.footballstats.applet" />
     </packages>
   </test>
 
-  <test name="Utils" >
+
+  <test name="Editor" >
     <packages>
-      <package name="net.footballpredictions.footballstats.util" />
+      <package name="net.footballpredictions.footballstats.editor" />
     </packages>
   </test>
 

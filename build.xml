@@ -66,6 +66,12 @@
   </target>
 
 
+  <target name="editor" depends="core, swing" description="Builds the data editor application.">
+    <uncommons:compile module="editor" />
+    <uncommons:jar module="editor" />
+  </target>
+
+
   <target name="applet.build" depends="core, swing" description="Builds the Swing applet.">
     <uncommons:compile module="applet" />
     <uncommons:jar module="applet" />
@@ -100,8 +106,6 @@
       </keep>
       <keep access="public" name="*" extends="java.util.ListResourceBundle" />
     </proguard>
-    <!-- Remove unobfuscated applet JAR. -->
-    <delete file="applet/${build.dir}/applet.jar" />
   </target>
 
 
@@ -132,13 +136,16 @@
 
   <!-- Runs unit tests for all modules. -->
   <target name="test"
-          depends="core, swing, applet.build"
+          depends="core, swing, applet.build, editor"
           description="Run the unit test suite.">
     <mkdir dir="${temp.dir}" />
 
     <path id="test.path">
-      <pathelement location="${classes.dir}/test" />
+      <dirset dir=".">
+        <include name="**/${classes.dir}/test" />
+      </dirset>      
       <fileset dir="${temp.dir}" includes="*.jar"/>
+      <fileset dir="." includes="**/${lib.dir}/**/*.jar"/>
       <path refid="base.path" />
     </path>
 
@@ -146,7 +153,10 @@
     <taskdef resource="tasks.properties" classpathref="test.path" />
     <cobertura-instrument todir="${temp.dir}"
                           datafile="${temp.dir}/cobertura.ser">
-      <fileset dir="${dist.dir}" includes="${project.jar}"/>
+      <fileset dir="core/build" includes="core.jar"/>
+      <fileset dir="swing/build" includes="swing.jar"/>
+      <fileset dir="applet/build" includes="applet.jar"/>
+      <fileset dir="editor/build" includes="editor.jar"/>
     </cobertura-instrument>
 
     <!-- Run the unit tests on the instrumented classes. -->
@@ -172,17 +182,19 @@
     <cobertura-report format="html"
                       destdir="${coverage.dir}"
                       datafile="${temp.dir}/cobertura.ser">
-      <fileset dir="${src.dir}/java/main">
-        <include name="**/*.java" />
-      </fileset>
+      <fileset dir="core/${src.dir}/java/main" includes="**/*.java" />
+      <fileset dir="swing/${src.dir}/java/main" includes="**/*.java" />
+      <fileset dir="applet/${src.dir}/java/main" includes="**/*.java" />
+      <fileset dir="editor/${src.dir}/java/main" includes="**/*.java" />
     </cobertura-report>
     <!-- Generate an XML coverage report so that Hudson can graph trends. -->
     <cobertura-report format="xml"
                       destdir="${coverage.dir}"
                       datafile="${temp.dir}/cobertura.ser">
-      <fileset dir="${src.dir}/java/main">
-        <include name="**/*.java" />
-      </fileset>
+      <fileset dir="core/${src.dir}/java/main" includes="**/*.java" />
+      <fileset dir="swing/${src.dir}/java/main" includes="**/*.java" />
+      <fileset dir="applet/${src.dir}/java/main" includes="**/*.java" />
+      <fileset dir="editor/${src.dir}/java/main" includes="**/*.java" />
     </cobertura-report>
 
   </target>
