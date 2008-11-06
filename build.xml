@@ -84,13 +84,13 @@
               defaultpackage=""
               printseeds="true">
       <libraryjar path="${jdk.libs}" />
-      <libraryjar path="${lib.dir}/compiletime/jfreechart/servlet.jar" />
+      <libraryjar path="swing/${lib.dir}/compiletime/jfreechart/servlet.jar" />
       <injar location="applet/build/applet.jar" />
       <injar location="swing/build/swing.jar" filter="!META-INF/MANIFEST.MF" />
       <injar location="core/build/core.jar" filter="!META-INF/MANIFEST.MF" />
-      <injar location="${lib.dir}/runtime/jfreechart/jfreechart-1.0.0.jar"
+      <injar location="swing/${lib.dir}/runtime/jfreechart/jfreechart-1.0.0.jar"
              filter="!META-INF/MANIFEST.MF,!**/*.jpg,!org/jfree/chart/editor/**,!org/jfree/chart/encoders/**,!org/jfree/data/resources/**" />
-      <injar location="${lib.dir}/runtime/jfreechart/jcommon-1.0.0.jar"
+      <injar location="swing/${lib.dir}/runtime/jfreechart/jcommon-1.0.0.jar"
              filter="!META-INF/MANIFEST.MF,!org/jfree/ui/about/resources/**,!org/jfree/ui/*.properties" />
       <outjar name="applet/${build.dir}/${project.jar}" />
       <keep name="net.footballpredictions.footballstats.applet.FootballStatsApplet" />
