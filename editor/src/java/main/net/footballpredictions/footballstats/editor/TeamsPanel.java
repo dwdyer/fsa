@@ -102,7 +102,10 @@ class TeamsPanel extends JPanel implements DataListener
                                                              JOptionPane.QUESTION_MESSAGE);
                 try
                 {
-                    teamsListModel.addTeam(newTeam.trim());
+                    if (newTeam != null)
+                    {
+                        teamsListModel.addTeam(newTeam.trim());
+                    }
                 }
                 catch (IllegalArgumentException ex)
                 {

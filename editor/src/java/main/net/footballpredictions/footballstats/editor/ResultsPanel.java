@@ -18,19 +18,21 @@
 package net.footballpredictions.footballstats.editor;
 
 import java.awt.BorderLayout;
-import java.util.Collections;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import net.footballpredictions.footballstats.model.Result;
+import net.footballpredictions.footballstats.model.LeagueSeason;
+import net.footballpredictions.footballstats.swing.DataListener;
 
 /**
  * @author Daniel Dyer
  */
-class ResultsPanel extends JPanel
+class ResultsPanel extends JPanel implements DataListener
 {
+    private final ResultsTableModel resultsTableModel = new ResultsTableModel();
+
     public ResultsPanel()
     {
         super(new BorderLayout());
@@ -41,7 +43,14 @@ class ResultsPanel extends JPanel
 
     private JComponent createTable()
     {
-        JTable resultsTable = new JTable(new ResultsTableModel(Collections.<Result>emptyList()));
+        JTable resultsTable = new JTable(resultsTableModel);
+        resultsTable.setShowGrid(true);
         return new JScrollPane(resultsTable);
+    }
+
+
+    public void setLeagueData(LeagueSeason data)
+    {
+        resultsTableModel.setResults(data.getAllResults());
     }
 }

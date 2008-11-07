@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Date;
+import java.util.Collections;
 import javax.swing.table.AbstractTableModel;
 import net.footballpredictions.footballstats.model.Result;
+import net.footballpredictions.footballstats.model.ResultDateComparator;
 
 /**
  * @author Daniel Dyer
@@ -36,7 +38,7 @@ class ResultsTableModel extends AbstractTableModel
     static final int AWAY_GOALS_COLUMN = 4;
     static final int ATTENDANCE_COLUMN = 5;
 
-    private final List<Result> results;
+    private final List<Result> results = new ArrayList<Result>(460);
 
     private static final String[] COLUMN_NAMES = new String[]{"Date",
                                                               "Home Team",
@@ -44,12 +46,6 @@ class ResultsTableModel extends AbstractTableModel
                                                               "Away Team",
                                                               "Goals",
                                                               "Attendance"};
-
-    public ResultsTableModel(Collection<Result> results)
-    {
-        this.results = new ArrayList<Result>(results);
-    }
-
 
     public int getRowCount()
     {
@@ -93,8 +89,25 @@ class ResultsTableModel extends AbstractTableModel
             case HOME_GOALS_COLUMN: return result.getHomeGoals();
             case AWAY_TEAM_COLUMN: return result.getAwayTeam();
             case AWAY_GOALS_COLUMN: return result.getAwayGoals();
-            case ATTENDANCE_COLUMN: return result.getAttendance();
+            case ATTENDANCE_COLUMN: return result.getAttendance() < 0 ? null : result.getAttendance();
             default: throw new IllegalArgumentException("Invalid column index: " + column);
+        }
+    }
+
+
+    public void setResults(Collection<Result> newResults)
+    {
+        int oldSize = getRowCount();
+        if (oldSize > 0)
+        {
+            this.results.clear();
+            fireTableRowsDeleted(0, oldSize - 1);
+        }
+        if (!newResults.isEmpty())
+        {
+            this.results.addAll(newResults);
+            Collections.sort(results, new ResultDateComparator());
+            fireTableRowsInserted(0, getRowCount() - 1);
         }
     }
 }

@@ -15,23 +15,26 @@
 //   You should have received a copy of the GNU General Public License
 //   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // ============================================================================
-package net.footballpredictions.footballstats.model;
+package net.footballpredictions.footballstats.editor;
 
-import java.util.Comparator;
+import net.footballpredictions.footballstats.swing.LabelledComponentsPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 
 /**
- * {@link Comparator} for ordering results by date.
+ * GUI control for manipulating league metadata (points for win,
+ * relegation positions, etc.)
  * @author Daniel Dyer
  */
-public class ResultDateComparator implements Comparator<Result>
+class MetaDataPanel extends LabelledComponentsPanel
 {
-    public int compare(Result result1, Result result2)
+    public MetaDataPanel()
     {
-        int compare = result1.getDate().compareTo(result2.getDate());
-        if (compare == 0) // If the date is the same, order alphabetically by home team.
-        {
-            compare = result1.getHomeTeam().toLowerCase().compareTo(result2.getHomeTeam().toLowerCase());
-        }
-        return compare;
+        addLabelledComponent("Points for a win:", new JSpinner(new SpinnerNumberModel(3, 1, 10, 1)));
+        addLabelledComponent("Points for a draw:", new JSpinner(new SpinnerNumberModel(1, 1, 10, 1)));
+        addLabelledComponent("Include attendances:", new JCheckBox());
+        setBorder(BorderFactory.createTitledBorder("League Metadata"));
     }
 }

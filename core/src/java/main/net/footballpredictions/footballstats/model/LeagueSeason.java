@@ -235,6 +235,17 @@ public final class LeagueSeason
     {
         return resultsByDate.get(date);
     }
+
+
+    public List<Result> getAllResults()
+    {
+        List<Result> allResults = new LinkedList<Result>();
+        for (List<Result> results : resultsByDate.values())
+        {
+            allResults.addAll(results);
+        }
+        return allResults;
+    }
     
     
     /**

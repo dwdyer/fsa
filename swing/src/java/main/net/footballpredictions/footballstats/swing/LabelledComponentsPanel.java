@@ -32,7 +32,7 @@ import javax.swing.JLabel;
  * unoccupied and can be added to. 
  * @author Daniel Dyer
  */
-class LabelledComponentsPanel extends JPanel
+public class LabelledComponentsPanel extends JPanel
 {
     private static final GridBagConstraints LABEL_CONSTRAINTS = new GridBagConstraints(GridBagConstraints.RELATIVE,
                                                                                        GridBagConstraints.RELATIVE,
@@ -40,7 +40,7 @@ class LabelledComponentsPanel extends JPanel
                                                                                        1,
                                                                                        1,
                                                                                        0,
-                                                                                       GridBagConstraints.NORTHWEST,
+                                                                                       GridBagConstraints.WEST,
                                                                                        GridBagConstraints.HORIZONTAL,
                                                                                        new Insets(0, 0, 0, 0),
                                                                                        0,
@@ -52,7 +52,7 @@ class LabelledComponentsPanel extends JPanel
                                                                                        1,
                                                                                        0,
                                                                                        0,
-                                                                                       GridBagConstraints.NORTHEAST,
+                                                                                       GridBagConstraints.EAST,
                                                                                        GridBagConstraints.HORIZONTAL,
                                                                                        new Insets(0, 0, 0, 0),
                                                                                        0,

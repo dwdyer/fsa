@@ -27,7 +27,7 @@ import java.awt.Container;
  * the relative sizes determined by a pre-configured ratio.
  * @author Daniel Dyer
  */
-class RatioLayout implements LayoutManager
+public class RatioLayout implements LayoutManager
 {
     private final double ratio;
     private final boolean horizontal;
