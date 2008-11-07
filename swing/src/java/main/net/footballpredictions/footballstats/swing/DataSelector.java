@@ -112,8 +112,8 @@ public class DataSelector extends JPanel
             XPathFactory factory = XPathFactory.newInstance();
             XPath xpath = factory.newXPath();
             XPathExpression leaguesQuery = xpath.compile("//league");
-            XPathExpression divisionQuery = xpath.compile("//division");
-            XPathExpression seasonQuery = xpath.compile("//season");
+            XPathExpression divisionQuery = xpath.compile("./division");
+            XPathExpression seasonQuery = xpath.compile("./season");
 
             NodeList leagueNodes = (NodeList) leaguesQuery.evaluate(document, XPathConstants.NODESET);
             for (int i = 0; i < leagueNodes.getLength(); i++)
