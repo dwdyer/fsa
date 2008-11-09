@@ -319,10 +319,12 @@ public final class StandardRecord extends AbstractTeamRecord
         if (goalsAgainst == 0)
         {
             addToSequence(SequenceType.CLEANSHEETS, result);
+            resetSequence(SequenceType.GAMES_CONCEDED_IN);
         }
         else
         {
             resetSequence(SequenceType.CLEANSHEETS);
+            addToSequence(SequenceType.GAMES_CONCEDED_IN, result);
         }
     }
 

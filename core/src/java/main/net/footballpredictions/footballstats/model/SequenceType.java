@@ -30,7 +30,8 @@ public enum SequenceType
     NO_WIN(3),
     CLEANSHEETS(3),
     GAMES_SCORED_IN(10),
-    GAMES_NOT_SCORED_IN(3);
+    GAMES_NOT_SCORED_IN(3),
+    GAMES_CONCEDED_IN(10);
 
     private final int interestLevel;
 
