@@ -35,7 +35,7 @@ RELEGATION|18|20|Relegation
 13092008|Blackburn Rovers|0|Arsenal|4
 13092008|Fulham|2|Bolton Wanderers|1
 13092008|Liverpool|2|Manchester United|1
-13092008|Manchester City|1|Chelsea|2
+13092008|Manchester City|1|Chelsea|3
 13092008|Newcastle United|1|Hull City|2
 13092008|Portsmouth|2|Middlesbrough|1
 13092008|West Bromwich Albion|3|West Ham United|2
@@ -112,3 +112,9 @@ RELEGATION|18|20|Relegation
 01112008|West Bromwich Albion|2|Blackburn Rovers|2
 02112008|Bolton Wanderers|2|Manchester City|0
 03112008|Newcastle United|2|Aston Villa|0
+08112008|Arsenal|2|Manchester United|1
+08112008|Hull City|0|Bolton Wanderers|1
+08112008|Liverpool|3|West Bromwich Albion|0
+08112008|Sunderland|1|Portsmouth|2
+08112008|West Ham United|1|Everton|3
+08112008|Wigan Athletic|0|Stoke City|0

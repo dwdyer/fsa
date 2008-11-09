@@ -78,9 +78,9 @@ public class RLTDataProvider implements LeagueDataProvider
                     if (Character.isDigit(dateString.charAt(0))) // Process as a result if first char is a number.
                     {
                         Date date = DATE_FORMAT.parse(dateString);
-                        String homeTeamName = nextResult.nextToken().trim();
+                        String homeTeamName = nextResult.nextToken().trim().intern();
                         int homeScore = Integer.parseInt(nextResult.nextToken().trim());
-                        String awayTeamName = nextResult.nextToken().trim();
+                        String awayTeamName = nextResult.nextToken().trim().intern();
                         int awayScore = Integer.parseInt(nextResult.nextToken().trim());
 
                         int attendance = -1;
