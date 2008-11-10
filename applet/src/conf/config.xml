@@ -22,4 +22,9 @@
       <season name="(All Time)" href="data/england/premier/alltime.rlt.gz" />
     </division>
   </league>
+  <league name="Scotland">
+    <division name="Premier League">
+      <season name="2006/07" href="data/scotland/premier/2006-2007.rlt.gz" />
+    </division>
+  </league>
 </config>

@@ -20,12 +20,15 @@ package net.footballpredictions.footballstats.model;
 import java.util.List;
 
 /**
+ * Information about a particular league.  Includes details of any deviations from
+ * standard rules and any prizes/relegation.
  * @author Daniel Dyer
  */
 public class LeagueMetaData
 {
     private final int pointsForWin;
     private final int pointsForDraw;
+    private final int split;
 
     private final int[] zones;
     private final String[] prizeZoneNames;
@@ -34,12 +37,14 @@ public class LeagueMetaData
 
     public LeagueMetaData(int pointsForWin,
                           int pointsForDraw,
+                          int split,
                           int numberOfTeams,
                           List<LeagueZone> prizeZones,
                           List<LeagueZone> relegationZones)
     {
         this.pointsForWin = pointsForWin;
         this.pointsForDraw = pointsForDraw;
+        this.split = split;
 
         // Workout positions info.
         zones = new int[numberOfTeams];
@@ -81,6 +86,34 @@ public class LeagueMetaData
 
 
     /**
+     * Certain leagues (e.g. the Scottish Premier League and the IFA Premiership in
+     * Northern Ireland) have an unconvential format that involves the league splitting
+     * into two sections after a certain number of matches.  Further matches are played
+     * after the split but bottom half teams cannot finish above top half teams even if
+     * they eventually accumulate more points.
+     *
+     * For example, in the SPL, after 33 games (each of the 12 teams plays each of the
+     * others 3 times), the league splits into a top half and bottom half of 6 teams
+     * each.  Within these sub-leagues, each team plays each other once more (5 games
+     * in total per club).  If a team makes the cut for the top section, they are
+     * guaranteed to finish no lower than sixth regardless of the results of the final
+     * 5 matches.  Likewise, if a team is in the bottom 6 after 33 matches they cannot
+     * finish higher than seventh, regardless of how many points they accumulate.
+     *
+     * This method returns the number of matches that are played before the league splits.
+     * Or ifm as in the case of most leagues, there is no split, the method returns zero.  
+     *
+     * @return The number of matches that are played before the league splits, or zero
+     * if this league does not split.
+     */
+    public int getSplit()
+    {
+        return split;
+    }
+
+    
+    /**
+     * @param position A league position, where 1 is the highest position.
      * @return A zone ID for a particular league position.  Positive zone IDs represent
      * prize zones (promotion, play-offs etc.) and negative IDs represent relegation zones.
      */

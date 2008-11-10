@@ -41,7 +41,13 @@ import net.footballpredictions.footballstats.model.Result;
  */
 public class RLTDataProvider implements LeagueDataProvider
 {
+    /**
+     * Replaced by {@link #RULES_TAG}.
+     */
+    @Deprecated
     private static final String POINTS_TAG = "POINTS";
+
+    private static final String RULES_TAG = "RULES";
     private static final String PRIZE_TAG = "PRIZE";
     private static final String RELEGATION_TAG = "RELEGATION";
     private static final String AWARDED_TAG = "AWARDED";
@@ -65,90 +71,92 @@ public class RLTDataProvider implements LeagueDataProvider
         {
             int pointsForWin = 3;
             int pointsForDraw = 1;
+            int split = 0;
 
             String nextLine = resultsReader.readLine();
             while (nextLine != null)
             {
                 nextLine = nextLine.trim();
-                if (nextLine.length() > 0)
+                // Lines beginning with a hash are comments and are ignored.  Blank lines are also ignored.
+                if (nextLine.length() > 0 && nextLine.charAt(0) != '#')
                 {
-                    StringTokenizer nextResult = new StringTokenizer(nextLine, "|");
+                    StringTokenizer tokens = new StringTokenizer(nextLine, "|");
 
-                    String dateString = nextResult.nextToken();
-                    if (Character.isDigit(dateString.charAt(0))) // Process as a result if first char is a number.
+                    String tag = tokens.nextToken();
+                    if (tag.equals(RULES_TAG) || tag.equals(POINTS_TAG)) // Data-file over-rides default league rules.
                     {
-                        Date date = DATE_FORMAT.parse(dateString);
-                        String homeTeamName = nextResult.nextToken().trim().intern();
-                        int homeScore = Integer.parseInt(nextResult.nextToken().trim());
-                        String awayTeamName = nextResult.nextToken().trim().intern();
-                        int awayScore = Integer.parseInt(nextResult.nextToken().trim());
-
-                        int attendance = -1;
-                        if (nextResult.hasMoreTokens())
+                        pointsForWin = Integer.parseInt(tokens.nextToken());
+                        pointsForDraw = Integer.parseInt(tokens.nextToken());
+                        if (tokens.hasMoreTokens())
                         {
-                            attendance = Integer.parseInt(nextResult.nextToken().trim());
+                            split = Integer.parseInt(tokens.nextToken());
                         }
+                    }
+                    else if (tag.equals(PRIZE_TAG))
+                    {
+                        prizeZones.add(new LeagueMetaData.LeagueZone(Integer.parseInt(tokens.nextToken()),
+                                                                     Integer.parseInt(tokens.nextToken()),
+                                                                     tokens.nextToken()));
+                    }
+                    else if (tag.equals(RELEGATION_TAG))
+                    {
+                        relegationZones.add(new LeagueMetaData.LeagueZone(Integer.parseInt(tokens.nextToken()),
+                                                                          Integer.parseInt(tokens.nextToken()),
+                                                                          tokens.nextToken()));
+                    }
+                    else if (tag.equals(DEDUCTED_TAG)) // Points adjustment.
+                    {
+                        processPointsAdjustment(tokens.nextToken(),
+                                                -Integer.parseInt(tokens.nextToken()));
+                    }
+                    else if (tag.equals(AWARDED_TAG))
+                    {
+                        processPointsAdjustment(tokens.nextToken(),
+                                                Integer.parseInt(tokens.nextToken()));
+                    }
+                    else // Process as a result (first char should be a number).
+                    {
+                        Date date = DATE_FORMAT.parse(tag);
+                        String homeTeamName = tokens.nextToken().trim().intern();
+                        int homeScore = Integer.parseInt(tokens.nextToken().trim());
+                        String awayTeamName = tokens.nextToken().trim().intern();
+                        int awayScore = Integer.parseInt(tokens.nextToken().trim());
 
+                        int attendance = tokens.hasMoreTokens() ? Integer.parseInt(tokens.nextToken().trim()) : -1;
 
                         Result result = new Result(homeTeamName, awayTeamName, homeScore, awayScore, attendance, date);
                         teams.add(homeTeamName);
                         teams.add(awayTeamName);
                         results.add(result);
-
-                    }
-                    else if (dateString.charAt(0) == '#')
-                    {
-                        // Lines beginning with a hash are comments and are ignored.
-                    }
-                    else if (dateString.equals(POINTS_TAG))
-                    {
-                        pointsForWin = Integer.parseInt(nextResult.nextToken());
-                        pointsForDraw = Integer.parseInt(nextResult.nextToken());
-                    }
-                    else if (dateString.equals(PRIZE_TAG))
-                    {
-                        prizeZones.add(new LeagueMetaData.LeagueZone(Integer.parseInt(nextResult.nextToken()),
-                                                                   Integer.parseInt(nextResult.nextToken()),
-                                                                   nextResult.nextToken()));
-                    }
-                    else if (dateString.equals(RELEGATION_TAG))
-                    {
-                        relegationZones.add(new LeagueMetaData.LeagueZone(Integer.parseInt(nextResult.nextToken()),
-                                                                        Integer.parseInt(nextResult.nextToken()),
-                                                                        nextResult.nextToken()));
-                    }
-                    else // Points adjustment.
-                    {
-                        String teamName = nextResult.nextToken();
-                        int amount = Integer.parseInt(nextResult.nextToken());
-                        if (dateString.equals(DEDUCTED_TAG))
-                        {
-                            amount = -amount;
-                        }
-
-                        Integer value = pointsAdjustments.get(teamName);
-                        if (value == null)
-                        {
-                            value = 0;
-                        }
-
-                        pointsAdjustments.put(teamName, value + amount);
                     }
                 }
                 nextLine = resultsReader.readLine();
             }
             System.out.println("Read " + results.size() + " results.");
 
-            this.metaData = new LeagueMetaData(pointsForWin, pointsForDraw, teams.size(), prizeZones, relegationZones);
+            this.metaData = new LeagueMetaData(pointsForWin,
+                                               pointsForDraw,
+                                               split,
+                                               teams.size(),
+                                               prizeZones,
+                                               relegationZones);
         }
         catch(ParseException ex)
         {
+            ex.printStackTrace();
             throw new IOException("Invalid date format in results file.");
         }
         finally
         {
             resultsReader.close();
         }
+    }
+
+
+    private void processPointsAdjustment(String team, int amount)
+    {
+        Integer value = pointsAdjustments.get(team);
+        pointsAdjustments.put(team, value == null ? amount : value + amount);
     }
 
 
