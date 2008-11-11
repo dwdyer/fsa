@@ -42,6 +42,7 @@ public final class Team
     private final StandardRecord homeRecord;
     private final StandardRecord awayRecord;
     private final StandardRecord overallRecord;
+    private final SplitRecord splitRecord; // Will be null if the league does not have a split.
 
     private int lowestCrowd;
     private int highestCrowd;
@@ -54,7 +55,7 @@ public final class Team
      */
     public Team(String name)
     {
-        this(name, 3, 1);
+        this(name, 3, 1, 0);
     }
 
 
@@ -63,13 +64,16 @@ public final class Team
      * @param name The name of the team.
      * @param pointsForWin The number of points awarded for each win.
      * @param pointsForDraw The number of points awarded for each draw.
+     * @param split How many games before this league splits SPL-style (zero means the
+     * league does not split).
      */
-    public Team(String name, int pointsForWin, int pointsForDraw)
+    public Team(String name, int pointsForWin, int pointsForDraw, int split)
     {
         this.name = name;
         this.homeRecord = new StandardRecord(this, VenueType.HOME, pointsForWin, pointsForDraw);
         this.awayRecord = new StandardRecord(this, VenueType.AWAY, pointsForWin, pointsForDraw);
         this.overallRecord = new StandardRecord(this, VenueType.BOTH, pointsForWin, pointsForDraw);
+        this.splitRecord = split > 0 ? new SplitRecord(this, pointsForWin, pointsForDraw, split) : null;
     }
 
 
@@ -88,6 +92,16 @@ public final class Team
             case BOTH: return overallRecord;
             default: throw new IllegalArgumentException("Invalid venue type: " + where);
         }
+    }
+
+
+    /**
+     * @return A record that includes only the results that will determine this team's
+     * split position.  Will be null if the league does not split SPL-style.
+     */
+    public SplitRecord getSplitRecord()
+    {
+        return splitRecord;
     }
 
 
@@ -162,6 +176,10 @@ public final class Team
         else if (result.getAwayTeam().equals(getName()))
         {
             awayRecord.addResult(result);
+        }
+        if (splitRecord != null)
+        {
+            splitRecord.addResult(result);
         }
     }
     

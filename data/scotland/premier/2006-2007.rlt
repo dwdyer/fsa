@@ -6,12 +6,12 @@ PRIZE|3|3|UEFA Cup
 RELEGATION|12|12|Relegation
 29072006|Celtic|4|Kilmarnock|1
 29072006|Dundee United|1|Falkirk|2
-29072006|Dunfermline|1|Heart of Midlothian|2
+29072006|Dunfermline Athletic|1|Heart of Midlothian|2
 29072006|Hibernian|1|Aberdeen|1
 29072006|Inverness Caledonian Thistle|1|St. Mirren|2
 30072006|Motherwell|1|Rangers|2
 05082006|Aberdeen|1|Inverness Caledonian Thistle|1
-05082006|Falkirk|1|Dunfermline|0
+05082006|Falkirk|1|Dunfermline Athletic|0
 05082006|Kilmarnock|2|Hibernian|1
 05082006|Rangers|2|Dundee United|2
 05082006|St. Mirren|2|Motherwell|0
@@ -21,26 +21,26 @@ RELEGATION|12|12|Relegation
 12082006|Inverness Caledonian Thistle|0|Hibernian|0
 12082006|Kilmarnock|0|Dundee United|0
 12082006|Motherwell|0|Aberdeen|2
-13082006|Dunfermline|1|Rangers|1
-19082006|Dundee United|0|Dunfermline|0
+13082006|Dunfermline Athletic|1|Rangers|1
+19082006|Dundee United|0|Dunfermline Athletic|0
 19082006|Falkirk|1|Kilmarnock|2
 19082006|Hibernian|3|Motherwell|1
 19082006|Rangers|2|Heart of Midlothian|0
 19082006|St. Mirren|1|Aberdeen|1
 20082006|Inverness Caledonian Thistle|1|Celtic|1
-26082006|Aberdeen|1|Dunfermline|0
+26082006|Aberdeen|1|Dunfermline Athletic|0
 26082006|Celtic|2|Hibernian|1
 26082006|Falkirk|0|Motherwell|1
 26082006|Heart of Midlothian|4|Inverness Caledonian Thistle|1
 26082006|St. Mirren|1|Dundee United|3
 27082006|Kilmarnock|2|Rangers|2
 09092006|Aberdeen|0|Celtic|1
-09092006|Dunfermline|3|Kilmarnock|2
+09092006|Dunfermline Athletic|3|Kilmarnock|2
 09092006|Heart of Midlothian|0|St. Mirren|1
 09092006|Motherwell|1|Inverness Caledonian Thistle|4
 09092006|Rangers|4|Falkirk|0
 10092006|Dundee United|0|Hibernian|3
-16092006|Celtic|1|Dunfermline|0
+16092006|Celtic|1|Dunfermline Athletic|0
 16092006|Falkirk|0|Aberdeen|2
 16092006|Inverness Caledonian Thistle|0|Dundee United|0
 16092006|St. Mirren|0|Kilmarnock|1
@@ -48,11 +48,11 @@ RELEGATION|12|12|Relegation
 17092006|Motherwell|0|Heart of Midlothian|1
 23092006|Celtic|2|Rangers|0
 23092006|Dundee United|1|Motherwell|1
-23092006|Dunfermline|2|St. Mirren|1
+23092006|Dunfermline Athletic|2|St. Mirren|1
 23092006|Hibernian|0|Falkirk|1
 23092006|Kilmarnock|1|Inverness Caledonian Thistle|1
 24092006|Aberdeen|1|Heart of Midlothian|3
-30092006|Inverness Caledonian Thistle|1|Dunfermline|0
+30092006|Inverness Caledonian Thistle|1|Dunfermline Athletic|0
 30092006|Motherwell|5|Kilmarnock|0
 30092006|St. Mirren|1|Hibernian|0
 01102006|Falkirk|0|Celtic|1
@@ -61,7 +61,7 @@ RELEGATION|12|12|Relegation
 14102006|Dundee United|1|Celtic|4
 14102006|Falkirk|1|St. Mirren|1
 14102006|Kilmarnock|1|Aberdeen|0
-14102006|Motherwell|2|Dunfermline|1
+14102006|Motherwell|2|Dunfermline Athletic|1
 14102006|Rangers|0|Inverness Caledonian Thistle|1
 15102006|Hibernian|2|Heart of Midlothian|2
 21102006|Aberdeen|3|Dundee United|1
@@ -69,15 +69,15 @@ RELEGATION|12|12|Relegation
 21102006|Heart of Midlothian|0|Kilmarnock|2
 21102006|Inverness Caledonian Thistle|3|Falkirk|2
 22102006|St. Mirren|2|Rangers|3
-23102006|Dunfermline|0|Hibernian|4
+23102006|Dunfermline Athletic|0|Hibernian|4
 28102006|Falkirk|5|Dundee United|1
-28102006|Heart of Midlothian|1|Dunfermline|1
+28102006|Heart of Midlothian|1|Dunfermline Athletic|1
 28102006|Rangers|1|Motherwell|1
 28102006|St. Mirren|1|Inverness Caledonian Thistle|1
 29102006|Kilmarnock|1|Celtic|2
 30102006|Aberdeen|2|Hibernian|1
 04112006|Celtic|2|Heart of Midlothian|1
-04112006|Dunfermline|0|Falkirk|3
+04112006|Dunfermline Athletic|0|Falkirk|3
 04112006|Hibernian|2|Kilmarnock|2
 04112006|Motherwell|0|St. Mirren|0
 05112006|Dundee United|2|Rangers|1
@@ -85,16 +85,16 @@ RELEGATION|12|12|Relegation
 11112006|Aberdeen|2|Motherwell|1
 11112006|Dundee United|1|Kilmarnock|0
 11112006|Hibernian|2|Inverness Caledonian Thistle|0
-11112006|Rangers|2|Dunfermline|0
+11112006|Rangers|2|Dunfermline Athletic|0
 12112006|St. Mirren|1|Celtic|3
 13112006|Falkirk|1|Heart of Midlothian|1
 18112006|Aberdeen|2|St. Mirren|0
 18112006|Celtic|3|Inverness Caledonian Thistle|0
-18112006|Dunfermline|2|Dundee United|1
+18112006|Dunfermline Athletic|2|Dundee United|1
 18112006|Kilmarnock|2|Falkirk|1
 18112006|Motherwell|1|Hibernian|6
 19112006|Heart of Midlothian|0|Rangers|1
-25112006|Dunfermline|0|Aberdeen|3
+25112006|Dunfermline Athletic|0|Aberdeen|3
 25112006|Inverness Caledonian Thistle|0|Heart of Midlothian|0
 25112006|Motherwell|4|Falkirk|2
 26112006|Dundee United|1|St. Mirren|0
@@ -103,7 +103,7 @@ RELEGATION|12|12|Relegation
 02122006|Celtic|1|Aberdeen|0
 02122006|Hibernian|2|Dundee United|1
 02122006|Inverness Caledonian Thistle|0|Motherwell|1
-02122006|Kilmarnock|5|Dunfermline|1
+02122006|Kilmarnock|5|Dunfermline Athletic|1
 02122006|St. Mirren|2|Heart of Midlothian|2
 03122006|Falkirk|1|Rangers|0
 09122006|Aberdeen|2|Falkirk|1
@@ -111,67 +111,67 @@ RELEGATION|12|12|Relegation
 09122006|Heart of Midlothian|4|Motherwell|1
 09122006|Kilmarnock|1|St. Mirren|1
 09122006|Rangers|3|Hibernian|0
-10122006|Dunfermline|1|Celtic|2
+10122006|Dunfermline Athletic|1|Celtic|2
 16122006|Falkirk|2|Hibernian|1
 16122006|Heart of Midlothian|0|Aberdeen|1
 16122006|Inverness Caledonian Thistle|3|Kilmarnock|4
 16122006|Motherwell|2|Dundee United|3
-16122006|St. Mirren|0|Dunfermline|0
+16122006|St. Mirren|0|Dunfermline Athletic|0
 17122006|Rangers|1|Celtic|1
 23122006|Aberdeen|1|Rangers|2
 23122006|Celtic|1|Falkirk|0
 23122006|Dundee United|0|Heart of Midlothian|1
-23122006|Dunfermline|0|Inverness Caledonian Thistle|0
+23122006|Dunfermline Athletic|0|Inverness Caledonian Thistle|0
 23122006|Hibernian|5|St. Mirren|1
 23122006|Kilmarnock|1|Motherwell|2
 26122006|Aberdeen|3|Kilmarnock|1
 26122006|Celtic|2|Dundee United|2
-26122006|Dunfermline|0|Motherwell|2
+26122006|Dunfermline Athletic|0|Motherwell|2
 26122006|Heart of Midlothian|3|Hibernian|2
 26122006|St. Mirren|1|Falkirk|0
 27122006|Inverness Caledonian Thistle|2|Rangers|1
 30122006|Dundee United|3|Aberdeen|1
 30122006|Falkirk|3|Inverness Caledonian Thistle|1
-30122006|Hibernian|2|Dunfermline|0
+30122006|Hibernian|2|Dunfermline Athletic|0
 30122006|Kilmarnock|0|Heart of Midlothian|0
 30122006|Motherwell|1|Celtic|1
 30122006|Rangers|1|St. Mirren|1
 01012007|Dundee United|1|Falkirk|5
 01012007|Inverness Caledonian Thistle|2|St. Mirren|1
 02012007|Celtic|2|Kilmarnock|0
-02012007|Dunfermline|0|Heart of Midlothian|1
+02012007|Dunfermline Athletic|0|Heart of Midlothian|1
 02012007|Hibernian|0|Aberdeen|0
 02012007|Motherwell|0|Rangers|1
 13012007|Aberdeen|1|Inverness Caledonian Thistle|1
-13012007|Falkirk|1|Dunfermline|0
+13012007|Falkirk|1|Dunfermline Athletic|0
 13012007|Rangers|5|Dundee United|0
 14012007|Heart of Midlothian|1|Celtic|2
 15012007|Kilmarnock|0|Hibernian|2
 20012007|Celtic|5|St. Mirren|1
 20012007|Heart of Midlothian|1|Falkirk|0
 20012007|Kilmarnock|1|Dundee United|0
-21012007|Dunfermline|0|Rangers|1
+21012007|Dunfermline Athletic|0|Rangers|1
 21012007|Inverness Caledonian Thistle|3|Hibernian|0
-27012007|Dundee United|0|Dunfermline|0
+27012007|Dundee United|0|Dunfermline Athletic|0
 27012007|Falkirk|0|Kilmarnock|2
 27012007|Hibernian|2|Motherwell|0
 27012007|Rangers|0|Heart of Midlothian|0
 27012007|St. Mirren|0|Aberdeen|2
 28012007|Inverness Caledonian Thistle|1|Celtic|2
-10022007|Aberdeen|3|Dunfermline|0
+10022007|Aberdeen|3|Dunfermline Athletic|0
 10022007|Celtic|1|Hibernian|0
 10022007|Falkirk|1|Motherwell|2
 10022007|Heart of Midlothian|1|Inverness Caledonian Thistle|0
 10022007|St. Mirren|0|Dundee United|1
 11022007|Kilmarnock|1|Rangers|3
 17022007|Aberdeen|1|Celtic|2
-17022007|Dunfermline|1|Kilmarnock|1
+17022007|Dunfermline Athletic|1|Kilmarnock|1
 17022007|Heart of Midlothian|1|St. Mirren|1
 17022007|Motherwell|1|Inverness Caledonian Thistle|0
 18022007|Dundee United|0|Hibernian|0
 18022007|Rangers|2|Falkirk|1
 20022007|St. Mirren|0|Motherwell|0
-03032007|Celtic|2|Dunfermline|1
+03032007|Celtic|2|Dunfermline Athletic|1
 03032007|Falkirk|1|Aberdeen|2
 03032007|Inverness Caledonian Thistle|1|Dundee United|0
 03032007|St. Mirren|0|Kilmarnock|2
@@ -179,31 +179,31 @@ RELEGATION|12|12|Relegation
 05032007|Motherwell|0|Heart of Midlothian|2
 10032007|Aberdeen|1|Heart of Midlothian|0
 10032007|Dundee United|1|Motherwell|1
-10032007|Dunfermline|0|St. Mirren|0
+10032007|Dunfermline Athletic|0|St. Mirren|0
 10032007|Hibernian|2|Falkirk|0
 10032007|Kilmarnock|3|Inverness Caledonian Thistle|2
 11032007|Celtic|0|Rangers|1
 13032007|Motherwell|0|Aberdeen|2
 17032007|Heart of Midlothian|0|Dundee United|4
-17032007|Inverness Caledonian Thistle|1|Dunfermline|3
+17032007|Inverness Caledonian Thistle|1|Dunfermline Athletic|3
 17032007|Rangers|3|Aberdeen|0
 18032007|Falkirk|1|Celtic|0
 31032007|Dundee United|1|Celtic|1
 31032007|Falkirk|2|St. Mirren|0
 31032007|Kilmarnock|1|Aberdeen|2
-31032007|Motherwell|2|Dunfermline|0
+31032007|Motherwell|2|Dunfermline Athletic|0
 31032007|Rangers|1|Inverness Caledonian Thistle|1
 01042007|Hibernian|0|Heart of Midlothian|1
 03042007|Motherwell|0|Kilmarnock|1
 04042007|St. Mirren|1|Hibernian|1
 07042007|Aberdeen|2|Dundee United|4
 07042007|Celtic|1|Motherwell|0
-07042007|Dunfermline|1|Hibernian|0
+07042007|Dunfermline Athletic|1|Hibernian|0
 07042007|Heart of Midlothian|1|Kilmarnock|0
 07042007|Inverness Caledonian Thistle|1|Falkirk|1
 08042007|St. Mirren|0|Rangers|1
 21042007|Aberdeen|2|Hibernian|2
-21042007|Dunfermline|1|Dundee United|0
+21042007|Dunfermline Athletic|1|Dundee United|0
 21042007|Inverness Caledonian Thistle|2|Motherwell|0
 21042007|Rangers|2|Heart of Midlothian|1
 22042007|Kilmarnock|1|Celtic|2
@@ -213,21 +213,21 @@ RELEGATION|12|12|Relegation
 28042007|Hibernian|3|Rangers|3
 28042007|Motherwell|3|Falkirk|3
 29042007|Celtic|1|Heart of Midlothian|3
-30042007|St. Mirren|0|Dunfermline|1
+30042007|St. Mirren|0|Dunfermline Athletic|1
 05052007|Dundee United|0|St. Mirren|2
 05052007|Falkirk|1|Inverness Caledonian Thistle|0
 05052007|Hibernian|0|Kilmarnock|1
 05052007|Rangers|2|Celtic|0
 06052007|Heart of Midlothian|1|Aberdeen|1
-07052007|Dunfermline|4|Motherwell|1
+07052007|Dunfermline Athletic|4|Motherwell|1
 12052007|Celtic|2|Aberdeen|1
 12052007|Falkirk|2|Dundee United|0
 12052007|Heart of Midlothian|2|Hibernian|0
-12052007|Inverness Caledonian Thistle|2|Dunfermline|1
+12052007|Inverness Caledonian Thistle|2|Dunfermline Athletic|1
 12052007|Motherwell|2|St. Mirren|3
 13052007|Rangers|0|Kilmarnock|1
 19052007|Dundee United|0|Motherwell|0
-19052007|Dunfermline|0|Falkirk|3
+19052007|Dunfermline Athletic|0|Falkirk|3
 19052007|St. Mirren|0|Inverness Caledonian Thistle|1
 20052007|Aberdeen|2|Rangers|0
 20052007|Hibernian|2|Celtic|1

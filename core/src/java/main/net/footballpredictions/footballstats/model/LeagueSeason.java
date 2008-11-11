@@ -17,12 +17,17 @@
 // ============================================================================
 package net.footballpredictions.footballstats.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -72,7 +77,8 @@ public final class LeagueSeason
         {
             teamMappings.put(teamName, new Team(teamName,
                                                 metaData.getPointsForWin(),
-                                                metaData.getPointsForDraw()));
+                                                metaData.getPointsForDraw(),
+                                                metaData.getSplit()));
         }
 
         List<Result> results = dataProvider.getResults();
@@ -117,7 +123,7 @@ public final class LeagueSeason
                 teamMappings.get(result.getAwayTeam()).addResult(result);
             }
             // Calculate table for current date.
-            SortedSet<StandardRecord> table = getStandardLeagueTable(VenueType.BOTH);
+            Set<StandardRecord> table = getStandardLeagueTable(VenueType.BOTH);
             int index = 1;
             for (StandardRecord team : table)
             {
@@ -195,6 +201,7 @@ public final class LeagueSeason
 
     /**
      * Get a list of the names of all the teams in the division, sorted in alphabetical order.
+     * @return An ordered collection of team names.
      */
     public SortedSet<String> getTeamNames()
     {
@@ -203,6 +210,7 @@ public final class LeagueSeason
     
     
     /**
+     * @param teamName The name of the team to look-up.
      * @return The Team object for a particular team name.
      */
     public Team getTeam(String teamName)
@@ -229,6 +237,7 @@ public final class LeagueSeason
     
     
     /**
+     * @param date The date of the matches to return.
      * @return An array of results for a particular date.
      */
     public List<Result> getResults(Date date)
@@ -246,17 +255,57 @@ public final class LeagueSeason
         }
         return allResults;
     }
+
+
+    /**
+     * Divide the league into two sections if an SPL-style split has been configured.
+     * Otherwise all teams are in one section as in any sane league.
+     * @param where The type of table that is being generated.
+     * @return A list of league sections (will be either one or two).
+     */
+    private List<Collection<Team>> splitTeams(VenueType where)
+    {
+        // Only split the teams if a split has been configured.  Don't split home/away tables.
+        if (metaData.getSplit() > 0 && where == VenueType.BOTH)
+        {
+            SortedSet<SplitRecord> splitTable = new TreeSet<SplitRecord>(new LeagueTableComparator());
+            for (Team team : teamMappings.values())
+            {
+                splitTable.add(team.getSplitRecord());
+            }
+            List<Team> teams = new ArrayList<Team>(teamNames.size());
+            for (SplitRecord record : splitTable)
+            {
+                teams.add(record.getTeam());
+            }
+            return Arrays.<Collection<Team>>asList(teams.subList(0, teams.size() / 2),
+                                                   teams.subList(teams.size() / 2, teams.size()));
+        }
+        else // All teams are in one league section.
+        {
+            return Arrays.asList(teamMappings.values());
+        }
+    }
     
     
     /**
      * Sorts the teams into standard league table order (in order of points won).
+     * @param where Whether the table is for home games, away games or both.
+     * @return A collection of team records ordered by league position.
      */
-    public SortedSet<StandardRecord> getStandardLeagueTable(VenueType where)
+    public Set<StandardRecord> getStandardLeagueTable(VenueType where)
     {
-        SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new LeagueTableComparator());
-        for (Team team : teamMappings.values())
+        List<Collection<Team>> splits = splitTeams(where);
+
+        Set<StandardRecord> leagueTable = new LinkedHashSet<StandardRecord>(teamNames.size());
+        for (Collection<Team> split : splits)
         {
-            leagueTable.add(team.getRecord(where));
+            SortedSet<StandardRecord> subTable = new TreeSet<StandardRecord>(new LeagueTableComparator());
+            for (Team team : split)
+            {
+                subTable.add(team.getRecord(where));
+            }
+            leagueTable.addAll(subTable);
         }
         return leagueTable;
     }
@@ -264,8 +313,10 @@ public final class LeagueSeason
     
     /**
      * Sorts the teams in order of average points won per game.
+     * @param where Whether the table is for home games, away games or both.
+     * @return A collection of team records ordered by points per game (highest first).
      */
-    public SortedSet<StandardRecord> getAverageLeagueTable(VenueType where)
+    public Set<StandardRecord> getAverageLeagueTable(VenueType where)
     {
         SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new PointsPerGameComparator());
         for (Team team : teamMappings.values())
@@ -278,8 +329,10 @@ public final class LeagueSeason
     
     /**
      * Sorts the teams in order of fewest points lost.
+     * @param where Whether the table is for home games, away games or both.
+     * @return A collection of team records ordered by points dropped (fewest first).
      */
-    public SortedSet<StandardRecord> getInvertedLeagueTable(VenueType where)
+    public Set<StandardRecord> getInvertedLeagueTable(VenueType where)
     {
         SortedSet<StandardRecord> leagueTable = new TreeSet<StandardRecord>(new DroppedPointsComparator());
         for (Team team : teamMappings.values())
@@ -290,7 +343,7 @@ public final class LeagueSeason
     }
     
     
-    public SortedSet<FormRecord> getFormTable(VenueType where)
+    public Set<FormRecord> getFormTable(VenueType where)
     {
         SortedSet<FormRecord> formTeams = new TreeSet<FormRecord>(new LeagueTableComparator());
         for (Team team : teamMappings.values())
@@ -307,9 +360,9 @@ public final class LeagueSeason
      * @param current Whether to use the current value of the sequence or the season's best sequence.
      * @return A set of teams, sorted in descending order of the sequence specified by the above parameters.
      */
-    public SortedSet<StandardRecord> getSequenceTable(SequenceType type,
-                                                      VenueType where,
-                                                      boolean current)
+    public Set<StandardRecord> getSequenceTable(SequenceType type,
+                                                VenueType where,
+                                                boolean current)
     {
         SortedSet<StandardRecord> sequenceTable = new TreeSet<StandardRecord>(new SequenceComparator(type, current));
         for (Team team : teamMappings.values())
@@ -325,7 +378,7 @@ public final class LeagueSeason
     }
     
     
-    public SortedSet<Team> getAttendanceTable(int type)
+    public Set<Team> getAttendanceTable(int type)
     {
         SortedSet<Team> sortedTeams = new TreeSet<Team>(new TeamAttendanceComparator(type));
         sortedTeams.addAll(teamMappings.values());

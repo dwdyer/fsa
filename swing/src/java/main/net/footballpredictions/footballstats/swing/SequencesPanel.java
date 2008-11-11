@@ -23,7 +23,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.SortedSet;
+import java.util.Set;
 import javax.swing.ButtonGroup;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -163,8 +163,8 @@ public class SequencesPanel extends JPanel implements DataListener
         VenueType venue = (VenueType) venueCombo.getSelectedItem();
         boolean current = currentOption.isSelected();
 
-        // Update teams table.
-        SortedSet<StandardRecord> teamData = data.getSequenceTable(type, venue, current);
+        // Update teams table.        
+        Set<StandardRecord> teamData = data.getSequenceTable(type, venue, current);
         teamsTable.setModel(new SequenceTableModel(teamData, type, current, messageResources));
         TableColumnModel columnModel = teamsTable.getColumnModel();
         for (int i = 0; i < columnModel.getColumnCount(); i++)
