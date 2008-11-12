@@ -246,17 +246,6 @@ public final class LeagueSeason
     }
 
 
-    public List<Result> getAllResults()
-    {
-        List<Result> allResults = new LinkedList<Result>();
-        for (List<Result> results : resultsByDate.values())
-        {
-            allResults.addAll(results);
-        }
-        return allResults;
-    }
-
-
     /**
      * Divide the league into two sections if an SPL-style split has been configured.
      * Otherwise all teams are in one section as in any sane league.

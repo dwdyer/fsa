@@ -66,12 +66,6 @@
   </target>
 
 
-  <target name="editor" depends="core, swing" description="Builds the data editor application.">
-    <uncommons:compile module="editor" />
-    <uncommons:jar module="editor" />
-  </target>
-
-
   <target name="applet.build" depends="core, swing" description="Builds the Swing applet.">
     <uncommons:compile module="applet" />
     <uncommons:jar module="applet" />
@@ -139,7 +133,7 @@
 
   <!-- Runs unit tests for all modules. -->
   <target name="test"
-          depends="core, swing, applet.build, editor"
+          depends="core, swing, applet.build"
           description="Run the unit test suite.">
     <mkdir dir="${temp.dir}" />
 
@@ -159,7 +153,6 @@
       <fileset dir="core/build" includes="core.jar"/>
       <fileset dir="swing/build" includes="swing.jar"/>
       <fileset dir="applet/build" includes="applet.jar"/>
-      <fileset dir="editor/build" includes="editor.jar"/>
     </cobertura-instrument>
 
     <!-- Run the unit tests on the instrumented classes. -->
@@ -188,7 +181,6 @@
       <fileset dir="core/${src.dir}/java/main" includes="**/*.java" />
       <fileset dir="swing/${src.dir}/java/main" includes="**/*.java" />
       <fileset dir="applet/${src.dir}/java/main" includes="**/*.java" />
-      <fileset dir="editor/${src.dir}/java/main" includes="**/*.java" />
     </cobertura-report>
     <!-- Generate an XML coverage report so that Hudson can graph trends. -->
     <cobertura-report format="xml"
@@ -197,7 +189,6 @@
       <fileset dir="core/${src.dir}/java/main" includes="**/*.java" />
       <fileset dir="swing/${src.dir}/java/main" includes="**/*.java" />
       <fileset dir="applet/${src.dir}/java/main" includes="**/*.java" />
-      <fileset dir="editor/${src.dir}/java/main" includes="**/*.java" />
     </cobertura-report>
 
   </target>
