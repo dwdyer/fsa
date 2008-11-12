@@ -71,7 +71,7 @@ class TableRenderer extends DefaultTableCellRenderer
         Object formattedValue = value instanceof Double ? DECIMAL_FORMAT.format(value) : value;
         JLabel component = (JLabel) super.getTableCellRendererComponent(table,
                                                                         formattedValue,
-                                                                        isSelected, // Never render selection.
+                                                                        isSelected,
                                                                         false, // Never render focus.
                                                                         row,
                                                                         column);
