@@ -113,13 +113,10 @@
       <fileset dir="applet/${src.dir}/conf" includes="*" />
       <fileset dir="applet/${src.dir}/html" includes="*" />
     </copy>
-    <!-- GZip task doesn't allow zipping of multiple files, so use exec instead. -->
-    <exec executable="sh" dir="${dist.dir}/data/england/premier">
-      <arg line="-c 'gzip *.rlt'" />
-    </exec>
-    <exec executable="sh" dir="${dist.dir}/data/scotland/premier">
-      <arg line="-c 'gzip *.rlt'" />
-    </exec>
+    <!-- Compress each individual data file (standard Ant GZip task does not work with Filesets). -->
+    <uncommons:gzip>
+      <fileset dir="${dist.dir}/data" includes="**/*.rlt" />
+    </uncommons:gzip>
   </target>
   
 
