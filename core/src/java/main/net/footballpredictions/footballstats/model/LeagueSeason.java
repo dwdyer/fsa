@@ -18,7 +18,6 @@
 package net.footballpredictions.footballstats.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -254,6 +253,7 @@ public final class LeagueSeason
      */
     private List<Collection<Team>> splitTeams(VenueType where)
     {
+        List<Collection<Team>> result = new ArrayList<Collection<Team>>(2);
         // Only split the teams if a split has been configured.  Don't split home/away tables.
         if (metaData.getSplit() > 0 && where == VenueType.BOTH)
         {
@@ -267,13 +267,14 @@ public final class LeagueSeason
             {
                 teams.add(record.getTeam());
             }
-            return Arrays.<Collection<Team>>asList(teams.subList(0, teams.size() / 2),
-                                                   teams.subList(teams.size() / 2, teams.size()));
+            result.add(teams.subList(0, teams.size() / 2));
+            result.add(teams.subList(teams.size() / 2, teams.size()));
         }
         else // All teams are in one league section.
         {
-            return Arrays.asList(teamMappings.values());
+            result.add(teamMappings.values());
         }
+        return result;
     }
     
     
