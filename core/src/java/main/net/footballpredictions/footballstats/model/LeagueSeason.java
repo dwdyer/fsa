@@ -70,8 +70,20 @@ public final class LeagueSeason
 
     public LeagueSeason(LeagueDataProvider dataProvider)
     {
-        this.metaData = dataProvider.getLeagueMetaData();
-        this.teamNames = dataProvider.getTeams();
+        this(dataProvider.getTeams(),
+             dataProvider.getResults(),
+             dataProvider.getPointsAdjustments(),
+             dataProvider.getLeagueMetaData());
+    }
+
+
+    public LeagueSeason(SortedSet<String> teamNames,
+                        List<Result> results,
+                        Map<String, Integer> pointsAdjustments,
+                        LeagueMetaData metaData)
+    {
+        this.metaData = metaData;
+        this.teamNames = teamNames;
         for (String teamName : teamNames)
         {
             teamMappings.put(teamName, new Team(teamName,
@@ -80,7 +92,6 @@ public final class LeagueSeason
                                                 metaData.getSplit()));
         }
 
-        List<Result> results = dataProvider.getResults();
         Collections.sort(results, new ResultDateComparator());
 
         for (Result result : results)
@@ -100,7 +111,7 @@ public final class LeagueSeason
             matchCount++;
         }
 
-        for (Map.Entry<String, Integer> adjustment : dataProvider.getPointsAdjustments().entrySet())
+        for (Map.Entry<String, Integer> adjustment : pointsAdjustments.entrySet())
         {
             teamMappings.get(adjustment.getKey()).adjustPoints(adjustment.getValue());
         }

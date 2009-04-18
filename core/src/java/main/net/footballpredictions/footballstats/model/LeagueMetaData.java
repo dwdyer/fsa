@@ -101,7 +101,7 @@ public class LeagueMetaData
      * finish higher than seventh, regardless of how many points they accumulate.
      *
      * This method returns the number of matches that are played before the league splits.
-     * Or ifm as in the case of most leagues, there is no split, the method returns zero.  
+     * Or if, as in the case of most leagues, there is no split, the method returns zero.  
      *
      * @return The number of matches that are played before the league splits, or zero
      * if this league does not split.

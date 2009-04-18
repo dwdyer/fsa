@@ -6,6 +6,7 @@
     <content url="file://$MODULE_DIR$/../..">
       <excludeFolder url="file://$MODULE_DIR$/../../applet" />
       <excludeFolder url="file://$MODULE_DIR$/../../core" />
+      <excludeFolder url="file://$MODULE_DIR$/../../dist" />
       <excludeFolder url="file://$MODULE_DIR$/../../swing" />
     </content>
     <orderEntry type="inheritedJdk" />
