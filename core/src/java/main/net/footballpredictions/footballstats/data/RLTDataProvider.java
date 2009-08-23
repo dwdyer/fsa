@@ -52,6 +52,7 @@ public class RLTDataProvider implements LeagueDataProvider
     private static final String RELEGATION_TAG = "RELEGATION";
     private static final String AWARDED_TAG = "AWARDED";
     private static final String DEDUCTED_TAG = "DEDUCTED";
+    private static final String MINILEAGUE_TAG = "MINILEAGUE";
 
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("ddMMyyyy");
 
@@ -114,8 +115,9 @@ public class RLTDataProvider implements LeagueDataProvider
                         processPointsAdjustment(tokens.nextToken(),
                                                 Integer.parseInt(tokens.nextToken()));
                     }
-                    else // Process as a result (first char should be a number).
+                    else if (!tag.equals(MINILEAGUE_TAG)) // Mini-leagues currently implemented by Anorak but not FSA.
                     {
+                        // Process as a result (first char should be a number).
                         Date date = DATE_FORMAT.parse(tag);
                         String homeTeamName = tokens.nextToken().trim().intern();
                         int homeScore = Integer.parseInt(tokens.nextToken().trim());

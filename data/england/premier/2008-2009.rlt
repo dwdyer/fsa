@@ -3,6 +3,11 @@ PRIZE|1|1|Champions
 PRIZE|2|3|UEFA CL Group Stage
 PRIZE|4|4|UEFA CL Qualifying
 RELEGATION|18|20|Relegation
+MINILEAGUE|Big 4|Arsenal|Chelsea|Liverpool|Manchester United
+MINILEAGUE|London|Arsenal|Chelsea|Fulham|Tottenham Hotspur|West Ham United
+MINILEAGUE|Midlands|Aston Villa|Stoke City|West Bromwich Albion
+MINILEAGUE|North East|Middlesbrough|Newcastle United|Sunderland
+MINILEAGUE|North West|Blackburn Rovers|Bolton Wanderers|Everton|Liverpool|Manchester City|Manchester United|Wigan Athletic
 16082008|Arsenal|1|West Bromwich Albion|0
 16082008|Bolton Wanderers|3|Stoke City|1
 16082008|Everton|2|Blackburn Rovers|3

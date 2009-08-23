@@ -3,6 +3,11 @@ PRIZE|1|1|Champions
 PRIZE|2|2|UEFA CL Group Stage
 PRIZE|3|4|UEFA CL Qualifying
 RELEGATION|18|20|Relegation
+MINILEAGUE|Big 4|Arsenal|Chelsea|Liverpool|Manchester United
+MINILEAGUE|London|Arsenal|Chelsea|Fulham|Tottenham Hotspur|West Ham United
+MINILEAGUE|Midlands|Aston Villa|Birmingham City|Derby County
+MINILEAGUE|North East|Middlesbrough|Newcastle United|Sunderland
+MINILEAGUE|North West|Blackburn Rovers|Bolton Wanderers|Everton|Liverpool|Manchester City|Manchester United|Wigan Athletic
 11082007|Aston Villa|1|Liverpool|2
 11082007|Bolton Wanderers|1|Newcastle United|3
 11082007|Derby County|2|Portsmouth|2

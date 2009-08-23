@@ -1,5 +1,12 @@
-# FA Premiership 1997/1998 - 2008/2009
+# FA Premiership 1992/1993 - 2008/2009
 DEDUCTED|Middlesbrough|3
+MINILEAGUE|Big 4|Arsenal|Chelsea|Liverpool|Manchester United
+MINILEAGUE|Ever-Present|Arsenal|Aston Villa|Chelsea|Everton|Liverpool|Manchester United|Tottenham Hotspur
+MINILEAGUE|London|Arsenal|Charlton Athletic|Chelsea|Crystal Palace|Fulham|Queens Park Rangers|Tottenham Hotspur|West Ham United|Wimbledon
+MINILEAGUE|Midlands|Aston Villa|Birmingham City|Coventry City|Derby County|Leicester City|Nottingham Forest|Stoke City|West Bromwich Albion|Wolverhampton Wanderers
+MINILEAGUE|North East|Middlesbrough|Newcastle United|Sunderland
+MINILEAGUE|North West|Blackburn Rovers|Bolton Wanderers|Everton|Liverpool|Manchester City|Manchester United|Oldham Athletic|Wigan Athletic
+MINILEAGUE|Yorkshire|Barnsley|Bradford City|Hull City|Leeds United|Sheffield United|Sheffield Wednesday
 15081992|Arsenal|2|Norwich City|4
 15081992|Chelsea|1|Oldham Athletic|1
 15081992|Coventry City|2|Middlesbrough|1
@@ -6706,3 +6713,24 @@ DEDUCTED|Middlesbrough|3
 24052009|Sunderland|2|Chelsea|3
 24052009|West Ham United|2|Middlesbrough|1
 24052009|Wigan Athletic|1|Portsmouth|0
+15082009|Aston Villa|0|Wigan Athletic|2
+15082009|Blackburn Rovers|0|Manchester City|2
+15082009|Bolton Wanderers|0|Sunderland|1
+15082009|Chelsea|2|Hull City|1
+15082009|Everton|1|Arsenal|6
+15082009|Portsmouth|0|Fulham|1
+15082009|Stoke City|2|Burnley|0
+15082009|Wolverhampton Wanderers|0|West Ham United|2
+16082009|Manchester United|1|Birmingham City|0
+16082009|Tottenham Hotspur|2|Liverpool|1
+18082009|Sunderland|1|Chelsea|3
+19082009|Birmingham City|1|Portsmouth|0
+19082009|Burnley|1|Manchester United|0
+19082009|Hull City|1|Tottenham Hotspur|5
+19082009|Liverpool|4|Stoke City|0
+23082009|Arsenal|4|Portsmouth|1
+23082009|Birmingham City|0|Stoke City|0
+23082009|Hull City|1|Bolton Wanderers|0
+23082009|Manchester City|1|Wolverhampton Wanderers|0
+23082009|Sunderland|2|Blackburn Rovers|1
+23082009|Wigan Athletic|0|Manchester United|5

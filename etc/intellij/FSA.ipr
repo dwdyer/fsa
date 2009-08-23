@@ -471,37 +471,6 @@
         <entry key="/Users/dan/Projects/fsa">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://fsa.dev.java.net/svn/fsa/branches">
-                    <value>
-                      <list>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1213057054355" />
-                          <option name="revision" value="1" />
-                          <option name="url" value="https://fsa.dev.java.net/svn/fsa/branches/README" />
-                        </SvnBranchItem>
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="https://fsa.dev.java.net/svn/fsa/tags">
-                    <value>
-                      <list>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1213113548191" />
-                          <option name="revision" value="13" />
-                          <option name="url" value="https://fsa.dev.java.net/svn/fsa/tags/fsa-2.0.3" />
-                        </SvnBranchItem>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1213057054355" />
-                          <option name="revision" value="1" />
-                          <option name="url" value="https://fsa.dev.java.net/svn/fsa/tags/README" />
-                        </SvnBranchItem>
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://fsa.dev.java.net/svn/fsa/branches" />

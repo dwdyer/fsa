@@ -3,6 +3,10 @@ PRIZE|1|1|Champions
 PRIZE|2|2|UEFA CL Group Stage
 PRIZE|3|3|UEFA CL Qualifying
 RELEGATION|18|20|Relegation
+MINILEAGUE|London|Arsenal|Charlton Athletic|Chelsea|Tottenham Hotspur|West Ham United
+MINILEAGUE|Midlands|Aston Villa|Coventry City|Derby County|Leicester City
+MINILEAGUE|North East|Middlesbrough|Newcastle United|Sunderland
+MINILEAGUE|North West|Everton|Liverpool|Manchester City|Manchester United
 19082000|Charlton Athletic|4|Manchester City|0
 19082000|Chelsea|4|West Ham United|2
 19082000|Coventry City|1|Middlesbrough|3
