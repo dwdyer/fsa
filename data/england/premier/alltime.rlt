@@ -1,5 +1,6 @@
 # FA Premiership 1992/1993 - 2008/2009
 DEDUCTED|Middlesbrough|3
+DEDUCTED|Portsmouth|9
 MINILEAGUE|Big 4|Arsenal|Chelsea|Liverpool|Manchester United
 MINILEAGUE|Ever-Present|Arsenal|Aston Villa|Chelsea|Everton|Liverpool|Manchester United|Tottenham Hotspur
 MINILEAGUE|London|Arsenal|Charlton Athletic|Chelsea|Crystal Palace|Fulham|Queens Park Rangers|Tottenham Hotspur|West Ham United|Wimbledon
@@ -6879,3 +6880,128 @@ MINILEAGUE|Yorkshire|Barnsley|Bradford City|Hull City|Leeds United|Sheffield Uni
 16122009|Chelsea|2|Portsmouth|1
 16122009|Liverpool|2|Wigan Athletic|1
 16122009|Tottenham Hotspur|3|Manchester City|0
+19122009|Arsenal|3|Hull City|0
+19122009|Aston Villa|1|Stoke City|0
+19122009|Blackburn Rovers|0|Tottenham Hotspur|2
+19122009|Fulham|3|Manchester United|0
+19122009|Manchester City|4|Sunderland|3
+19122009|Portsmouth|2|Liverpool|0
+20122009|Everton|1|Birmingham City|1
+20122009|West Ham United|1|Chelsea|1
+20122009|Wolverhampton Wanderers|2|Burnley|0
+26122009|Birmingham City|0|Chelsea|0
+26122009|Burnley|1|Bolton Wanderers|1
+26122009|Fulham|0|Tottenham Hotspur|0
+26122009|Liverpool|2|Wolverhampton Wanderers|0
+26122009|Manchester City|2|Stoke City|0
+26122009|Sunderland|1|Everton|1
+26122009|West Ham United|2|Portsmouth|0
+26122009|Wigan Athletic|1|Blackburn Rovers|1
+27122009|Arsenal|3|Aston Villa|0
+27122009|Hull City|1|Manchester United|3
+28122009|Blackburn Rovers|2|Sunderland|2
+28122009|Chelsea|2|Fulham|1
+28122009|Everton|2|Burnley|0
+28122009|Stoke City|0|Birmingham City|1
+28122009|Tottenham Hotspur|2|West Ham United|0
+28122009|Wolverhampton Wanderers|0|Manchester City|3
+29122009|Aston Villa|0|Liverpool|1
+29122009|Bolton Wanderers|2|Hull City|2
+30122009|Manchester United|5|Wigan Athletic|0
+30122009|Portsmouth|1|Arsenal|4
+05012010|Stoke City|3|Fulham|2
+09012010|Arsenal|2|Everton|2
+09012010|Birmingham City|1|Manchester United|1
+11012010|Manchester City|4|Blackburn Rovers|1
+16012010|Chelsea|7|Sunderland|2
+16012010|Everton|2|Manchester City|0
+16012010|Manchester United|3|Burnley|0
+16012010|Stoke City|1|Liverpool|1
+16012010|Tottenham Hotspur|0|Hull City|0
+16012010|Wolverhampton Wanderers|0|Wigan Athletic|2
+17012010|Aston Villa|0|West Ham United|0
+17012010|Blackburn Rovers|2|Fulham|0
+17012010|Bolton Wanderers|0|Arsenal|2
+20012010|Arsenal|4|Bolton Wanderers|2
+20012010|Liverpool|2|Tottenham Hotspur|0
+23012010|Manchester United|4|Hull City|0
+26012010|Bolton Wanderers|1|Burnley|0
+26012010|Portsmouth|1|West Ham United|1
+26012010|Tottenham Hotspur|2|Fulham|0
+26012010|Wolverhampton Wanderers|0|Liverpool|0
+27012010|Aston Villa|0|Arsenal|0
+27012010|Blackburn Rovers|2|Wigan Athletic|1
+27012010|Chelsea|3|Birmingham City|0
+27012010|Everton|2|Sunderland|0
+30012010|Birmingham City|1|Tottenham Hotspur|1
+30012010|Burnley|1|Chelsea|2
+30012010|Fulham|0|Aston Villa|2
+30012010|Hull City|2|Wolverhampton Wanderers|2
+30012010|Liverpool|2|Bolton Wanderers|0
+30012010|West Ham United|0|Blackburn Rovers|0
+30012010|Wigan Athletic|0|Everton|1
+31012010|Arsenal|1|Manchester United|3
+31012010|Manchester City|2|Portsmouth|0
+01022010|Sunderland|0|Stoke City|0
+02022010|Hull City|1|Chelsea|1
+03022010|Fulham|1|Portsmouth|0
+06022010|Bolton Wanderers|0|Fulham|0
+06022010|Burnley|2|West Ham United|1
+06022010|Hull City|2|Manchester City|1
+06022010|Liverpool|1|Everton|0
+06022010|Manchester United|5|Portsmouth|0
+06022010|Stoke City|3|Blackburn Rovers|0
+06022010|Sunderland|1|Wigan Athletic|1
+06022010|Tottenham Hotspur|0|Aston Villa|0
+07022010|Birmingham City|2|Wolverhampton Wanderers|1
+07022010|Chelsea|2|Arsenal|0
+09022010|Fulham|3|Burnley|0
+09022010|Manchester City|2|Bolton Wanderers|0
+09022010|Portsmouth|1|Sunderland|1
+09022010|Wigan Athletic|1|Stoke City|1
+10022010|Arsenal|1|Liverpool|0
+10022010|Aston Villa|1|Manchester United|1
+10022010|Blackburn Rovers|1|Hull City|0
+10022010|Everton|2|Chelsea|1
+10022010|West Ham United|2|Birmingham City|0
+10022010|Wolverhampton Wanderers|1|Tottenham Hotspur|0
+16022010|Stoke City|1|Manchester City|1
+17022010|Wigan Athletic|0|Bolton Wanderers|0
+20022010|Arsenal|2|Sunderland|0
+20022010|Everton|3|Manchester United|1
+20022010|Portsmouth|1|Stoke City|2
+20022010|West Ham United|3|Hull City|0
+20022010|Wolverhampton Wanderers|0|Chelsea|2
+21022010|Aston Villa|5|Burnley|2
+21022010|Blackburn Rovers|3|Bolton Wanderers|0
+21022010|Fulham|2|Birmingham City|1
+21022010|Manchester City|0|Liverpool|0
+21022010|Wigan Athletic|0|Tottenham Hotspur|3
+23022010|Manchester United|3|West Ham United|0
+27022010|Birmingham City|1|Wigan Athletic|0
+27022010|Bolton Wanderers|1|Wolverhampton Wanderers|0
+27022010|Burnley|1|Portsmouth|2
+27022010|Chelsea|2|Manchester City|4
+27022010|Stoke City|1|Arsenal|3
+28022010|Liverpool|2|Blackburn Rovers|1
+28022010|Sunderland|0|Fulham|0
+28022010|Tottenham Hotspur|2|Everton|1
+06032010|Arsenal|3|Burnley|1
+06032010|West Ham United|1|Bolton Wanderers|2
+06032010|Wolverhampton Wanderers|0|Manchester United|1
+07032010|Everton|5|Hull City|1
+08032010|Wigan Athletic|1|Liverpool|0
+09032010|Portsmouth|1|Birmingham City|2
+09032010|Sunderland|4|Bolton Wanderers|0
+10032010|Burnley|1|Stoke City|1
+13032010|Birmingham City|2|Everton|2
+13032010|Bolton Wanderers|4|Wigan Athletic|0
+13032010|Burnley|1|Wolverhampton Wanderers|2
+13032010|Chelsea|4|West Ham United|1
+13032010|Hull City|1|Arsenal|2
+13032010|Stoke City|0|Aston Villa|0
+13032010|Tottenham Hotspur|3|Blackburn Rovers|1
+14032010|Manchester United|3|Fulham|0
+14032010|Sunderland|1|Manchester City|1
+15032010|Liverpool|4|Portsmouth|1
+16032010|Wigan Athletic|1|Aston Villa|2
