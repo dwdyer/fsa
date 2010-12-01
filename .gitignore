@@ -4,3 +4,4 @@ temp
 */build
 *.iws
 .DS_Store
+velocity.log
