@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>Football Statistics</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="description" content="The Football Statistics Applet (FSA), a Java applet for generating league tables, form tables, sequences and other statistics." />
+    <meta name="keywords" content="football, statistics, applet, fsa, java, soccer, league, tables, form, table, sequences" />
+    <meta name="author" content="Daniel Dyer" />
+    <link href="fsa.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="container">
+      <a href="http://github.com/dwdyer/fsa"><img id="githubribbon" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" width="149" height="149" alt="Fork me on GitHub" /></a>
+      <div id="title">
+        <h1>Football Statistics Applet</h1>
+      </div>
+      <div id="ribbon">
+        <a href="http://github.com/dwdyer/fsa/downloads">Download</a>
+        <a href="demo/index.html">Demo</a>
+        <a href="http://github.com/dwdyer/fsa/issues">Bugs</a>
+        <a href="http://github.com/dwdyer/fsa">Source Code</a>
+      </div>
+      <p>
+        The Football Statistics Applet (FSA) is open source software licensed under the
+        terms of the <a href="http://www.gnu.org/licenses/gpl-3.0.html">GNU General Public License, Version 3</a>.
+      </p>
+      <p>
+        The Football Statistics Applet provides league tables, results, form tables, sequences and
+        head-to-head analysis for league football competitions.  It can be embedded in a web page to
+        provide fast, low-maintenance statistics.  It is an entirely client-side solution and will
+        work with any web hosting package (there is no need for a servlet container or database server).
+      </p>
+      <h2>Important Links</h2>
+      <ul>
+        <li>
+          <strong><a href="demo/index.html">Version 3.0 Preview</a></strong> - A demo of the
+          latest version of the Football Statistics Applet (requires Java 5.0).
+        </li>
+        <li>
+          <strong><a href="http://github.com/dwdyer/fsa/downloads">Version 2.0.3
+          Download</a></strong> - The old FSA stable release.  The zip file contains a sample HTML page that
+          should give some indication of how to embed the applet in a web page.
+        </li>
+        <li>
+          <strong><a href="dataformat.html">Results File Format</a></strong> - A description of the structure of
+          the plain text data files used by the Football Statistics Applet.
+        </li>
+      </ul>
+      <h2>New in Version 3.0</h2>
+      <div style="text-align: center;">
+        <img src="leaguetable.png" width="364" height="250"
+             alt="Version 3.0 league table view (OS X)"
+             title="Version 3.0 league table view (OS X)"
+             style="margin: .5em;"/>
+        <img src="headtohead.png" width="364" height="250"
+             alt="Version 3.0 head-to-head view (OS X)"
+             title="Version 3.0 head-to-head view (OS X)"
+             style="margin: .5em;"/>
+      </div>
+      <dl>
+        <dt><strong>Updated Source Code</strong></dt>
+        <dd>
+          For version 3.0, the applet's source code has been
+          <a href="http://blog.uncommons.org/2008/06/20/java-archaeology/">brought
+          up-to-date</a> and now takes advantage of modern Java features (Java 5.0
+          rather than 1.1).
+        </dd>
+        <dt><strong>Improved User Interface</strong></dt>
+        <dd>
+          Because it targeted Java 1.1, the original applet could not use Swing for its user
+          interface.  Instead it had to use the limited components provided by AWT.  Version
+          3.0 uses Swing, providing a much richer user experience.
+        </dd>
+        <dt><strong>Better Graphs</strong></dt>
+        <dd>
+          Moving to Swing means we now use the excellent
+          <a href="http://www.jfree.org/jfreechart/">JFreeChart</a> library for graphs rather
+          than the rather basic and ugly custom AWT charts used in version 2.
+        </dd>
+        <dt><strong>Compressed Data Files</strong></dt>
+        <dd>
+          Data files can now optionally use GZip compression to reduce their size by up to 80%.
+          This reduces the amount of data transferred by your web server and makes things
+          noticeably faster for users on slow connections.
+        </dd>
+        <dt><strong>Internationalisation</strong></dt>
+        <dd>
+          Prior to version 3, FSA was only available in English.  Java.net user <tt>maty535</tt>
+          has implemented i18n support and provided an initial translation into Slovak.  If you
+          would like to see FSA in your language, you can provide your own translations (please
+          submit your efforts via a pull request on GitHub).
+        </dd>
+        <dt><strong>More Detailed Sequence Statistics</strong></dt>
+        <dd>
+          The software now displays a list of all of the results that contributed to a particular
+          sequence.  Additionally, there is a new sequence that tracks the number of matches since
+          a team last kept a cleansheet.
+        </dd>
+        <dt><strong>Support for Split Leagues</strong></dt>
+        <dd>
+          Previous versions of the software did not work properly for the Scottish Premier League
+          (and similar leagues such as Northern Ireland's IFA Premiership) because the
+          <a href="http://en.wikipedia.org/wiki/Scottish_Premier_League#Competition_format">split
+          format</a> permits teams to finish above others that have more points.  Version 3.0
+          allows you to specify that the league will split in half after a certain number of games.
+        </dd>
+      </dl>
+      <div style="text-align: center;">
+        <img src="goaldifference.png" width="364" height="250"
+             alt="Version 3.0 goal difference graph (Windows XP)"
+             title="Version 3.0 goal difference graph (Windows XP)"
+             style="margin: .5em;"/>
+        <img src="sequences.png" width="364" height="250"
+             alt="Version 3.0 sequences view (Windows XP)"
+             title="Version 3.0 sequences view (Windows XP)"
+             style="margin: .5em;"/>
+      </div>
+      <div id="footer">
+        &copy; 2000-2010 <a href="http://dandyer.co.uk">Daniel W. Dyer</a>
+      </div>
+    </div>
+  </body>
+</html>

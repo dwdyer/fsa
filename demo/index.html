@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <title>Football Statistics Applet - Demo Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Daniel Dyer" />
+    <link href="../fsa.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="title">
+        <h1>Football Statistics Applet Demo</h1>
+        <h2>FA Premier League Statistics</h2>
+      </div>
+      <p>
+        This page provides historical data and statistics for the
+        <a href="http://www.premierleague.com/">FA Premier League</a>.
+        By default it shows the league table, results, form guide and graphs for the current season.
+        However, by changing the value of the "Season" drop-down box you can view data from
+        any year.  Alternatively, by selecting "(All Time)" from the "Season" drop-down, you
+        can view the all-time Premier League table and statistics.
+      </p>
+      <div style="text-align: center;">
+        <!-- Begin FSA code.  The nested object tags are necessary to work in both IE (inner tag) and Firefox
+             (outer tag).  Opera will work with either.  It should not be necessary to modify this code.
+             Configuration is achieved by editing the config.xml file. -->
+        <!--[if !IE]>-->
+        <object classid="java:net.footballpredictions.footballstats.applet.FootballStatsApplet.class"
+                type="application/x-java-applet"
+                archive="fsa.jar"
+                height="500"
+                width="700"
+                standby="Loading the Football Statistics Applet...">
+          <param name="config.url" value="config.xml" />
+          <param name="locale" value="en" />
+        <!--<![endif]-->
+          <object classid="clsid:08B0E5C0-4FCB-11CF-AAA5-00401C608501"
+                  type="application/x-java-applet"
+                  archive="fsa.jar"
+                  height="500"
+                  width="700"
+                  standby="Loading the Football Statistics Applet...">
+            <param name="code" value="net.footballpredictions.footballstats.applet.FootballStatsApplet.class" />
+            <param name="config.url" value="config.xml" />
+            <param name="locale" value="en" />
+          </object>
+        <!--[if !IE]>-->
+        </object>
+        <!--<![endif]-->
+        <!-- End FSA code. -->
+      </div>
+      <p>
+        This page is intended to demonstrate the capabilities of the
+        <a href="http://fsa.dev.java.net">Football Statistics Applet</a>.  The version of the
+        software embedded on this page is a preview build of version 3.0.
+      </p>
+      <div id="footer">
+        &copy; 2000-2010 <a href="http://dandyer.co.uk">Daniel W. Dyer</a>
+      </div>
+    </div>
+  </body>
+</html>

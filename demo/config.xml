@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+  <league name="England">
+    <division name="Premier League">
+      <season name="2009/10" href="data/england/premier/2009-2010.rlt.gz" />
+      <season name="2008/09" href="data/england/premier/2008-2009.rlt.gz" />
+      <season name="2007/08" href="data/england/premier/2007-2008.rlt.gz" />
+      <season name="2006/07" href="data/england/premier/2006-2007.rlt.gz" />
+      <season name="2005/06" href="data/england/premier/2005-2006.rlt.gz" />
+      <season name="2004/05" href="data/england/premier/2004-2005.rlt.gz" />
+      <season name="2003/04" href="data/england/premier/2003-2004.rlt.gz" />
+      <season name="2002/03" href="data/england/premier/2002-2003.rlt.gz" />
+      <season name="2001/02" href="data/england/premier/2001-2002.rlt.gz" />
+      <season name="2000/01" href="data/england/premier/2000-2001.rlt.gz" />
+      <season name="1999/00" href="data/england/premier/1999-2000.rlt.gz" />
+      <season name="1998/99" href="data/england/premier/1998-1999.rlt.gz" />
+      <season name="1997/98" href="data/england/premier/1997-1998.rlt.gz" />
+      <season name="1996/97" href="data/england/premier/1996-1997.rlt.gz" />
+      <season name="1995/96" href="data/england/premier/1995-1996.rlt.gz" />
+      <season name="1994/95" href="data/england/premier/1994-1995.rlt.gz" />
+      <season name="1993/94" href="data/england/premier/1993-1994.rlt.gz" />
+      <season name="1992/93" href="data/england/premier/1992-1993.rlt.gz" />
+      <season name="(All Time)" href="data/england/premier/alltime.rlt.gz" />
+    </division>
+  </league>
+  <league name="Scotland">
+    <division name="Premier League">
+      <season name="2006/07" href="data/scotland/premier/2006-2007.rlt.gz" />
+    </division>
+  </league>
+</config>
+
