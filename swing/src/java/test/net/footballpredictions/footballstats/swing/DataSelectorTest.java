@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   Â© Copyright 2000-2010 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@ package net.footballpredictions.footballstats.swing;
 
 import java.awt.BorderLayout;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -26,7 +27,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import org.fest.swing.core.RobotFixture;
+import org.fest.swing.core.BasicRobot;
+import org.fest.swing.core.Robot;
 import org.fest.swing.fixture.FrameFixture;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -39,13 +41,25 @@ import org.testng.annotations.Test;
  */
 public class DataSelectorTest
 {
-    private static final String TEST_URL = "http://www.dandyer.co.uk/fsa/englishpremiership0506.rlt";
+    private static final String TEST_FILE = "./data/england/premier/2005-2006.rlt";
+    private static URL TEST_URL;
+    static
+    {
+        try
+        {
+            TEST_URL = new File(TEST_FILE).toURI().toURL();
+        }
+        catch (MalformedURLException ex)
+        {
+            throw new IllegalStateException(ex);
+        }
+    }
 
     private static final String CONFIG_XML
         = "<config><league name=\"England\"><division name=\"Premier League\">" +
           "<season name=\"2008/09\" href=\"" + TEST_URL + "\" /></division></league></config>";
 
-    private RobotFixture robot;
+    private Robot robot;
 
     private Map<String, Map<String, Map<String, URL>>> leagues = new LinkedHashMap<String, Map<String, Map<String, URL>>>();
 
@@ -53,22 +67,22 @@ public class DataSelectorTest
     public void prepareData() throws MalformedURLException
     {
         Map<String, URL> eplSeasons = new LinkedHashMap<String, URL>();
-        eplSeasons.put("A", new URL(TEST_URL));
-        eplSeasons.put("B", new URL(TEST_URL));
+        eplSeasons.put("A", TEST_URL);
+        eplSeasons.put("B", TEST_URL);
         Map<String, URL> championshipSeasons = new LinkedHashMap<String, URL>();
-        eplSeasons.put("C", new URL(TEST_URL));
-        eplSeasons.put("D", new URL(TEST_URL));
+        championshipSeasons.put("C", TEST_URL);
+        championshipSeasons.put("D", TEST_URL);
 
         Map<String, Map<String, URL>> englandDivisions = new LinkedHashMap<String, Map<String, URL>>();
         englandDivisions.put("Premier League", eplSeasons);
         englandDivisions.put("Championship", championshipSeasons);
 
         Map<String, URL> splSeasons = new LinkedHashMap<String, URL>();
-        splSeasons.put("E", new URL(TEST_URL));
-        splSeasons.put("F", new URL(TEST_URL));
+        splSeasons.put("E", TEST_URL);
+        splSeasons.put("F", TEST_URL);
         Map<String, URL> d1Seasons = new LinkedHashMap<String, URL>();
-        d1Seasons.put("G", new URL(TEST_URL));
-        d1Seasons.put("H", new URL(TEST_URL));
+        d1Seasons.put("G", TEST_URL);
+        d1Seasons.put("H", TEST_URL);
 
         Map<String, Map<String, URL>> scotlandDivisions = new LinkedHashMap<String, Map<String, URL>>();
         scotlandDivisions.put("SPL", splSeasons);
@@ -82,7 +96,7 @@ public class DataSelectorTest
     @BeforeMethod
     public void prepareRobot()
     {
-        robot = RobotFixture.robotWithNewAwtHierarchy();
+        robot = BasicRobot.robotWithNewAwtHierarchy();
     }
 
 

@@ -63,8 +63,8 @@ public final class FootballStatsApplet extends JApplet
     }
     
     private static final String NAME_STRING = "Football Statistics Applet";
-    private static final String VERSION_STRING = "Version 3.0 (Preview)";
-    private static final String COPYRIGHT_STRING = "\u00A9 Copyright 2000-2008, Daniel W. Dyer";
+    private static final String VERSION_STRING = "Version 3.0";
+    private static final String COPYRIGHT_STRING = "\u00A9 Copyright 2000-2010, Daniel W. Dyer";
     private static final String URL_STRING = "http://fsa.footballpredictions.net";
 
     private final DataSelector dataSelector = new DataSelector();

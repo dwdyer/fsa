@@ -1,6 +1,6 @@
 // ============================================================================
 //   The Football Statistics Applet (http://fsa.footballpredictions.net)
-//   © Copyright 2000-2008 Daniel W. Dyer
+//   Â© Copyright 2000-2010 Daniel W. Dyer
 //
 //   This program is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
@@ -82,7 +82,6 @@ public class SwingBackgroundTaskTest
             @Override
             protected void onError(Throwable throwable)
             {
-                super.onError(throwable);
                 // Make sure we've been passed the right exception.
                 if (throwable.getClass().equals(UnsupportedOperationException.class))
                 {

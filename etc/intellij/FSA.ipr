@@ -499,7 +499,7 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="svn" />
+    <mapping directory="" vcs="Git" />
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="com.intellij.jsf.UserDefinedFacesConfigs">
@@ -519,16 +519,19 @@
     <option name="shortCycleTableSpecificationString" value="" />
   </component>
   <component name="libraryTable">
-    <library name="testng-5.6-jdk15">
+    <library name="TestNG">
       <CLASSES>
-        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/testng/testng-5.6-jdk15.jar!/" />
+        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/testng/testng-5.13.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="fest-swing-1.0b2.1">
+    <library name="FEST">
       <CLASSES>
-        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/fest/fest-swing-1.0b2.1.jar!/" />
+        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/fest/fest-reflect-1.1.jar!/" />
+        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/fest/fest-swing-1.1.jar!/" />
+        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/fest/fest-util-1.0.jar!/" />
+        <root url="jar:///Users/dan/Projects/fsa/lib/compiletime/fest/fest-assert-1.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

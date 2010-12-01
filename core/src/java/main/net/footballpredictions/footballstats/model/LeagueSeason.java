@@ -140,8 +140,6 @@ public final class LeagueSeason
                 team.getTeam().addLeaguePosition(date, index);
                 ++index;
             }
-        
-            System.out.println("Processed results for " + date.toString());
         }
     }
     
