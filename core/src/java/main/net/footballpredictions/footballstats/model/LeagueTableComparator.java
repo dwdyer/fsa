@@ -18,12 +18,13 @@
 package net.footballpredictions.footballstats.model;
 
 import java.util.Comparator;
+import java.io.Serializable;
 
 /**
  * {@link Comparator} used to order teams in standard league table order.
  * @author Daniel Dyer
  */
-class LeagueTableComparator implements Comparator<TeamRecord>
+class LeagueTableComparator implements Comparator<TeamRecord>, Serializable
 {
     public final int compare(TeamRecord team1, TeamRecord team2)
     {

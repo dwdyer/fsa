@@ -72,7 +72,7 @@
   </target>
 
 
-  <target name="applet.shrink" depends="clean, applet.build" description="Packs the applet and all dependencies into a single, obfuscated JAR.">
+  <target name="applet.shrink" depends="applet.build" description="Packs the applet and all dependencies into a single, obfuscated JAR.">
     <!-- Make the applet as small as possible. -->
     <taskdef resource="proguard/ant/task.properties" classpath="${lib.compiletime}/proguard/proguard.jar" />
     <proguard shrink="true"
@@ -120,7 +120,7 @@
   </target>
   
 
-  <target name="release" depends="test, dist" description="Zips files ready for release.">
+  <target name="release" depends="clean, test, dist" description="Zips files ready for release.">
     <mkdir dir="${release.dir}" />
     <zip destfile="${release.dir}/${release.zip}">
       <fileset dir="${dist.dir}" includes="**/*"/>
