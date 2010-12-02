@@ -20,6 +20,6 @@ STATUS
 
   FSA has been superseded in many ways by Anorak (see
   https://github.com/dwdyer/anorak), a system for generating football statistics
-  as static HTML pages.  The are unlikely to be any major new versions though
+  as static HTML pages.  There are unlikely to be any major new versions though
   improvements submitted via GitHub pull requests will be considered.
 
